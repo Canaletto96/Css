@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 5: специфичность и каскад — какой стиль победит, как считается вес селектора, !important.">
+    <title>CSS Урок 5. Специфичность и каскад</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Демо-стили */
+        .demo p { color: red; }
+        .demo .test { color: blue; }
+        .demo #test-id { color: green; }
+
+        .order-test {
+            color: red;
+        }
+        .order-test {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 5. Специфичность и каскад</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, почему один стиль "побеждает" другой,  -->
+    <!-- и научиться предсказывать результат.                       -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: два правила — одно свойство</h2>
+
+    <p>
+        Что если два CSS-правила задают <strong>одно и то же свойство</strong>
+        для одного элемента?
+    </p>
+
+    <pre><code>p {
+    color: red;
+}
+
+p {
+    color: blue;
+}</code></pre>
+
+    <p>Какой цвет будет? Ответ — <strong>синий</strong>. Потому что <strong>каскад</strong>.</p>
+
+    <p>
+        <strong>Каскад</strong> (cascading) — это набор правил, по которым браузер решает,
+        какой стиль применить, если их несколько. Отсюда название CSS —
+        <strong>C</strong>ascading <strong>S</strong>tyle <strong>S</strong>heets.
+    </p>
+
+    <h2>2. Три уровня приоритета</h2>
+
+    <p>Когда два стиля конфликтуют, браузер сравнивает их по трём критериям <strong>по порядку</strong>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Уровень</th>
+                <th>Критерий</th>
+                <th>Кто побеждает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><strong>Важность</strong></td>
+                <td>Без <code>!important</code> &lt; с <code>!important</code></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>Специфичность</strong></td>
+                <td>Более конкретный селектор</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><strong>Порядок</strong></td>
+                <td>Кто ниже в CSS — тот побеждает</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Логика:</strong>
+        <ol>
+            <li>Сначала — есть ли <code>!important</code>. Если да — побеждает он.</li>
+            <li>Если у обоих нет — сравнить <strong>специфичность</strong>.</li>
+            <li>Если специфичность равна — побеждает <strong>тот, что ниже</strong> в файле.</li>
+        </ol>
+    </div>
+
+    <h2>3. Специфичность — что это</h2>
+
+    <p>
+        <strong>Специфичность</strong> (specificity) — это «вес» селектора. Чем
+        конкретнее селектор, тем он важнее.
+    </p>
+
+    <p>Специфичность считается как <strong>четыре числа</strong> (a, b, c, d):</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Что считается</th>
+                <th>Вес</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>a</strong></td>
+                <td><code>!important</code></td>
+                <td>1 (или 0)</td>
+            </tr>
+            <tr>
+                <td><strong>b</strong></td>
+                <td><code>#id</code></td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td><strong>c</strong></td>
+                <td><code>.class</code>, <code>[attr]</code>, <code>:pseudo-class</code></td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td><strong>d</strong></td>
+                <td><code>тег</code>, <code>::pseudo-element</code></td>
+                <td>1</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Важно:</strong> числа <strong>не складываются</strong> как обычные.
+        <code>11 классов</code> <strong>не победят</strong> <code>1 id</code> — потому
+        что id и класс — разные «разряды». Это как «11 копеек &lt; 1 рубль».
+    </div>
+
+    <h2>4. Примеры специфичности</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Специфичность</th>
+                <th>Пояснение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>*</code></td>
+                <td>(0, 0, 0, 0)</td>
+                <td>Универсальный — вес 0</td>
+            </tr>
+            <tr>
+                <td><code>p</code></td>
+                <td>(0, 0, 0, 1)</td>
+                <td>Один тег</td>
+            </tr>
+            <tr>
+                <td><code>p span</code></td>
+                <td>(0, 0, 0, 2)</td>
+                <td>Два тега</td>
+            </tr>
+            <tr>
+                <td><code>.card</code></td>
+                <td>(0, 0, 1, 0)</td>
+                <td>Один класс</td>
+            </tr>
+            <tr>
+                <td><code>p.card</code></td>
+                <td>(0, 0, 1, 1)</td>
+                <td>Класс + тег</td>
+            </tr>
+            <tr>
+                <td><code>.card .title</code></td>
+                <td>(0, 0, 2, 0)</td>
+                <td>Два класса</td>
+            </tr>
+            <tr>
+                <td><code>#header</code></td>
+                <td>(0, 1, 0, 0)</td>
+                <td>Один id</td>
+            </tr>
+            <tr>
+                <td><code>#header .card</code></td>
+                <td>(0, 1, 1, 0)</td>
+                <td>id + класс</td>
+            </tr>
+            <tr>
+                <td><code>#header .card p</code></td>
+                <td>(0, 1, 1, 1)</td>
+                <td>id + класс + тег</td>
+            </tr>
+            <tr>
+                <td><code>a:hover</code></td>
+                <td>(0, 0, 1, 1)</td>
+                <td>Псевдокласс + тег</td>
+            </tr>
+            <tr>
+                <td><code>a::before</code></td>
+                <td>(0, 0, 0, 2)</td>
+                <td>Тег + псевдоэлемент</td>
+            </tr>
+            <tr>
+                <td><code>style=""</code></td>
+                <td>(1, 0, 0, 0)</td>
+                <td>Инлайн-стиль (как id, но выше)</td>
+            </tr>
+            <tr>
+                <td><code>!important</code></td>
+                <td>↑ всё</td>
+                <td>Перебивает всё</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Сравнение: кто победит</h2>
+
+    <pre><code>/* Специфичность: (0, 0, 0, 1) */
+p {
+    color: red;
+}
+
+/* Специфичность: (0, 0, 1, 0) — ВЫШЕ */
+.card {
+    color: blue;
+}</code></pre>
+
+    <p>Победит <strong>синий</strong> (класс специфичнее тега).</p>
+
+    <pre><code>/* Специфичность: (0, 0, 1, 0) */
+.card {
+    color: blue;
+}
+
+/* Специфичность: (0, 1, 0, 0) — ВЫШЕ */
+#header {
+    color: green;
+}</code></pre>
+
+    <p>Победит <strong>зелёный</strong> (id специфичнее класса).</p>
+
+    <div class="demo">
+        <div class="demo-label">Демо: p внутри .demo, .test, #test-id</div>
+        <p>Этот параграф — <strong>красный</strong> (сработал <code>.demo p</code>)</p>
+        <p class="test">Этот параграф — <strong>синий</strong> (сработал <code>.demo .test</code>)</p>
+        <p class="test" id="test-id">Этот параграф — <strong>зелёный</strong> (сработал <code>.demo #test-id</code>)</p>
+    </div>
+
+    <h2>6. Порядок в CSS</h2>
+
+    <p>Если специфичность <strong>равна</strong>, побеждает тот, что <strong>ниже</strong> в файле:</p>
+
+    <pre><code>.order-test {
+    color: red;
+}
+
+.order-test {
+    color: blue;   /* ← это победит (ниже) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <p class="order-test">Этот текст — <strong>синий</strong>, потому что правило ниже.</p>
+    </div>
+
+    <div class="note">
+        <strong>Почему так:</strong> представь, что браузер читает CSS сверху вниз
+        и «перезаписывает» стили. Кто ниже — тот записал последним.
+    </div>
+
+    <h3>Порядок подключения CSS</h3>
+
+    <p>Порядок имеет значение и между файлами:</p>
+
+    <pre><code>&lt;!-- Сначала этот --&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;
+
+&lt;!-- Потом этот — перезапишет совпадающие --&gt;
+&lt;link rel="stylesheet" href="override.css"&gt;</code></pre>
+
+    <h2>7. <code>!important</code> — ядерная кнопка</h2>
+
+    <p>
+        <code>!important</code> заставляет свойство <strong>игнорировать</strong> специфичность
+        и порядок.
+    </p>
+
+    <pre><code>p {
+    color: red !important;
+}
+
+#header .card p {
+    color: blue;
+}</code></pre>
+
+    <p>Победит <strong>красный</strong>, несмотря на то что <code>#header .card p</code> специфичнее.</p>
+
+    <div class="warn">
+        <strong>Не используй <code>!important</code> без крайней необходимости!</strong>
+        <ul>
+            <li>Ломает каскад — ты не можешь переопределить стиль.</li>
+            <li>Через год ты сам не вспомнишь, зачем поставил.</li>
+            <li>Приходится ставить <code>!important</code> на <code>!important</code> — ад.</li>
+        </ul>
+        <strong>Когда можно:</strong>
+        <ul>
+            <li>Переопределяешь стили сторонней библиотеки (Bootstrap).</li>
+            <li>Пишешь утилитарный класс (например, <code>.hidden { display: none !important; }</code>).</li>
+            <li>Email-письма (там свои причуды).</li>
+        </ul>
+    </div>
+
+    <h2>8. Порядок применения стилей</h2>
+
+    <p>Полный порядок (от низшего к высшему):</p>
+
+    <ol>
+        <li><strong>Стили браузера</strong> (user agent) — встроенные.</li>
+        <li><strong>Стили пользователя</strong> — настройки в браузере (редко).</li>
+        <li><strong>Стили автора</strong> (твои) — обычные CSS.</li>
+        <li><strong>Стили автора с <code>!important</code></strong>.</li>
+        <li><strong>Стили пользователя с <code>!important</code></strong> — настройки доступности.</li>
+        <li><strong>Стили браузера с <code>!important</code></strong> — крайне редко.</li>
+    </ol>
+
+    <div class="note">
+        Для тебя важны пункты 3 и 4: <strong>твои обычные стили</strong> и <strong>твои
+        <code>!important</code></strong>. Всё остальное — редкость.
+    </div>
+
+    <h2>9. Практические примеры</h2>
+
+    <h3>Пример 1: класс vs тег</h3>
+
+    <pre><code>&lt;p class="intro"&gt;Текст&lt;/p&gt;
+
+p { color: red; }         /* (0,0,0,1) */
+.intro { color: blue; }   /* (0,0,1,0) — побеждает */</code></pre>
+
+    <p>Результат: <strong>синий</strong>.</p>
+
+    <h3>Пример 2: id vs 10 классов</h3>
+
+    <pre><code>&lt;div id="header" class="a b c d e f g h i j"&gt;...&lt;/div&gt;
+
+#header { color: red; }      /* (0,1,0,0) */
+.a.b.c.d.e.f.g.h.i.j { color: blue; }  /* (0,0,10,0) */</code></pre>
+
+    <p>Результат: <strong>красный</strong>. Один id побеждает 10 классов.</p>
+
+    <div class="warn">
+        <strong>Важно:</strong> 10 классов <strong>не</strong> равны 1 id.
+        Это <strong>разные разряды</strong>. id всегда выше.
+    </div>
+
+    <h3>Пример 3: инлайн-стиль vs id</h3>
+
+    <pre><code>&lt;p id="text" style="color: green;"&gt;Текст&lt;/p&gt;
+
+#text { color: red; }   /* (0,1,0,0) */
+/* style="" имеет специфичность (1,0,0,0) — побеждает */</code></pre>
+
+    <p>Результат: <strong>зелёный</strong> (инлайн-стиль).</p>
+
+    <h3>Пример 4: !important vs всё</h3>
+
+    <pre><code>p { color: red !important; }
+#header .card p { color: blue; }
+p { color: green; }</code></pre>
+
+    <p>Результат: <strong>красный</strong>. <code>!important</code> перебивает всё.</p>
+
+    <h2>10. Как избежать «войн специфичности»</h2>
+
+    <p>Проблема: если стили конфликтуют, ты начинаешь добавлять <code>!important</code>, потом ещё один — и код превращается в ад.</p>
+
+    <p><strong>Правила:</strong></p>
+
+    <ol>
+        <li><strong>Используй классы</strong>, не id для стилей.</li>
+        <li><strong>Не углубляйся</strong> больше 2–3 уровней: <code>.card .title</code>, а не <code>div &gt; section &gt; .card &gt; .title</code>.</li>
+        <li><strong>Один класс — одна ответственность</strong> (BEM).</li>
+        <li><strong>Не используй <code>!important</code></strong> без причины.</li>
+        <li><strong>Порядок файлов</strong>: сначала reset, потом базовые, потом компоненты, потом утилиты.</li>
+    </ol>
+
+    <h2>11. Как проверить специфичность в DevTools</h2>
+
+    <p>
+        Открой <kbd>F12</kbd> → Elements → выбери элемент. Справа — панель <strong>Styles</strong>.
+    </p>
+
+    <p>Ты увидишь:</p>
+    <ul>
+        <li><strong>Применённые стили</strong> — обычным текстом.</li>
+        <li><strong>Перебитые стили</strong> — <s>зачёркнуты</s>.</li>
+        <li>Откуда каждый стиль — файл и строка.</li>
+    </ul>
+
+    <p>Это <strong>лучший способ</strong> понять, какой стиль победил и почему.</p>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Использовать id для стилей</td>
+                <td>Высокая специфичность — сложно переопределить</td>
+            </tr>
+            <tr>
+                <td>Ставить <code>!important</code> «на всякий случай»</td>
+                <td>Ломает каскад, приходится ставить ещё один</td>
+            </tr>
+            <tr>
+                <td>Думать, что 10 классов = 1 id</td>
+                <td>Нет. id всегда выше, это разные разряды</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>div &gt; section &gt; ul &gt; li &gt; a</code></td>
+                <td>Слишком высокая специфичность, хрупко</td>
+            </tr>
+            <tr>
+                <td>Забывать про порядок файлов</td>
+                <td>Стили могут «перебить» друг друга неожиданно</td>
+            </tr>
+            <tr>
+                <td>Не проверять в DevTools</td>
+                <td>Гадание вместо фактов</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Каскад</strong> — правила, по которым браузер решает, какой стиль применить.</li>
+        <li><strong>Три критерия:</strong> <code>!important</code> → специфичность → порядок.</li>
+        <li><strong>Специфичность</strong> считается как <code>(id, классы, теги)</code>.</li>
+        <li><strong>Специфичность:</strong> <code>*</code> = 0, тег = 1, класс = 10, id = 100.</li>
+        <li><strong>10 классов ≠ 1 id.</strong> id всегда выше.</li>
+        <li><strong>Инлайн-стиль</strong> <code>style=""</code> — выше id, но ниже <code>!important</code>.</li>
+        <li><strong>При равной специфичности</strong> побеждает тот, что <strong>ниже</strong>.</li>
+        <li><strong><code>!important</code></strong> — крайняя мера. Не используй без причины.</li>
+        <li><strong>DevTools</strong> — лучший способ понять, что победило.</li>
+        <li><strong>Правило:</strong> используй классы, не углубляйся, не спамь <code>!important</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 5 · Следующий урок: <em>Наследование — какие свойства наследуются</em>
+    </p>
+
+</body>
+</html>

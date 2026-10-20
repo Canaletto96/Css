@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Оглавление курса CSS — все 60 уроков с прямыми ссылками.">
+    <title>Курс CSS — Оглавление</title>
+
+    <style>
+        :root {
+            --accent: #1565c0;
+            --accent-light: #e3f2fd;
+            --bg: #fafafa;
+            --card: #ffffff;
+            --text: #222;
+            --muted: #888;
+            --border: #e0e0e0;
+            --done: #43a047;
+            --pending: #bdbdbd;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        h1 {
+            color: var(--accent);
+            margin: 0 0 8px 0;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1.05em;
+            margin: 0;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat { text-align: center; }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--accent);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section { margin-bottom: 40px; }
+
+        .section-title {
+            background: #333;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            margin: 0;
+            font-size: 1.15em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title .section-count {
+            font-size: 0.85em;
+            opacity: 0.7;
+            font-weight: normal;
+        }
+
+        .lessons {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        .lesson {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            transition: background 0.15s;
+        }
+
+        .lesson:last-child { border-bottom: none; }
+        .lesson:hover { background: var(--accent-light); }
+
+        .lesson-number {
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 4px 10px;
+            border-radius: 6px;
+            min-width: 40px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .lesson:hover .lesson-number { background: #fff; }
+
+        .lesson-title {
+            flex: 1;
+            font-size: 1em;
+        }
+
+        .lesson-tags {
+            font-size: 0.8em;
+            color: var(--muted);
+            font-family: Consolas, Monaco, monospace;
+            white-space: nowrap;
+        }
+
+        .lesson-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .lesson-status.done { background: var(--done); }
+        .lesson-status.pending { background: var(--pending); }
+        .lesson-status.done::before { content: "✓"; }
+        .lesson-status.pending::before { content: "·"; font-size: 18px; }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.9em;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 0.85em;
+            color: var(--muted);
+        }
+
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend .dot.done { background: var(--done); }
+        .legend .dot.pending { background: var(--pending); }
+
+        @media (max-width: 600px) {
+            .lesson-tags { display: none; }
+            .lesson { padding: 12px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Курс CSS</h1>
+        <p class="subtitle">Полный курс по каскадным таблицам стилей — 60 уроков</p>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-value">60</span>
+                <span class="stat-label">уроков</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">11</span>
+                <span class="stat-label">блоков</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 1. ОСНОВЫ CSS                                            -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 1. Основы CSS
+            <span class="section-count">6 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="01-basics/01-intro.html">
+                <span class="lesson-number">01</span>
+                <span class="lesson-title">Что такое CSS и как он работает</span>
+                <span class="lesson-tags">введение</span>
+                <span class="lesson-status done"></span>
+            </a>
+
+            <a class="lesson" href="01-basics/02-connection.html">
+                <span class="lesson-number">02</span>
+                <span class="lesson-title">Способы подключения CSS — внешний файл, &lt;style&gt;, style=""</span>
+                <span class="lesson-tags">link style @import</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="01-basics/03-syntax.html">
+                <span class="lesson-number">03</span>
+                <span class="lesson-title">Синтаксис CSS — селектор, свойство, значение</span>
+                <span class="lesson-tags">синтаксис</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="01-basics/04-selectors.html">
+                <span class="lesson-number">04</span>
+                <span class="lesson-title">Селекторы — тег, класс, id, потомок, ребёнок, сосед</span>
+                <span class="lesson-tags">селекторы</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="01-basics/05-specificity.html">
+                <span class="lesson-number">05</span>
+                <span class="lesson-title">Специфичность и каскад — какой стиль победит</span>
+                <span class="lesson-tags">specificity каскад</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="01-basics/06-inheritance.html">
+                <span class="lesson-number">06</span>
+                <span class="lesson-title">Наследование — какие свойства наследуются</span>
+                <span class="lesson-tags">inherit</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 2. ЕДИНИЦЫ И ЦВЕТ                                        -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 2. Единицы и цвет
+            <span class="section-count">4 урока</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="02-units-color/07-units.html">
+                <span class="lesson-number">07</span>
+                <span class="lesson-title">Единицы измерения — px, %, em, rem, vw, vh, ch</span>
+                <span class="lesson-tags">px em rem vw vh</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="02-units-color/08-colors.html">
+                <span class="lesson-number">08</span>
+                <span class="lesson-title">Цвет — HEX, RGB, HSL, RGBA, HSLA</span>
+                <span class="lesson-tags">color rgb hsl</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="02-units-color/09-typography.html">
+                <span class="lesson-number">09</span>
+                <span class="lesson-title">Форматирование текста — font-family, font-size, line-height</span>
+                <span class="lesson-tags">font line-height</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="02-units-color/10-text-alignment.html">
+                <span class="lesson-number">10</span>
+                <span class="lesson-title">Выравнивание — text-align, vertical-align, text-transform</span>
+                <span class="lesson-tags">text-align transform</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 3. БЛОЧНАЯ МОДЕЛЬ                                        -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 3. Блочная модель
+            <span class="section-count">6 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="03-box-model/11-box-model.html">
+                <span class="lesson-number">11</span>
+                <span class="lesson-title">Блочная модель — content, padding, border, margin</span>
+                <span class="lesson-tags">box model</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="03-box-model/12-box-sizing.html">
+                <span class="lesson-number">12</span>
+                <span class="lesson-title">box-sizing — почему border-box спасает жизнь</span>
+                <span class="lesson-tags">box-sizing</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="03-box-model/13-borders.html">
+                <span class="lesson-number">13</span>
+                <span class="lesson-title">Границы — border, border-radius, outline, box-shadow</span>
+                <span class="lesson-tags">border radius shadow</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="03-box-model/14-spacing.html">
+                <span class="lesson-number">14</span>
+                <span class="lesson-title">Отступы — margin и padding, схлопывание margin</span>
+                <span class="lesson-tags">margin padding</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="03-box-model/15-display.html">
+                <span class="lesson-number">15</span>
+                <span class="lesson-title">display — block, inline, inline-block, none</span>
+                <span class="lesson-tags">display</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="03-box-model/16-overflow.html">
+                <span class="lesson-number">16</span>
+                <span class="lesson-title">Переполнение — overflow, overflow-x, overflow-y</span>
+                <span class="lesson-tags">overflow</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 4. ФОН И ГРАФИКА                                         -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 4. Фон и графика
+            <span class="section-count">5 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="04-background/17-background.html">
+                <span class="lesson-number">17</span>
+                <span class="lesson-title">Фон — background-color, image, size, position</span>
+                <span class="lesson-tags">background</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="04-background/18-gradients.html">
+                <span class="lesson-number">18</span>
+                <span class="lesson-title">Градиенты — linear, radial, conic</span>
+                <span class="lesson-tags">gradient</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="04-background/19-shadows.html">
+                <span class="lesson-number">19</span>
+                <span class="lesson-title">Тени — box-shadow, text-shadow, drop-shadow</span>
+                <span class="lesson-tags">shadow filter</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="04-background/20-opacity.html">
+                <span class="lesson-number">20</span>
+                <span class="lesson-title">Прозрачность — opacity vs rgba</span>
+                <span class="lesson-tags">opacity rgba</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="04-background/21-images.html">
+                <span class="lesson-number">21</span>
+                <span class="lesson-title">Изображения — object-fit, object-position, aspect-ratio</span>
+                <span class="lesson-tags">object-fit aspect-ratio</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 5. ПОЗИЦИОНИРОВАНИЕ                                      -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 5. Позиционирование
+            <span class="section-count">5 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="05-positioning/22-position.html">
+                <span class="lesson-number">22</span>
+                <span class="lesson-title">Позиционирование — static, relative, absolute, fixed, sticky</span>
+                <span class="lesson-tags">position</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="05-positioning/23-z-index.html">
+                <span class="lesson-number">23</span>
+                <span class="lesson-title">z-index и контекст наложения</span>
+                <span class="lesson-tags">z-index stacking</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="05-positioning/24-coordinates.html">
+                <span class="lesson-number">24</span>
+                <span class="lesson-title">top, right, bottom, left — координаты</span>
+                <span class="lesson-tags">top left</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="05-positioning/25-float.html">
+                <span class="lesson-number">25</span>
+                <span class="lesson-title">float и clear — legacy, но надо знать</span>
+                <span class="lesson-tags">float clear</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="05-positioning/26-centering.html">
+                <span class="lesson-number">26</span>
+                <span class="lesson-title">Центрирование — все способы</span>
+                <span class="lesson-tags">центрирование</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 6. FLEXBOX                                               -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🔥 Блок 6. Flexbox
+            <span class="section-count">6 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="06-flexbox/27-flexbox-intro.html">
+                <span class="lesson-number">27</span>
+                <span class="lesson-title">Что такое Flexbox — идея, display: flex, ось</span>
+                <span class="lesson-tags">flex</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="06-flexbox/28-flex-direction.html">
+                <span class="lesson-number">28</span>
+                <span class="lesson-title">Основная ось — flex-direction, flex-wrap, flex-flow</span>
+                <span class="lesson-tags">flex-direction wrap</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="06-flexbox/29-alignment.html">
+                <span class="lesson-number">29</span>
+                <span class="lesson-title">Выравнивание — justify-content, align-items, align-self</span>
+                <span class="lesson-tags">justify align</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="06-flexbox/30-flex-properties.html">
+                <span class="lesson-number">30</span>
+                <span class="lesson-title">Размеры flex — flex-grow, flex-shrink, flex-basis</span>
+                <span class="lesson-tags">flex-grow shrink basis</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="06-flexbox/31-gap-order.html">
+                <span class="lesson-number">31</span>
+                <span class="lesson-title">gap и порядок — gap, order</span>
+                <span class="lesson-tags">gap order</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="06-flexbox/32-flexbox-practice.html">
+                <span class="lesson-number">32</span>
+                <span class="lesson-title">Практика Flexbox — меню, карточки, sticky footer</span>
+                <span class="lesson-tags">практика</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 7. GRID                                                  -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🔥 Блок 7. Grid
+            <span class="section-count">7 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="07-grid/33-grid-intro.html">
+                <span class="lesson-number">33</span>
+                <span class="lesson-title">Что такое Grid — идея, display: grid</span>
+                <span class="lesson-tags">grid</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="07-grid/34-grid-template.html">
+                <span class="lesson-number">34</span>
+                <span class="lesson-title">Колонки и строки — template-columns, fr, repeat, minmax</span>
+                <span class="lesson-tags">template fr repeat</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="07-grid/35-grid-positioning.html">
+                <span class="lesson-number">35</span>
+                <span class="lesson-title">Позиционирование — grid-column, grid-row, span</span>
+                <span class="lesson-tags">grid-column span</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="07-grid/36-grid-areas.html">
+                <span class="lesson-number">36</span>
+                <span class="lesson-title">Области — grid-template-areas</span>
+                <span class="lesson-tags">grid-areas</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="07-grid/37-grid-auto.html">
+                <span class="lesson-number">37</span>
+                <span class="lesson-title">Автоматическая сетка — grid-auto-flow</span>
+                <span class="lesson-tags">grid-auto</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="07-grid/38-grid-alignment.html">
+                <span class="lesson-number">38</span>
+                <span class="lesson-title">gap и выравнивание — justify-items, align-items</span>
+                <span class="lesson-tags">grid gap</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="07-grid/39-grid-practice.html">
+                <span class="lesson-number">39</span>
+                <span class="lesson-title">Практика Grid — макеты страниц, галереи</span>
+                <span class="lesson-tags">практика</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 8. АДАПТИВНОСТЬ                                          -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 8. Адаптивность
+            <span class="section-count">6 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="08-responsive/40-responsive-intro.html">
+                <span class="lesson-number">40</span>
+                <span class="lesson-title">Что такое адаптивность — mobile-first, desktop-first</span>
+                <span class="lesson-tags">адаптив</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="08-responsive/41-media-queries.html">
+                <span class="lesson-number">41</span>
+                <span class="lesson-title">Media queries — @media, min-width, max-width</span>
+                <span class="lesson-tags">@media</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="08-responsive/42-relative-units.html">
+                <span class="lesson-number">42</span>
+                <span class="lesson-title">Относительные единицы — %, rem, vw, clamp()</span>
+                <span class="lesson-tags">clamp min max</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="08-responsive/43-responsive-images.html">
+                <span class="lesson-number">43</span>
+                <span class="lesson-title">Изображения в адаптиве — max-width, picture, srcset</span>
+                <span class="lesson-tags">srcset picture</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="08-responsive/44-responsive-grids.html">
+                <span class="lesson-number">44</span>
+                <span class="lesson-title">Адаптивные сетки — repeat(auto-fit, minmax(...))</span>
+                <span class="lesson-tags">auto-fit minmax</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="08-responsive/45-container-queries.html">
+                <span class="lesson-number">45</span>
+                <span class="lesson-title">Container queries — современная адаптивность</span>
+                <span class="lesson-tags">@container</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 9. ПРОДВИНУТОЕ                                           -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 9. Продвинутое
+            <span class="section-count">7 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="09-advanced/46-pseudo-classes.html">
+                <span class="lesson-number">46</span>
+                <span class="lesson-title">Псевдоклассы — :hover, :focus, :nth-child, :not, :is</span>
+                <span class="lesson-tags">:hover :focus :not</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="09-advanced/47-pseudo-elements.html">
+                <span class="lesson-number">47</span>
+                <span class="lesson-title">Псевдоэлементы — ::before, ::after, ::first-letter</span>
+                <span class="lesson-tags">::before ::after</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="09-advanced/48-transitions.html">
+                <span class="lesson-number">48</span>
+                <span class="lesson-title">Переходы — transition-property, duration, timing-function</span>
+                <span class="lesson-tags">transition</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="09-advanced/49-transforms.html">
+                <span class="lesson-number">49</span>
+                <span class="lesson-title">Трансформации — translate, rotate, scale, skew</span>
+                <span class="lesson-tags">transform</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="09-advanced/50-animations.html">
+                <span class="lesson-number">50</span>
+                <span class="lesson-title">Анимации — @keyframes, animation</span>
+                <span class="lesson-tags">@keyframes animation</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="09-advanced/51-css-variables.html">
+                <span class="lesson-number">51</span>
+                <span class="lesson-title">CSS-переменные — --my-color, var(), :root</span>
+                <span class="lesson-tags">--var var()</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="09-advanced/52-functions.html">
+                <span class="lesson-number">52</span>
+                <span class="lesson-title">Функции — calc(), clamp(), min(), max(), var()</span>
+                <span class="lesson-tags">calc clamp</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 10. ПРАКТИКА И ИНСТРУМЕНТЫ                               -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🟢 Блок 10. Практика и инструменты
+            <span class="section-count">7 уроков</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="10-practice/53-reset.html">
+                <span class="lesson-number">53</span>
+                <span class="lesson-title">Сброс стилей — reset.css, normalize.css</span>
+                <span class="lesson-tags">reset normalize</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="10-practice/54-methodologies.html">
+                <span class="lesson-number">54</span>
+                <span class="lesson-title">CSS-методологии — BEM, OOCSS, Atomic CSS</span>
+                <span class="lesson-tags">BEM</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="10-practice/55-devtools.html">
+                <span class="lesson-number">55</span>
+                <span class="lesson-title">DevTools для CSS — как отлаживать стили</span>
+                <span class="lesson-tags">DevTools</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="10-practice/56-organization.html">
+                <span class="lesson-number">56</span>
+                <span class="lesson-title">Организация CSS-файлов — один vs несколько, импорты</span>
+                <span class="lesson-tags">@import</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="10-practice/57-preprocessors.html">
+                <span class="lesson-number">57</span>
+                <span class="lesson-title">Препроцессоры — Sass, LESS (обзорно)</span>
+                <span class="lesson-tags">Sass LESS</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="10-practice/58-frameworks.html">
+                <span class="lesson-number">58</span>
+                <span class="lesson-title">CSS-фреймворки — Bootstrap, Tailwind (обзорно)</span>
+                <span class="lesson-tags">Bootstrap Tailwind</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+            <a class="lesson" href="10-practice/59-modern-css.html">
+                <span class="lesson-number">59</span>
+                <span class="lesson-title">Современный CSS — nesting, :has(), container queries</span>
+                <span class="lesson-tags">:has() nesting</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК 11. ИТОГОВЫЙ ПРОЕКТ                                      -->
+    <!-- ============================================================ -->
+
+    <div class="section">
+        <h2 class="section-title">
+            🎯 Блок 11. Итоговый проект
+            <span class="section-count">1 урок</span>
+        </h2>
+        <div class="lessons">
+
+            <a class="lesson" href="11-project/60-final-project.html">
+                <span class="lesson-number">60</span>
+                <span class="lesson-title">Финальный проект — собрать полноценный адаптивный сайт</span>
+                <span class="lesson-tags">проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Курс CSS · Оглавление</p>
+        <div class="legend">
+            <span><span class="dot done"></span> Урок готов</span>
+            <span><span class="dot pending"></span> Ещё не сгенерирован</span>
+        </div>
+    </div>
+
+</body>
+</html>

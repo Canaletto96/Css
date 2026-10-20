@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 2: способы подключения CSS — внешний файл, style, инлайн-стили, @import. Плюсы и минусы.">
+    <title>CSS Урок 2. Способы подключения CSS</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+        .method-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .method-card h4 {
+            margin: 0 0 8px 0;
+            color: #1565c0;
+        }
+        .pro { color: #2e7d32; }
+        .con { color: #c62828; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 2. Способы подключения CSS</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить все 4 способа подключения CSS,         -->
+    <!-- понять плюсы и минусы каждого и выбрать правильный.        -->
+    <!-- ========================================================= -->
+
+    <h2>1. Обзор: 4 способа</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Способ</th>
+                <th>Где пишется</th>
+                <th>Когда использовать</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Внешний файл</strong></td>
+                <td>Отдельный <code>.css</code>, подключён через <code>&lt;link&gt;</code></td>
+                <td><strong>Основной способ</strong> — 99% случаев</td>
+            </tr>
+            <tr>
+                <td><strong><code>&lt;style&gt;</code></strong></td>
+                <td>Внутри <code>&lt;head&gt;</code></td>
+                <td>Прототипы, email-письма, один файл</td>
+            </tr>
+            <tr>
+                <td><strong><code>style=""</code></strong></td>
+                <td>Атрибут тега</td>
+                <td>Тест, динамика через JS</td>
+            </tr>
+            <tr>
+                <td><strong><code>@import</code></strong></td>
+                <td>Внутри CSS</td>
+                <td>Редко — модульность</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Способ 1: внешний файл (рекомендуется)</h2>
+
+    <p>
+        CSS лежит в <strong>отдельном файле</strong> <code>.css</code>, а HTML
+        подключает его через тег <code>&lt;link&gt;</code>.
+    </p>
+
+    <h3>Структура</h3>
+
+    <pre><code>my-site/
+├── index.html
+└── style.css    ← отдельный файл</code></pre>
+
+    <h3>HTML</h3>
+
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Заголовок&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <h3>CSS</h3>
+
+    <pre><code>/* style.css */
+h1 {
+    color: blue;
+    font-size: 32px;
+}</code></pre>
+
+    <div class="method-card">
+        <h4>Плюсы</h4>
+        <ul>
+            <li class="pro">✅ Один файл для всех страниц — переиспользование.</li>
+            <li class="pro">✅ Браузер кеширует — быстрее загрузка.</li>
+            <li class="pro">✅ HTML остаётся чистым.</li>
+            <li class="pro">✅ Легко поддерживать и менять.</li>
+        </ul>
+        <h4>Минусы</h4>
+        <ul>
+            <li class="con">❌ Нужен отдельный файл — чуть сложнее структура.</li>
+            <li class="con">❌ При локальном открытии (file://) может быть проблема с путями.</li>
+        </ul>
+    </div>
+
+    <h3>Как работает <code>&lt;link&gt;</code></h3>
+
+    <pre><code>&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Атрибут</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>rel="stylesheet"</code></td>
+                <td>Тип связи — «таблица стилей». <strong>Обязателен.</strong></td>
+            </tr>
+            <tr>
+                <td><code>href="style.css"</code></td>
+                <td>Путь к CSS-файлу (см. урок 25 HTML-курса)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Путь к файлу:</strong> если <code>style.css</code> лежит рядом с <code>index.html</code> —
+        <code>href="style.css"</code>. Если в папке <code>css/</code> — <code>href="css/style.css"</code>.
+    </div>
+
+    <h2>3. Способ 2: <code>&lt;style&gt;</code> внутри HTML</h2>
+
+    <p>
+        CSS пишется прямо в HTML, внутри тега <code>&lt;style&gt;</code> в <code>&lt;head&gt;</code>.
+    </p>
+
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;style&gt;
+        h1 {
+            color: blue;
+            font-size: 32px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Заголовок&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <div class="method-card">
+        <h4>Плюсы</h4>
+        <ul>
+            <li class="pro">✅ Один файл — удобно для прототипов.</li>
+            <li class="pro">✅ Не нужно настраивать пути.</li>
+            <li class="pro">✅ Работает в email-письмах (там <code>&lt;link&gt;</code> часто не работает).</li>
+        </ul>
+        <h4>Минусы</h4>
+        <ul>
+            <li class="con">❌ Не кешируется — грузится с каждым HTML.</li>
+            <li class="con">❌ Смешивает HTML и CSS — сложнее читать.</li>
+            <li class="con">❌ Только для одной страницы.</li>
+            <li class="con">❌ Не работает для нескольких HTML-файлов.</li>
+        </ul>
+    </div>
+
+    <h3>Где писать <code>&lt;style&gt;</code></h3>
+
+    <ul>
+        <li><strong>В <code>&lt;head&gt;</code></strong> — рекомендуется. Стили применяются до отрисовки.</li>
+        <li><strong>В <code>&lt;body&gt;</code></strong> — технически работает, но может «мигнуть» контент.</li>
+    </ul>
+
+    <h2>4. Способ 3: инлайн-стили (<code>style=""</code>)</h2>
+
+    <p>
+        CSS пишется прямо в <strong>атрибуте тега</strong> <code>style</code>.
+    </p>
+
+    <pre><code>&lt;h1 style="color: blue; font-size: 32px;"&gt;Заголовок&lt;/h1&gt;
+&lt;p style="margin-top: 20px; color: gray;"&gt;Текст&lt;/p&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <h3 style="color: blue; font-size: 32px; border: none; padding: 0; margin: 0;">Заголовок</h3>
+        <p style="margin-top: 20px; color: gray;">Текст с инлайн-стилем</p>
+    </div>
+
+    <div class="method-card">
+        <h4>Плюсы</h4>
+        <ul>
+            <li class="pro">✅ Быстро — можно проверить «на лету».</li>
+            <li class="pro">✅ Работает везде, включая email.</li>
+            <li class="pro">✅ Используется для динамики через JS (<code>element.style.color = 'red'</code>).</li>
+        </ul>
+        <h4>Минусы</h4>
+        <ul>
+            <li class="con">❌ Высокая специфичность — сложно переопределить.</li>
+            <li class="con">❌ Не кешируется.</li>
+            <li class="con">❌ HTML превращается в «кашу».</li>
+            <li class="con">❌ Не работает для <code>:hover</code>, медиа-запросов.</li>
+        </ul>
+    </div>
+
+    <div class="warn">
+        <strong>Правило:</strong> <code>style=""</code> — только для <strong>теста</strong>
+        или <strong>динамики через JS</strong>. В основном коде — не используй.
+    </div>
+
+    <h2>5. Способ 4: <code>@import</code></h2>
+
+    <p>
+        CSS-файл может <strong>подключать другой CSS-файл</strong> через <code>@import</code>.
+        Это не «четвёртый способ подключения к HTML», а <strong>внутри CSS</strong>.
+    </p>
+
+    <pre><code>/* style.css */
+@import url('reset.css');
+@import url('typography.css');
+
+h1 {
+    color: blue;
+}</code></pre>
+
+    <div class="method-card">
+        <h4>Плюсы</h4>
+        <ul>
+            <li class="pro">✅ Модульность — разбить CSS на части.</li>
+            <li class="pro">✅ Один <code>&lt;link&gt;</code> в HTML — остальное внутри.</li>
+        </ul>
+        <h4>Минусы</h4>
+        <ul>
+            <li class="con">❌ Замедляет загрузку — файлы грузятся <strong>последовательно</strong>, а не параллельно.</li>
+            <li class="con">❌ Не работает в старых браузерах (IE).</li>
+            <li class="con">❌ Сложно отлаживать — не видно, откуда пришёл стиль.</li>
+        </ul>
+    </div>
+
+    <div class="note">
+        <strong>Современная альтернатива:</strong> несколько <code>&lt;link&gt;</code> в HTML
+        работают <strong>лучше</strong>, чем <code>@import</code>:
+        <pre style="margin: 8px 0;"><code>&lt;link rel="stylesheet" href="reset.css"&gt;
+&lt;link rel="stylesheet" href="typography.css"&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+        Они грузятся <strong>параллельно</strong>.
+    </div>
+
+    <h3>Синтаксис <code>@import</code></h3>
+
+    <pre><code>@import url('style.css');           /* с url() */
+@import 'style.css';                 /* без url() — тоже работает */
+@import url('style.css') screen;    /* только для экрана */</code></pre>
+
+    <div class="warn">
+        <strong>Важно:</strong> <code>@import</code> должен быть <strong>в самом верху</strong>
+        CSS-файла, до любых других правил. Иначе не сработает.
+    </div>
+
+    <h2>6. Сравнение всех способов</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Внешний файл</th>
+                <th><code>&lt;style&gt;</code></th>
+                <th><code>style=""</code></th>
+                <th><code>@import</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Переиспользование</td>
+                <td>✅ Все страницы</td>
+                <td>❌ Одна</td>
+                <td>❌ Один тег</td>
+                <td>✅ Все</td>
+            </tr>
+            <tr>
+                <td>Кеширование</td>
+                <td>✅ Да</td>
+                <td>❌ Нет</td>
+                <td>❌ Нет</td>
+                <td>✅ Да</td>
+            </tr>
+            <tr>
+                <td>Скорость загрузки</td>
+                <td>✅ Параллельно</td>
+                <td>✅ Быстро</td>
+                <td>✅ Быстро</td>
+                <td>❌ Последовательно</td>
+            </tr>
+            <tr>
+                <td>Чистота HTML</td>
+                <td>✅ Да</td>
+                <td>⚠️ Смешивается</td>
+                <td>❌ Очень смешивается</td>
+                <td>✅ Да</td>
+            </tr>
+            <tr>
+                <td>Специфичность</td>
+                <td>Обычная</td>
+                <td>Обычная</td>
+                <td>⚠️ Высокая</td>
+                <td>Обычная</td>
+            </tr>
+            <tr>
+                <td>Когда использовать</td>
+                <td><strong>Основной</strong></td>
+                <td>Прототипы, email</td>
+                <td>Тест, JS</td>
+                <td>Редко — модульность</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>7. Можно ли комбинировать?</h2>
+
+    <p><strong>Да, и это нормально.</strong> Например:</p>
+
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+    &lt;style&gt;
+        /* Специфичные стили только для этой страницы */
+        .hero { background: #f0f0f0; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1 style="color: red;"&gt;Тест&lt;/h1&gt;
+    &lt;section class="hero"&gt;...&lt;/section&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <p>
+        <strong>Порядок применения</strong> (по каскаду):
+    </p>
+    <ol>
+        <li>Браузерные стили (user agent).</li>
+        <li>Внешний файл (<code>style.css</code>).</li>
+        <li><code>&lt;style&gt;</code> в HTML.</li>
+        <li><code>style=""</code> — самый высокий приоритет (если нет <code>!important</code>).</li>
+    </ol>
+
+    <h2>8. Как проверить, какой стиль применился</h2>
+
+    <p>
+        <strong>DevTools</strong> (<kbd>F12</kbd>) → Elements → выбери элемент → справа
+        увидишь <strong>все</strong> CSS-правила, которые к нему применились.
+    </p>
+
+    <p>Ты увидишь:</p>
+    <ul>
+        <li>Откуда правило (файл + строка).</li>
+        <li>Какие правила перебиты (зачёркнуты).</li>
+        <li>Какое правило победило.</li>
+    </ul>
+
+    <h2>9. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>4 способа:</strong> внешний файл, <code>&lt;style&gt;</code>, <code>style=""</code>, <code>@import</code>.</li>
+        <li><strong>Основной способ — внешний файл</strong> через <code>&lt;link rel="stylesheet" href="..."&gt;</code>.</li>
+        <li><strong><code>&lt;style&gt;</code></strong> — для прототипов и email-писем.</li>
+        <li><strong><code>style=""</code></strong> — для теста и JS-динамики. Не для основного кода.</li>
+        <li><strong><code>@import</code></strong> — внутри CSS. Замедляет загрузку. Используй редко.</li>
+        <li><strong>Можно комбинировать.</strong> Порядок: user agent → внешний → <code>&lt;style&gt;</code> → <code>style=""</code>.</li>
+        <li><strong><code>rel="stylesheet"</code></strong> — обязательный атрибут <code>&lt;link&gt;</code>.</li>
+        <li><strong><code>@import</code></strong> — только в начале CSS-файла.</li>
+        <li><strong>Проверяй в DevTools</strong> — какой стиль применился.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 2 · Следующий урок: <em>Синтаксис CSS — селектор, свойство, значение</em>
+    </p>
+
+</body>
+</html>

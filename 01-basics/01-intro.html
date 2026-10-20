@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 1: что такое CSS, как браузер применяет стили, зачем нужен CSS.">
+    <title>CSS Урок 1. Что такое CSS</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 1. Что такое CSS</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, зачем нужен CSS, как браузер применяет -->
+    <!-- стили и почему без CSS сайт выглядит "голым".               -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое CSS</h2>
+
+    <p>
+        <strong>CSS</strong> (Cascading Style Sheets — «каскадные таблицы стилей») —
+        это язык <strong>оформления</strong> HTML-документов. Он отвечает за то,
+        <em>как</em> выглядит страница: цвета, шрифты, отступы, расположение элементов.
+    </p>
+
+    <div class="note">
+        <strong>Аналогия.</strong> HTML — это <strong>каркас здания</strong>
+        (стены, двери, окна). CSS — это <strong>отделка</strong> (обои, плитка,
+        цвет стен, мебель). Без CSS дом стоит, но выглядит «серым».
+    </div>
+
+    <h3>HTML vs CSS</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>HTML</th>
+                <th>CSS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Отвечает за</td>
+                <td>Структуру и смысл</td>
+                <td>Внешний вид</td>
+            </tr>
+            <tr>
+                <td>Пример</td>
+                <td><code>&lt;h1&gt;Заголовок&lt;/h1&gt;</code></td>
+                <td><code>h1 { color: blue; }</code></td>
+            </tr>
+            <tr>
+                <td>Если убрать</td>
+                <td>Страница исчезнет</td>
+                <td>Страница станет «голой»</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Как выглядит сайт без CSS</h2>
+
+    <p>Браузер применяет к HTML <strong>стили по умолчанию</strong> (user agent stylesheet):</p>
+
+    <ul>
+        <li>Заголовки — жирные, разного размера.</li>
+        <li>Ссылки — синие с подчёркиванием.</li>
+        <li>Параграфы — с отступами сверху и снизу.</li>
+        <li>Списки — с точками и отступами.</li>
+    </ul>
+
+    <p>Но это минимум. Цвета, шрифты, сетки, кнопки — всё это CSS.</p>
+
+    <div class="demo">
+        <div class="demo-label">Так выглядит HTML без CSS:</div>
+        <div style="font-family: Times New Roman, serif; background: #fff; padding: 16px; border: 1px solid #ddd;">
+            <h1 style="color: #000; font-family: Times New Roman, serif;">Заголовок</h1>
+            <p>Это параграф текста. <a href="#">Ссылка</a> в тексте.</p>
+            <ul>
+                <li>Пункт списка</li>
+                <li>Ещё пункт</li>
+            </ul>
+            <button style="font-family: Times New Roman, serif;">Кнопка</button>
+        </div>
+    </div>
+
+    <p>А теперь — <strong>эта же страница с CSS</strong> (этот урок, который ты читаешь). Разница очевидна.</p>
+
+    <h2>3. Как браузер применяет CSS</h2>
+
+    <p>Когда ты открываешь HTML-файл, браузер:</p>
+
+    <ol>
+        <li><strong>Читает HTML</strong> и строит <strong>DOM-дерево</strong> — структуру страницы.</li>
+        <li><strong>Читает CSS</strong> и строит <strong>CSSOM</strong> — модель стилей.</li>
+        <li><strong>Объединяет</strong> их в <strong>render tree</strong> — что и как рисовать.</li>
+        <li><strong>Рисует</strong> страницу на экране.</li>
+    </ol>
+
+    <div class="note">
+        <strong>DOM</strong> (Document Object Model) — структура HTML.<br>
+        <strong>CSSOM</strong> (CSS Object Model) — структура стилей.<br>
+        <strong>Render tree</strong> — итоговая модель «что и как рисовать».
+    </div>
+
+    <h2>4. Синтаксис CSS</h2>
+
+    <p>CSS-правило состоит из трёх частей:</p>
+
+    <pre><code>селектор {
+    свойство: значение;
+}</code></pre>
+
+    <p>Пример:</p>
+
+    <pre><code>h1 {
+    color: blue;
+    font-size: 32px;
+}</code></pre>
+
+    <p>Разбор:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что это</th>
+                <th>В примере</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Селектор</strong></td>
+                <td>Кого стилизуем</td>
+                <td><code>h1</code></td>
+            </tr>
+            <tr>
+                <td><strong>Свойство</strong></td>
+                <td>Что меняем</td>
+                <td><code>color</code>, <code>font-size</code></td>
+            </tr>
+            <tr>
+                <td><strong>Значение</strong></td>
+                <td>На что меняем</td>
+                <td><code>blue</code>, <code>32px</code></td>
+            </tr>
+            <tr>
+                <td><strong>Фигурные скобки</strong></td>
+                <td>Границы правила</td>
+                <td><code>{ }</code></td>
+            </tr>
+            <tr>
+                <td><strong>Точка с запятой</strong></td>
+                <td>Конец объявления</td>
+                <td><code>;</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Точка с запятой</strong> — <strong>обязательна</strong> после каждого свойства,
+        кроме последнего (но лучше ставить всегда). Забыл — следующее свойство
+        не применится.
+    </div>
+
+    <h2>5. Три способа подключить CSS</h2>
+
+    <h3>Способ 1: внешний файл (рекомендуется)</h3>
+
+    <p>CSS в отдельном файле <code>.css</code>, подключается через <code>&lt;link&gt;</code>:</p>
+
+    <pre><code>&lt;!-- В &lt;head&gt; HTML --&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+
+    <pre><code>/* style.css */
+h1 {
+    color: blue;
+}</code></pre>
+
+    <p><strong>Плюсы:</strong> один файл для всех страниц, кешируется, чище HTML.</p>
+
+    <h3>Способ 2: встроенные стили (<code>&lt;style&gt;</code>)</h3>
+
+    <p>CSS прямо в HTML, внутри <code>&lt;head&gt;</code>:</p>
+
+    <pre><code>&lt;head&gt;
+    &lt;style&gt;
+        h1 {
+            color: blue;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;</code></pre>
+
+    <p><strong>Плюсы:</strong> не нужен отдельный файл.<br>
+       <strong>Минусы:</strong> не кешируется, смешивается с HTML, не работает для нескольких страниц.</p>
+
+    <h3>Способ 3: инлайн-стили (<code>style=""</code>)</h3>
+
+    <p>CSS прямо в теге через атрибут <code>style</code>:</p>
+
+    <pre><code>&lt;h1 style="color: blue;"&gt;Заголовок&lt;/h1&gt;</code></pre>
+
+    <p><strong>Плюсы:</strong> быстро, для теста.<br>
+       <strong>Минусы:</strong> не кешируется, сложно поддерживать, смешивает всё.</p>
+
+    <div class="demo">
+        <div class="demo-label">Инлайн-стиль в действии:</div>
+        <p style="color: #1565c0; font-weight: bold; font-size: 20px;">Этот текст — синий, жирный, 20px (через <code>style=""</code>)</p>
+    </div>
+
+    <h3>Сравнение</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Внешний файл</th>
+                <th><code>&lt;style&gt;</code></th>
+                <th><code>style=""</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Переиспользование</td>
+                <td>✅ Все страницы</td>
+                <td>❌ Только эта</td>
+                <td>❌ Только тег</td>
+            </tr>
+            <tr>
+                <td>Кеширование</td>
+                <td>✅ Да</td>
+                <td>❌ Нет</td>
+                <td>❌ Нет</td>
+            </tr>
+            <tr>
+                <td>Чистота HTML</td>
+                <td>✅ Да</td>
+                <td>⚠️ Смешивается</td>
+                <td>❌ Очень смешивается</td>
+            </tr>
+            <tr>
+                <td>Когда использовать</td>
+                <td><strong>Основной способ</strong></td>
+                <td>Прототипы, письма</td>
+                <td>Тест, JS-динамика</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Правило:</strong> 99% CSS — во внешнем файле. <code>&lt;style&gt;</code> — для прототипов и email-писем.
+        <code>style=""</code> — только для быстрых тестов и динамики через JS.
+    </div>
+
+    <h2>6. Комментарии в CSS</h2>
+
+    <pre><code>/* Это комментарий — браузер его игнорирует */
+
+h1 {
+    color: blue;   /* синий заголовок */
+    /* font-size: 32px;  — пока закомментировано */
+}</code></pre>
+
+    <p><strong>Синтаксис:</strong> <code>/* ... */</code>. Работает на нескольких строках.</p>
+
+    <div class="warn">
+        <strong>Нельзя:</strong> <code>//</code> (это из JavaScript, в CSS не работает).
+        Только <code>/* */</code>.
+    </div>
+
+    <h2>7. Что можно стилизовать</h2>
+
+    <p>CSS умеет <strong>почти всё</strong>. Базовые категории:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Категория</th>
+                <th>Примеры свойств</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Текст</td>
+                <td><code>color</code>, <code>font-size</code>, <code>font-weight</code>, <code>line-height</code></td>
+            </tr>
+            <tr>
+                <td>Отступы</td>
+                <td><code>margin</code>, <code>padding</code></td>
+            </tr>
+            <tr>
+                <td>Рамки</td>
+                <td><code>border</code>, <code>border-radius</code>, <code>box-shadow</code></td>
+            </tr>
+            <tr>
+                <td>Фон</td>
+                <td><code>background-color</code>, <code>background-image</code></td>
+            </tr>
+            <tr>
+                <td>Размеры</td>
+                <td><code>width</code>, <code>height</code>, <code>max-width</code></td>
+            </tr>
+            <tr>
+                <td>Расположение</td>
+                <td><code>display</code>, <code>position</code>, <code>float</code></td>
+            </tr>
+            <tr>
+                <td>Flexbox/Grid</td>
+                <td><code>flex</code>, <code>grid-template-columns</code></td>
+            </tr>
+            <tr>
+                <td>Анимация</td>
+                <td><code>transition</code>, <code>animation</code>, <code>transform</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>8. CSS — это каскад</h2>
+
+    <p>
+        Слово <strong>Cascading</strong> («каскадные») — ключевое. Если одно свойство
+        задано несколько раз, применяется <strong>по правилам каскада</strong>:
+    </p>
+
+    <ul>
+        <li><strong>Специфичность</strong> — более конкретный селектор побеждает.</li>
+        <li><strong>Порядок</strong> — при равной специфичности побеждает тот, что ниже.</li>
+        <li><strong>!important</strong> — принудительно перебивает всё.</li>
+    </ul>
+
+    <p>Подробно — в уроке 5. Пока просто знай: <strong>CSS — это каскад, не «последний победил»</strong>.</p>
+
+    <pre><code>h1 { color: red; }
+h1 { color: blue; }   /* ← это применится, потому что ниже */</code></pre>
+
+    <h2>9. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>CSS</strong> — язык оформления. Отвечает за <strong>внешний вид</strong>, а не за структуру.</li>
+        <li><strong>HTML + CSS</strong> = каркас + отделка. Без CSS сайт «голый».</li>
+        <li><strong>Синтаксис:</strong> <code>селектор { свойство: значение; }</code>.</li>
+        <li><strong>Три способа подключения:</strong> внешний файл (рекомендуется), <code>&lt;style&gt;</code>, <code>style=""</code>.</li>
+        <li><strong>Комментарии:</strong> <code>/* ... */</code>. Не <code>//</code>.</li>
+        <li><strong>Точка с запятой</strong> после каждого свойства (кроме последнего, но лучше всегда).</li>
+        <li><strong>Каскад</strong> — если свойство задано несколько раз, решает специфичность и порядок.</li>
+        <li><strong>CSS = 99% во внешнем файле.</strong> <code>&lt;style&gt;</code> — для прототипов, <code>style=""</code> — для теста.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 1 · Следующий урок: <em>Способы подключения CSS — внешний файл, &lt;style&gt;, style="", @import</em>
+    </p>
+
+</body>
+</html>

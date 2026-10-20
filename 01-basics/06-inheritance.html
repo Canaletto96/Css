@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 6: наследование — какие свойства наследуются, inherit, initial, unset, revert.">
+    <title>CSS Урок 6. Наследование</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Демонстрационные стили */
+        .inherit-demo {
+            color: #1565c0;
+            font-family: Georgia, serif;
+            border: 2px solid #ddd;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .inherit-demo p {
+            /* Цвет и шрифт унаследованы, но border — нет */
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 6. Наследование</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, какие CSS-свойства "переходят" от      -->
+    <!-- родителя к детям, а какие — нет.                           -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое наследование</h2>
+
+    <p>
+        <strong>Наследование</strong> (inheritance) — это механизм, при котором
+        <strong>некоторые</strong> CSS-свойства автоматически передаются от родителя
+        к дочерним элементам.
+    </p>
+
+    <p>Пример:</p>
+
+    <pre><code>body {
+    color: #333;
+    font-family: system-ui, sans-serif;
+}</code></pre>
+
+    <p>
+        Ты задал цвет и шрифт только для <code>&lt;body&gt;</code>. Но <strong>все</strong>
+        элементы внутри (<code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;span&gt;</code>...)
+        получат тот же цвет и шрифт — <strong>по наследству</strong>.
+    </p>
+
+    <div class="note">
+        <strong>Аналогия.</strong> Наследование — как «семейные черты»: дети наследуют
+        цвет глаз от родителей, но не их одежду. Так и в CSS: цвет текста и шрифт
+        наследуются, а <code>border</code> и <code>margin</code> — нет.
+    </div>
+
+    <h2>2. Какие свойства наследуются</h2>
+
+    <p>
+        <strong>Наследуются</strong> в основном свойства, связанные с <strong>текстом</strong>
+        и <strong>шрифтом</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>color</code></td><td>Цвет текста</td></tr>
+            <tr><td><code>font-family</code></td><td>Шрифт</td></tr>
+            <tr><td><code>font-size</code></td><td>Размер шрифта</td></tr>
+            <tr><td><code>font-weight</code></td><td>Жирность</td></tr>
+            <tr><td><code>font-style</code></td><td>Курсив</td></tr>
+            <tr><td><code>line-height</code></td><td>Межстрочный интервал</td></tr>
+            <tr><td><code>letter-spacing</code></td><td>Расстояние между буквами</td></tr>
+            <tr><td><code>text-align</code></td><td>Выравнивание текста</td></tr>
+            <tr><td><code>text-transform</code></td><td>Регистр (CAPS / lowercase)</td></tr>
+            <tr><td><code>text-indent</code></td><td>Отступ первой строки</td></tr>
+            <tr><td><code>visibility</code></td><td>Видимость</td></tr>
+            <tr><td><code>cursor</code></td><td>Курсор</td></tr>
+            <tr><td><code>list-style</code></td><td>Стиль списка</td></tr>
+        </tbody>
+    </table>
+
+    <p><strong>НЕ наследуются</strong> свойства, связанные с <strong>блоком</strong> и <strong>позиционированием</strong>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>margin</code></td><td>Внешние отступы</td></tr>
+            <tr><td><code>padding</code></td><td>Внутренние отступы</td></tr>
+            <tr><td><code>border</code></td><td>Рамка</td></tr>
+            <tr><td><code>background</code></td><td>Фон</td></tr>
+            <tr><td><code>width</code>, <code>height</code></td><td>Размеры</td></tr>
+            <tr><td><code>display</code></td><td>Тип отображения</td></tr>
+            <tr><td><code>position</code></td><td>Позиционирование</td></tr>
+            <tr><td><code>top</code>, <code>left</code> и др.</td><td>Координаты</td></tr>
+            <tr><td><code>float</code></td><td>Обтекание</td></tr>
+            <tr><td><code>box-shadow</code></td><td>Тень</td></tr>
+            <tr><td><code>opacity</code></td><td>Прозрачность</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Почему так:</strong> если бы <code>border</code> наследовался, у каждого
+        <code>&lt;span&gt;</code> внутри <code>&lt;p&gt;</code> появилась бы рамка. Это
+        выглядело бы странно. А цвет текста — логично наследовать: «весь текст в блоке
+        одного цвета».
+    </div>
+
+    <h2>3. Живая демонстрация</h2>
+
+    <div class="demo">
+        <div class="demo-label">Родитель с цветом, шрифтом и рамкой:</div>
+        <div class="inherit-demo">
+            <p>Этот параграф наследует <strong>цвет</strong> и <strong>шрифт</strong> от родителя.</p>
+            <p>Но <strong>рамка</strong> не наследуется — у параграфов её нет.</p>
+            <span>Даже span получил цвет и шрифт.</span>
+        </div>
+    </div>
+
+    <p>
+        Родитель <code>.inherit-demo</code> имеет <code>color</code>, <code>font-family</code>
+        и <code>border</code>. Дети получили <strong>цвет</strong> и <strong>шрифт</strong>,
+        но <strong>не рамку</strong>.
+    </p>
+
+    <h2>4. Как это работает в DevTools</h2>
+
+    <p>
+        Открой <kbd>F12</kbd> → Elements → выбери элемент. В панели <strong>Styles</strong>
+        наследованные свойства показываются <strong>серым</strong> с пометкой
+        <code>Inherited from ...</code>.
+    </p>
+
+    <p>Это лучший способ увидеть, что унаследовано, а что задано явно.</p>
+
+    <h2>5. Управление наследованием</h2>
+
+    <p>Есть 4 ключевых слова для управления наследованием:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ключевое слово</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>inherit</code></td>
+                <td><strong>Принудительно</strong> наследовать от родителя</td>
+            </tr>
+            <tr>
+                <td><code>initial</code></td>
+                <td>Установить <strong>значение по умолчанию</strong> (из спецификации)</td>
+            </tr>
+            <tr>
+                <td><code>unset</code></td>
+                <td>Сбросить: <code>inherit</code> если свойство наследуемое, иначе <code>initial</code></td>
+            </tr>
+            <tr>
+                <td><code>revert</code></td>
+                <td>Откатить к стилю браузера</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3><code>inherit</code> — принудительное наследование</h3>
+
+    <p>
+        Иногда свойство <strong>не наследуется</strong>, но ты хочешь, чтобы наследовалось.
+        Например, <code>border</code>:
+    </p>
+
+    <pre><code>.parent {
+    border: 2px solid red;
+}
+
+.child {
+    border: inherit;   /* ← принудительно наследует рамку родителя */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Пример inherit:</div>
+        <div style="border: 2px solid #1565c0; padding: 12px; border-radius: 6px;">
+            <p style="margin: 0 0 8px 0;">Родитель с рамкой.</p>
+            <div style="border: inherit; padding: 8px; border-radius: 4px;">
+                Этот блок получил рамку по наследству (через <code>border: inherit</code>).
+            </div>
+        </div>
+    </div>
+
+    <h3><code>initial</code> — значение по умолчанию</h3>
+
+    <p>
+        Сбрасывает свойство к <strong>значению из спецификации CSS</strong>, независимо
+        от родителя.
+    </p>
+
+    <pre><code>.parent {
+    color: red;
+}
+
+.child {
+    color: initial;   /* ← чёрный (значение по умолчанию для color) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Пример initial:</div>
+        <div style="color: #1565c0; padding: 8px;">
+            <p style="margin: 0 0 4px 0;">Этот параграф — синий (наследованный).</p>
+            <p style="margin: 0; color: initial;">А этот — чёрный (сброшен через <code>initial</code>).</p>
+        </div>
+    </div>
+
+    <h3><code>unset</code> — умный сброс</h3>
+
+    <p>
+        Работает как <code>inherit</code>, если свойство <strong>наследуемое</strong>,
+        и как <code>initial</code>, если нет.
+    </p>
+
+    <pre><code>.child {
+    color: unset;       /* → inherit (наследуемое) */
+    border: unset;      /* → initial (не наследуемое) */
+}</code></pre>
+
+    <h3><code>revert</code> — вернуть стиль браузера</h3>
+
+    <p>
+        Откатывает к стилю <strong>браузера по умолчанию</strong> (user agent). Полезно,
+        если ты «сбросил» стили через reset, но хочешь вернуть стандартное поведение:
+    </p>
+
+    <pre><code>/* Reset сломал внешний вид кнопки */
+button {
+    all: unset;
+}
+
+/* Но эта кнопка должна выглядеть как обычная */
+button.normal {
+    all: revert;   /* ← вернёт стиль браузера */
+}</code></pre>
+
+    <h2>6. Универсальное свойство <code>all</code></h2>
+
+    <p>
+        <code>all</code> применяет значение ко <strong>всем</strong> свойствам сразу:
+    </p>
+
+    <pre><code>.child {
+    all: inherit;    /* наследует ВСЁ от родителя */
+    all: initial;    /* сбрасывает ВСЁ к умолчанию */
+    all: unset;      /* сбрасывает ВСЁ разумно */
+    all: revert;     /* откатывает ВСЁ к стилям браузера */
+}</code></pre>
+
+    <div class="warn">
+        <strong>Осторожно с <code>all</code>:</strong> он сбрасывает <strong>всё</strong>,
+        включая <code>display</code>, <code>position</code>. Может сломать layout.
+        Используй осознанно.
+    </div>
+
+    <h2>7. Наследование и font-size</h2>
+
+    <p>
+        <code>font-size</code> — наследуемое свойство. Это важно для единиц <code>em</code>
+        и <code>rem</code> (урок 7):
+    </p>
+
+    <pre><code>html {
+    font-size: 16px;
+}
+
+body {
+    /* наследует 16px от html */
+}
+
+p {
+    /* наследует 16px от body */
+}
+
+.small {
+    font-size: 0.875em;   /* 14px (16 × 0.875) */
+}
+
+.tiny {
+    font-size: 0.75em;    /* 12px (16 × 0.75) */
+}</code></pre>
+
+    <div class="note">
+        <strong>Почему это важно:</strong> если родитель изменил <code>font-size</code>,
+        дети получат новое значение. Это <strong>основа</strong> для адаптивной типографики.
+    </div>
+
+    <h2>8. Наследование и <code>rem</code> vs <code>em</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Единица</th>
+                <th>Относительно</th>
+                <th>Наследуется?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>px</code></td>
+                <td>Абсолютно</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td><code>em</code></td>
+                <td>Родительского <code>font-size</code></td>
+                <td>Да (зависит от родителя)</td>
+            </tr>
+            <tr>
+                <td><code>rem</code></td>
+                <td><code>&lt;html&gt;</code></td>
+                <td>Нет (всегда от корня)</td>
+            </tr>
+            <tr>
+                <td><code>%</code></td>
+                <td>Родителя</td>
+                <td>Да (для шрифта)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Подробно — в уроке 7.</p>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Думать, что <code>border</code> наследуется</td>
+                <td>Нет. Каждый блок имеет свою рамку</td>
+            </tr>
+            <tr>
+                <td>Думать, что <code>margin</code> наследуется</td>
+                <td>Нет. У каждого элемента свои отступы</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>all: unset</code> на всём</td>
+                <td>Сломает <code>display</code>, <code>position</code></td>
+            </tr>
+            <tr>
+                <td>Путать <code>inherit</code> и <code>initial</code></td>
+                <td><code>inherit</code> — от родителя, <code>initial</code> — значение по умолчанию</td>
+            </tr>
+            <tr>
+                <td>Забывать, что <code>font-size</code> наследуется</td>
+                <td>Влияет на <code>em</code> у детей</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Наследование</strong> — передача свойств от родителя к детям.</li>
+        <li><strong>Наследуются:</strong> <code>color</code>, <code>font-*</code>, <code>line-height</code>, <code>text-align</code>, <code>cursor</code>, <code>visibility</code>, <code>list-style</code>.</li>
+        <li><strong>НЕ наследуются:</strong> <code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>, <code>height</code>, <code>display</code>, <code>position</code>.</li>
+        <li><strong><code>inherit</code></strong> — принудительно наследовать.</li>
+        <li><strong><code>initial</code></strong> — значение по умолчанию.</li>
+        <li><strong><code>unset</code></strong> — <code>inherit</code> или <code>initial</code> в зависимости от свойства.</li>
+        <li><strong><code>revert</code></strong> — откатить к стилю браузера.</li>
+        <li><strong><code>all</code></strong> — применить ко всем свойствам сразу (осторожно!).</li>
+        <li><strong><code>font-size</code> наследуется</strong> — влияет на <code>em</code>.</li>
+        <li><strong>DevTools</strong> показывает наследованные стили серым.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 6 · Следующий урок: <em>Единицы измерения — px, %, em, rem, vw, vh, ch</em>
+    </p>
+
+</body>
+</html>

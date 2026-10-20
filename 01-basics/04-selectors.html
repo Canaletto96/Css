@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 4: селекторы — тег, класс, id, потомок, ребёнок, сосед, атрибуты, группировка.">
+    <title>CSS Урок 4. Селекторы</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Демонстрационные стили */
+        .demo-box {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            background: #fff;
+        }
+        .highlight { background: #fff8e1; border-color: #ffb300; }
+        .demo-tag { color: #1565c0; }
+        .demo-class { background: #e3f2fd; padding: 2px 6px; border-radius: 4px; }
+        #demo-id { background: #c8e6c9; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 4. Селекторы</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить все основные селекторы CSS.            -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое селектор</h2>
+
+    <p>
+        <strong>Селектор</strong> — это «кого стилизуем». Он говорит браузеру,
+        к каким элементам применить правило.
+    </p>
+
+    <pre><code>селектор {
+    свойство: значение;
+}</code></pre>
+
+    <p>Пример: <code>h1 { color: blue; }</code> — «все <code>&lt;h1&gt;</code> сделай синими».</p>
+
+    <h2>2. Обзор селекторов</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Пример</th>
+                <th>Кого выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Тег</strong></td>
+                <td><code>p</code></td>
+                <td>Все <code>&lt;p&gt;</code></td>
+            </tr>
+            <tr>
+                <td><strong>Класс</strong></td>
+                <td><code>.card</code></td>
+                <td>Все элементы с <code>class="card"</code></td>
+            </tr>
+            <tr>
+                <td><strong>id</strong></td>
+                <td><code>#header</code></td>
+                <td>Один элемент с <code>id="header"</code></td>
+            </tr>
+            <tr>
+                <td><strong>Универсальный</strong></td>
+                <td><code>*</code></td>
+                <td>Все элементы</td>
+            </tr>
+            <tr>
+                <td><strong>Группировка</strong></td>
+                <td><code>h1, h2, h3</code></td>
+                <td>Все <code>h1</code>, <code>h2</code>, <code>h3</code></td>
+            </tr>
+            <tr>
+                <td><strong>Потомок</strong></td>
+                <td><code>div p</code></td>
+                <td>Все <code>p</code> внутри <code>div</code> (на любом уровне)</td>
+            </tr>
+            <tr>
+                <td><strong>Ребёнок</strong></td>
+                <td><code>div &gt; p</code></td>
+                <td>Только <code>p</code>, которые <strong>прямые дети</strong> <code>div</code></td>
+            </tr>
+            <tr>
+                <td><strong>Сосед</strong></td>
+                <td><code>h2 + p</code></td>
+                <td>Первый <code>p</code> сразу после <code>h2</code></td>
+            </tr>
+            <tr>
+                <td><strong>Все соседи</strong></td>
+                <td><code>h2 ~ p</code></td>
+                <td>Все <code>p</code> после <code>h2</code> (на том же уровне)</td>
+            </tr>
+            <tr>
+                <td><strong>Атрибут</strong></td>
+                <td><code>input[type="text"]</code></td>
+                <td>Все <code>input</code> с <code>type="text"</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. Селектор по тегу</h2>
+
+    <p>Выбирает <strong>все</strong> элементы с этим тегом.</p>
+
+    <pre><code>p {
+    color: #333;
+}
+
+h1 {
+    font-size: 32px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все &lt;p&gt; в этом демо — синие:</div>
+        <p class="demo-tag">Первый параграф.</p>
+        <p class="demo-tag">Второй параграф.</p>
+        <p class="demo-tag">Третий параграф.</p>
+    </div>
+
+    <p><strong>Когда:</strong> базовые стили для всех элементов одного типа.</p>
+
+    <h2>4. Селектор по классу (<code>.имя</code>)</h2>
+
+    <p>Выбирает <strong>все</strong> элементы с этим классом. Класс может быть у многих элементов.</p>
+
+    <pre><code>.card {
+    border: 1px solid #ddd;
+    padding: 16px;
+}</code></pre>
+
+    <pre><code>&lt;div class="card"&gt;Карточка 1&lt;/div&gt;
+&lt;div class="card"&gt;Карточка 2&lt;/div&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все .demo-box — с рамкой:</div>
+        <div class="demo-box">Карточка 1</div>
+        <div class="demo-box">Карточка 2</div>
+        <div class="demo-box">Карточка 3</div>
+    </div>
+
+    <p><strong>Когда:</strong> основный способ стилизации. Один класс — много элементов.</p>
+
+    <h3>Несколько классов у одного элемента</h3>
+
+    <pre><code>&lt;div class="card highlight"&gt;...&lt;/div&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">.card + .highlight:</div>
+        <div class="demo-box">Обычная карточка</div>
+        <div class="demo-box highlight">Выделенная карточка</div>
+    </div>
+
+    <h2>5. Селектор по id (<code>#имя</code>)</h2>
+
+    <p>Выбирает <strong>один</strong> элемент с этим id. id уникален на странице.</p>
+
+    <pre><code>#header {
+    background: #333;
+    color: white;
+}</code></pre>
+
+    <pre><code>&lt;header id="header"&gt;...&lt;/header&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Элемент с id="demo-id":</div>
+        <p>Обычный параграф.</p>
+        <p id="demo-id">Параграф с id="demo-id" — зелёный фон.</p>
+        <p>Ещё один обычный параграф.</p>
+    </div>
+
+    <div class="warn">
+        <strong>Не используй id для стилизации!</strong>
+        <ul>
+            <li>Высокая специфичность — сложно переопределить.</li>
+            <li>id уникален — нельзя применить к группе.</li>
+            <li>Лучше — класс.</li>
+        </ul>
+        id — для якорей (<code>#section</code>), JS (<code>getElementById</code>), label.
+    </div>
+
+    <h2>6. Универсальный селектор <code>*</code></h2>
+
+    <p>Выбирает <strong>все</strong> элементы.</p>
+
+    <pre><code>* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}</code></pre>
+
+    <p><strong>Когда:</strong> сброс стилей (reset), <code>box-sizing</code>.</p>
+
+    <div class="note">
+        Не используй <code>*</code> для сложных стилей — это применяется ко всему,
+        включая <code>&lt;html&gt;</code>, <code>&lt;body&gt;</code>, <code>&lt;head&gt;</code>.
+    </div>
+
+    <h2>7. Группировка селекторов (через запятую)</h2>
+
+    <p>Одно правило — для нескольких селекторов:</p>
+
+    <pre><code>h1, h2, h3, h4 {
+    font-family: system-ui, sans-serif;
+    color: #333;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все заголовки — одного цвета:</div>
+        <h3 style="color: #333;">Заголовок h3</h3>
+        <h4 style="color: #333;">Заголовок h4</h4>
+        <h5 style="color: #333;">Заголовок h5</h5>
+    </div>
+
+    <p>Это <strong>то же самое</strong>, что:</p>
+
+    <pre><code>h1 { font-family: system-ui, sans-serif; color: #333; }
+h2 { font-family: system-ui, sans-serif; color: #333; }
+h3 { font-family: system-ui, sans-serif; color: #333; }
+h4 { font-family: system-ui, sans-serif; color: #333; }</code></pre>
+
+    <p>Но короче и удобнее.</p>
+
+    <h2>8. Селектор потомка (через пробел)</h2>
+
+    <p>Выбирает элементы <strong>внутри</strong> другого, на <strong>любом уровне</strong> вложенности.</p>
+
+    <pre><code>div p {
+    color: green;
+}</code></pre>
+
+    <p>«Все <code>&lt;p&gt;</code>, которые находятся <strong>внутри</strong> <code>&lt;div&gt;</code> — на любом уровне».</p>
+
+    <pre><code>&lt;div&gt;
+    &lt;p&gt;Прямой ребёнок&lt;/p&gt;
+    &lt;section&gt;
+        &lt;p&gt;Внук — тоже подходит!&lt;/p&gt;
+    &lt;/section&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все p внутри .demo — зелёные:</div>
+        <div class="demo-box">
+            <p style="color: green;">Прямой ребёнок</p>
+            <div style="padding-left: 20px;">
+                <p style="color: green;">Внук — тоже зелёный</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>9. Селектор ребёнка (через <code>&gt;</code>)</h2>
+
+    <p>Выбирает <strong>только прямых детей</strong> (первый уровень вложенности).</p>
+
+    <pre><code>div &gt; p {
+    color: red;
+}</code></pre>
+
+    <p>«Только <code>&lt;p&gt;</code>, которые являются <strong>прямыми детьми</strong> <code>&lt;div&gt;</code>».</p>
+
+    <div class="demo">
+        <div class="demo-label">Только прямые дети — красные:</div>
+        <div class="demo-box">
+            <p style="color: red;">Прямой ребёнок — красный</p>
+            <div style="padding-left: 20px;">
+                <p style="color: #333;">Внук — обычный</p>
+            </div>
+        </div>
+    </div>
+
+    <h3>Потомок vs ребёнок</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Что выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>div p</code></td>
+                <td><strong>Все</strong> <code>p</code> внутри <code>div</code> (дети, внуки, правнуки...)</td>
+            </tr>
+            <tr>
+                <td><code>div &gt; p</code></td>
+                <td><strong>Только прямые дети</strong> (первый уровень)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Селектор соседа (через <code>+</code>)</h2>
+
+    <p>Выбирает <strong>первый</strong> элемент, который идёт <strong>сразу после</strong> указанного.</p>
+
+    <pre><code>h2 + p {
+    color: blue;
+}</code></pre>
+
+    <p>«Первый <code>&lt;p&gt;</code>, который идёт сразу после <code>&lt;h2&gt;</code> на том же уровне».</p>
+
+    <div class="demo">
+        <div class="demo-label">Первый p после h2 — синий:</div>
+        <div class="demo-box">
+            <h3 style="margin: 0 0 8px 0;">Заголовок</h3>
+            <p style="color: blue;">Первый параграф — синий (сосед h3)</p>
+            <p>Второй параграф — обычный</p>
+            <p>Третий параграф — обычный</p>
+        </div>
+    </div>
+
+    <h2>11. Селектор всех соседей (через <code>~</code>)</h2>
+
+    <p>Выбирает <strong>все</strong> элементы, которые идут <strong>после</strong> указанного (на том же уровне).</p>
+
+    <pre><code>h2 ~ p {
+    color: purple;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все p после h3 — фиолетовые:</div>
+        <div class="demo-box">
+            <h3 style="margin: 0 0 8px 0;">Заголовок</h3>
+            <p style="color: purple;">Первый — фиолетовый</p>
+            <p style="color: purple;">Второй — фиолетовый</p>
+            <p style="color: purple;">Третий — фиолетовый</p>
+        </div>
+    </div>
+
+    <h3>Сосед vs все соседи</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Что выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>h2 + p</code></td>
+                <td><strong>Только первый</strong> <code>p</code> сразу после <code>h2</code></td>
+            </tr>
+            <tr>
+                <td><code>h2 ~ p</code></td>
+                <td><strong>Все</strong> <code>p</code> после <code>h2</code> на том же уровне</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Селектор по атрибуту (<code>[атрибут]</code>)</h2>
+
+    <p>Выбирает элементы с определённым атрибутом или значением.</p>
+
+    <pre><code>/* Все элементы с атрибутом title */
+[title] {
+    cursor: help;
+}
+
+/* Все input с type="text" */
+input[type="text"] {
+    border: 1px solid #ccc;
+}
+
+/* Ссылки с href, начинающимся с "https" */
+a[href^="https"] {
+    color: green;
+}
+
+/* Ссылки с href, заканчивающимся на ".pdf" */
+a[href$=".pdf"] {
+    color: red;
+}
+
+/* Ссылки с href, содержащим "example" */
+a[href*="example"] {
+    color: orange;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Ссылки с разными href:</div>
+        <p><a href="https://example.com" style="color: green;">https://example.com — зелёная</a></p>
+        <p><a href="file.pdf" style="color: red;">file.pdf — красная</a></p>
+        <p><a href="/page" style="color: orange;">/page — оранжевая</a></p>
+    </div>
+
+    <h3>Виды атрибутных селекторов</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Синтаксис</th>
+                <th>Что выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>[attr]</code></td>
+                <td>Есть атрибут</td>
+            </tr>
+            <tr>
+                <td><code>[attr="value"]</code></td>
+                <td>Точное совпадение</td>
+            </tr>
+            <tr>
+                <td><code>[attr^="value"]</code></td>
+                <td>Начинается с</td>
+            </tr>
+            <tr>
+                <td><code>[attr$="value"]</code></td>
+                <td>Заканчивается на</td>
+            </tr>
+            <tr>
+                <td><code>[attr*="value"]</code></td>
+                <td>Содержит</td>
+            </tr>
+            <tr>
+                <td><code>[attr~="value"]</code></td>
+                <td>Одно из слов в списке через пробел</td>
+            </tr>
+            <tr>
+                <td><code>[attr|="value"]</code></td>
+                <td>Точно или начинается с <code>value-</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Комбинирование селекторов</h2>
+
+    <p>Селекторы можно комбинировать для точного выбора.</p>
+
+    <pre><code>/* Все p внутри .card */
+.card p {
+    color: #666;
+}
+
+/* Прямые дети .card */
+.card &gt; * {
+    margin-bottom: 8px;
+}
+
+/* Класс .card И .highlight */
+.card.highlight {
+    background: yellow;
+}
+
+/* Все ссылки внутри nav, у которых есть href с https */
+nav a[href^="https"] {
+    color: green;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">.card.highlight — оба класса:</div>
+        <div class="demo-box highlight">.card + .highlight</div>
+        <div class="demo-box">Только .card (без highlight)</div>
+    </div>
+
+    <div class="note">
+        <strong><code>.card.highlight</code></strong> (без пробела) — элемент, у которого
+        <strong>оба</strong> класса.<br>
+        <strong><code>.card .highlight</code></strong> (с пробелом) — элемент с <code>.highlight</code>
+        внутри элемента с <code>.card</code>.
+    </div>
+
+    <h2>14. Специфичность (кратко)</h2>
+
+    <p>Если два правила конфликтуют, побеждает более <strong>специфичный</strong>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Специфичность</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>*</code></td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td><code>p</code></td>
+                <td>1 (тег)</td>
+            </tr>
+            <tr>
+                <td><code>.card</code></td>
+                <td>10 (класс)</td>
+            </tr>
+            <tr>
+                <td><code>#header</code></td>
+                <td>100 (id)</td>
+            </tr>
+            <tr>
+                <td><code>p.card</code></td>
+                <td>11 (тег + класс)</td>
+            </tr>
+            <tr>
+                <td><code>#header .card</code></td>
+                <td>110 (id + класс)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Подробно — в уроке 5.</p>
+
+    <h2>15. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Использовать id для стилизации</td>
+                <td>Высокая специфичность, нельзя переопределить</td>
+            </tr>
+            <tr>
+                <td><code>.card .highlight</code> вместо <code>.card.highlight</code></td>
+                <td>Первый — потомок, второй — оба класса</td>
+            </tr>
+            <tr>
+                <td><code>div p</code> для всех p</td>
+                <td>Избыточно — достаточно <code>p</code></td>
+            </tr>
+            <tr>
+                <td>Пробел после <code>.</code> в классе</td>
+                <td><code>. card</code> — не селектор</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>&gt;</code> для ребёнка</td>
+                <td>Выберет всех потомков, а не только детей</td>
+            </tr>
+            <tr>
+                <td><code>h2 + p</code> для всех p</td>
+                <td>Выберет только первый после h2. Для всех — <code>~</code></td>
+            </tr>
+            <tr>
+                <td>Слишком глубокая вложенность <code>div &gt; section &gt; ul &gt; li &gt; a</code></td>
+                <td>Хрупко, ломается при изменении HTML</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>16. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Селектор</strong> — «кого стилизуем».</li>
+        <li><strong>Тег:</strong> <code>p</code> — все <code>&lt;p&gt;</code>.</li>
+        <li><strong>Класс:</strong> <code>.card</code> — все с <code>class="card"</code>.</li>
+        <li><strong>id:</strong> <code>#header</code> — один с <code>id="header"</code>. Не для стилей!</li>
+        <li><strong>Универсальный:</strong> <code>*</code> — все.</li>
+        <li><strong>Группировка:</strong> <code>h1, h2</code> — через запятую.</li>
+        <li><strong>Потомок:</strong> <code>div p</code> — все <code>p</code> внутри <code>div</code>.</li>
+        <li><strong>Ребёнок:</strong> <code>div &gt; p</code> — только прямые дети.</li>
+        <li><strong>Сосед:</strong> <code>h2 + p</code> — первый <code>p</code> после <code>h2</code>.</li>
+        <li><strong>Все соседи:</strong> <code>h2 ~ p</code> — все <code>p</code> после <code>h2</code>.</li>
+        <li><strong>Атрибут:</strong> <code>[type="text"]</code>, <code>[href^="https"]</code>.</li>
+        <li><strong><code>.card.highlight</code></strong> — оба класса (без пробела).</li>
+        <li><strong><code>.card .highlight</code></strong> — потомок (с пробелом).</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 4 · Следующий урок: <em>Специфичность и каскад — какой стиль победит</em>
+    </p>
+
+</body>
+</html>

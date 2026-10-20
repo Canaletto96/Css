@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 14: отступы — margin и padding. Разница, схлопывание margin, центрирование, отрицательные значения.">
+    <title>CSS Урок 14. Отступы</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .compare {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .compare > div {
+            flex: 1;
+            min-width: 180px;
+        }
+        .compare h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .box-padding {
+            background: #e3f2fd;
+            border: 2px solid #1565c0;
+            padding: 24px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .box-padding > div {
+            background: #fff;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .box-margin {
+            background: #f0f0f0;
+            border: 2px solid #999;
+            border-radius: 6px;
+            padding: 8px;
+        }
+        .box-margin > div {
+            background: #e3f2fd;
+            border: 2px solid #1565c0;
+            margin: 24px;
+            padding: 12px;
+            border-radius: 4px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .collapse-demo {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 14. Отступы</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: досконально разобрать margin и padding,        -->
+    <!-- включая схлопывание — главную "странность" CSS.            -->
+    <!-- ========================================================= -->
+
+    <h2>1. <code>margin</code> vs <code>padding</code> — в чём разница</h2>
+
+    <p>
+        Оба задают <strong>отступы</strong>, но в разных местах:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>padding</code></th>
+                <th><code>margin</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Где</td>
+                <td><strong>Внутри</strong> — между content и border</td>
+                <td><strong>Снаружи</strong> — между border и другими элементами</td>
+            </tr>
+            <tr>
+                <td>Входит в размер блока</td>
+                <td>Да (при <code>content-box</code>)</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td>Фон</td>
+                <td>Закрашивается</td>
+                <td>Прозрачный</td>
+            </tr>
+            <tr>
+                <td>Может быть отрицательным</td>
+                <td>Нет</td>
+                <td>Да</td>
+            </tr>
+            <tr>
+                <td>Схлопывается</td>
+                <td>Нет</td>
+                <td>Да (вертикально)</td>
+            </tr>
+            <tr>
+                <td>При клике</td>
+                <td>Входит в область клика</td>
+                <td>Не входит — клик проходит мимо</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Аналогия.</strong> Представь коробку с подарком:
+        <ul>
+            <li><strong>Content</strong> — сам подарок.</li>
+            <li><strong>Padding</strong> — поролон внутри (часть коробки).</li>
+            <li><strong>Border</strong> — стенки коробки.</li>
+            <li><strong>Margin</strong> — расстояние между коробками на полке.</li>
+        </ul>
+    </div>
+
+    <h2>2. Живое сравнение</h2>
+
+    <div class="demo">
+        <div class="demo-label">Один блок с padding, другой с margin:</div>
+        <div class="compare">
+            <div>
+                <h4>padding: 24px</h4>
+                <div class="box-padding">
+                    border + padding + content
+                    <div>content</div>
+                </div>
+            </div>
+            <div>
+                <h4>margin: 24px</h4>
+                <div class="box-margin">
+                    <div>border + content</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <strong>Padding</strong> — увеличивает блок изнутри, фон закрашивается.
+        <strong>Margin</strong> — отодвигает блок от соседей, фон прозрачный.
+    </p>
+
+    <h2>3. Shorthand <code>padding</code></h2>
+
+    <pre><code>.box {
+    padding: 20px;                    /* все стороны */
+    padding: 10px 20px;               /* верх/низ 10, право/лево 20 */
+    padding: 10px 20px 30px;          /* верх 10, право/лево 20, низ 30 */
+    padding: 10px 20px 30px 40px;     /* верх 10, право 20, низ 30, лево 40 */
+}
+
+/* Отдельные стороны */
+.box {
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    padding-left: 40px;
+}</code></pre>
+
+    <p><strong>Порядок:</strong> верх → право → низ → лево (по часовой).</p>
+
+    <h2>4. Shorthand <code>margin</code></h2>
+
+    <pre><code>.box {
+    margin: 20px;                    /* все стороны */
+    margin: 10px 20px;               /* верх/низ 10, право/лево 20 */
+    margin: 10px 20px 30px;          /* верх 10, право/лево 20, низ 30 */
+    margin: 10px 20px 30px 40px;     /* верх 10, право 20, низ 30, лево 40 */
+}</code></pre>
+
+    <p>Тот же порядок, что в <code>padding</code>.</p>
+
+    <h2>5. <code>margin: 0 auto</code> — центрирование</h2>
+
+    <p>
+        Классический способ центрировать <strong>блок</strong> по горизонтали.
+    </p>
+
+    <pre><code>.box {
+    width: 300px;
+    margin: 0 auto;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">margin: 0 auto:</div>
+        <div style="background: #f9f9f9; padding: 16px; border-radius: 6px;">
+            <div style="width: 200px; max-width: 100%; margin: 0 auto; background: #e3f2fd; border: 2px solid #1565c0; padding: 12px; border-radius: 6px; text-align: center; font-family: monospace;">
+                width: 200px, margin: 0 auto
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Как это работает:</strong> <code>auto</code> в horizontal margin означает
+        «взять оставшееся место и разделить пополам». Работает, только если у блока
+        задана <code>width</code> (иначе он и так занимает всю ширину).
+    </div>
+
+    <h2>6. Отрицательный <code>margin</code></h2>
+
+    <p>
+        <code>margin</code> может быть <strong>отрицательным</strong> — элемент
+        «наезжает» на соседей. Полезно для наложения блоков.
+    </p>
+
+    <pre><code>.pull-up {
+    margin-top: -20px;
+}
+
+.overlap {
+    margin-left: -10px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Отрицательный margin-top:</div>
+        <div style="background: #f9f9f9; padding: 16px; border-radius: 6px;">
+            <div style="background: #1565c0; color: white; padding: 16px; text-align: center; border-radius: 6px; font-family: monospace;">
+                первый блок
+            </div>
+            <div style="background: #e53935; color: white; padding: 16px; text-align: center; border-radius: 6px; font-family: monospace; margin-top: -16px; position: relative; z-index: 1;">
+                margin-top: -16px
+            </div>
+        </div>
+    </div>
+
+    <h2>7. Схлопывание <code>margin</code> (margin collapse)</h2>
+
+    <p>
+        <strong>Главная странность CSS.</strong> Вертикальные <code>margin</code> двух
+        соседних блоков <strong>объединяются</strong>, а не складываются.
+    </p>
+
+    <pre><code>.first {
+    margin-bottom: 30px;
+}
+
+.second {
+    margin-top: 20px;
+}
+
+/* Расстояние между ними = 30px (max), а не 50px! */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">margin-bottom: 30px + margin-top: 20px = 30px:</div>
+        <div class="collapse-demo">
+            <div style="background: #e3f2fd; border: 2px solid #1565c0; padding: 12px; border-radius: 6px; margin-bottom: 30px; font-family: monospace;">
+                первый: margin-bottom: 30px
+            </div>
+            <div style="background: #c8e6c9; border: 2px solid #43a047; padding: 12px; border-radius: 6px; margin-top: 20px; font-family: monospace;">
+                второй: margin-top: 20px
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #c62828; margin: 8px 0 0 0;">
+            Фактическое расстояние между блоками = 30px (максимум из двух), а не 50px.
+        </p>
+    </div>
+
+    <h3>Когда margin схлопываются</h3>
+
+    <ul>
+        <li><strong>Вертикальные</strong> <code>margin</code> соседних блоков.</li>
+        <li><strong>Родитель и первый/последний ребёнок</strong> (margin «протекает» наружу).</li>
+        <li><strong>Пустые блоки</strong> (без содержимого и border/padding).</li>
+    </ul>
+
+    <h3>Когда НЕ схлопываются</h3>
+
+    <ul>
+        <li><strong>Горизонтальные</strong> <code>margin</code> (left/right) — никогда.</li>
+        <li>Если между блоками есть <strong>border</strong> или <strong>padding</strong>.</li>
+        <li>Если между блоками есть <strong>содержимое</strong> (текст, другой элемент).</li>
+        <li>Если родитель — <strong>Flexbox</strong> или <strong>Grid</strong>.</li>
+        <li>Если у родителя <code>overflow: hidden</code> или <code>display: flow-root</code>.</li>
+    </ul>
+
+    <h3>Как бороться со схлопыванием</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Способ</th>
+                <th>Как</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Использовать <code>padding</code></td>
+                <td>Вместо <code>margin</code></td>
+            </tr>
+            <tr>
+                <td>Добавить <code>border</code></td>
+                <td>Даже прозрачный — отменяет схлопывание</td>
+            </tr>
+            <tr>
+                <td><code>display: flex</code></td>
+                <td>На родителе — отменяет схлопывание</td>
+            </tr>
+            <tr>
+                <td><code>display: flow-root</code></td>
+                <td>Современный способ — «создаёт BFC»</td>
+            </tr>
+            <tr>
+                <td><code>overflow: hidden</code></td>
+                <td>Тоже создаёт BFC</td>
+            </tr>
+            <tr>
+                <td><code>gap</code> вместо <code>margin</code></td>
+                <td>В Flexbox и Grid — <code>gap</code> не схлопывается</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Современный подход:</strong> для сеток используй <code>gap</code> в
+        Flexbox/Grid. Он <strong>не схлопывается</strong> и проще в управлении.
+    </div>
+
+    <h2>8. Схлопывание родителя и ребёнка</h2>
+
+    <p>
+        Ещё одна проблема: <code>margin-top</code> первого ребёнка «протекает» через
+        родителя, если у родителя нет <code>border</code>, <code>padding</code>
+        или <code>overflow</code>.
+    </p>
+
+    <pre><code>.parent {
+    background: #f0f0f0;
+    /* нет border, padding, overflow */
+}
+
+.child {
+    margin-top: 30px;   /* ← "вытечет" наружу родителя */
+}</code></pre>
+
+    <h3>Решение</h3>
+
+    <pre><code>.parent {
+    display: flow-root;   /* ← современный способ */
+    /* или */
+    overflow: hidden;
+    /* или */
+    padding-top: 1px;     /* костыль */
+    /* или */
+    border-top: 1px solid transparent;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Демо: margin-top ребёнка «вытекает» из родителя:</div>
+        <div style="background: #f9f9f9; padding: 0; border-radius: 6px; border: 1px dashed #999;">
+            <div style="background: #ffcdd2; border-radius: 6px; padding: 0;">
+                <div style="margin-top: 30px; background: #e3f2fd; border: 2px solid #1565c0; padding: 12px; border-radius: 6px; font-family: monospace;">
+                    margin-top: 30px — «вытек» наверх
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Правило:</strong> если <code>margin-top</code> ребёнка «не работает» —
+        проверь, не «протекает» ли он через родителя. Добавь родителю
+        <code>display: flow-root</code>.
+    </div>
+
+    <h2>9. Padding и клики</h2>
+
+    <p>
+        <strong>Padding входит в область клика</strong>, margin — нет.
+    </p>
+
+    <pre><code>.btn {
+    padding: 20px;
+    margin: 20px;
+}</code></pre>
+
+    <p>
+        Клик по padding сработает (это часть кнопки). Клик по margin — нет
+        (это расстояние до кнопки).
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">Проверь (клик по padding срабатывает, по margin — нет):</div>
+        <button style="padding: 20px; margin: 20px; background: #1565c0; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;" onclick="this.textContent = 'Клик по padding!'; setTimeout(() => this.textContent = 'Кнопка с padding', 1000);">
+            Кнопка с padding
+        </button>
+        <span style="font-size: 12px; color: #666;">← клик по padding = клик по кнопке</span>
+    </div>
+
+    <h2>10. Практика: карточка</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.card {
+    width: 300px;
+    padding: 24px;          /* внутренний отступ */
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    margin-bottom: 16px;    /* отступ между карточками */
+    background: #fff;
+}
+
+.card h3 {
+    margin: 0 0 12px 0;     /* отступ между заголовком и текстом */
+    color: #1565c0;
+}
+
+.card p {
+    margin: 0;               /* убираем стандартный margin у параграфа */
+    color: #666;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки с отступами:</div>
+        <div style="max-width: 350px;">
+            <div style="width: 300px; max-width: 100%; padding: 24px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 16px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h3 style="margin: 0 0 12px 0; color: #1565c0; font-size: 18px;">Заголовок</h3>
+                <p style="margin: 0; color: #666;">padding: 24px внутри. margin-bottom: 16px снаружи.</p>
+            </div>
+            <div style="width: 300px; max-width: 100%; padding: 24px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 16px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h3 style="margin: 0 0 12px 0; color: #1565c0; font-size: 18px;">Вторая карточка</h3>
+                <p style="margin: 0; color: #666;">margin-bottom: 16px между карточками.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Практика: сетка на <code>gap</code></h2>
+
+    <p>
+        Вместо <code>margin</code> у элементов — <code>gap</code> у родителя.
+        <strong>Не схлопывается</strong>, проще в управлении.
+    </p>
+
+    <pre><code>.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;   /* ← вместо margin у элементов */
+}
+
+.card {
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Сетка с gap:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px;">
+            <div style="padding: 16px; background: #e3f2fd; border-radius: 8px; text-align: center; font-family: monospace; font-size: 13px;">1</div>
+            <div style="padding: 16px; background: #e3f2fd; border-radius: 8px; text-align: center; font-family: monospace; font-size: 13px;">2</div>
+            <div style="padding: 16px; background: #e3f2fd; border-radius: 8px; text-align: center; font-family: monospace; font-size: 13px;">3</div>
+            <div style="padding: 16px; background: #e3f2fd; border-radius: 8px; text-align: center; font-family: monospace; font-size: 13px;">4</div>
+        </div>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Путать margin и padding</td>
+                <td>Margin снаружи (прозрачный), padding внутри (закрашен)</td>
+            </tr>
+            <tr>
+                <td><code>padding: -10px</code></td>
+                <td>Невалидно. Отрицательный — только margin</td>
+            </tr>
+            <tr>
+                <td>Удивляться, что margin не работает</td>
+                <td>Схлопывание. См. раздел 7</td>
+            </tr>
+            <tr>
+                <td><code>margin: 0 auto</code> без width</td>
+                <td>Не центрирует — блок и так всю ширину</td>
+            </tr>
+            <tr>
+                <td>Использовать margin для сеток</td>
+                <td>Лучше <code>gap</code> в Flexbox/Grid</td>
+            </tr>
+            <tr>
+                <td>Думать, что margin входит в размер</td>
+                <td>Нет. Margin — снаружи</td>
+            </tr>
+            <tr>
+                <td>Ставить margin всем элементам</td>
+                <td>Лучше <code>gap</code> на родителе или <code>margin</code> только с одной стороны</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>padding</code></strong> — внутри, <strong>закрашивается фоном</strong>, входит в размер (при <code>content-box</code>).</li>
+        <li><strong><code>margin</code></strong> — снаружи, <strong>прозрачный</strong>, не входит в размер.</li>
+        <li><strong><code>padding</code> не отрицательный</strong>, <code>margin</code> — может.</li>
+        <li><strong>Порядок shorthand:</strong> верх → право → низ → лево.</li>
+        <li><strong><code>margin: 0 auto</code></strong> центрирует блок (с <code>width</code>).</li>
+        <li><strong>Схлопывание margin</strong> — вертикальные margin соседей объединяются по максимуму.</li>
+        <li><strong>Горизонтальные margin</strong> не схлопываются.</li>
+        <li><strong>Margin «протекает»</strong> через родителя без border/padding/overflow.</li>
+        <li><strong>Решение:</strong> <code>display: flow-root</code>, <code>overflow: hidden</code>, <code>gap</code> вместо margin.</li>
+        <li><strong>Padding входит в клик</strong>, margin — нет.</li>
+        <li><strong>Для сеток</strong> — <code>gap</code> вместо <code>margin</code> у элементов.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 14 · Следующий урок: <em>display — block, inline, inline-block, none</em>
+    </p>
+
+</body>
+</html>

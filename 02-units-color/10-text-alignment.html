@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 10: выравнивание текста — text-align, vertical-align, text-indent, white-space, word-break.">
+    <title>CSS Урок 10. Выравнивание текста</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+        .align-demo {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            border: 1px solid #eee;
+        }
+        .inline-demo {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 20px;
+        }
+        .inline-demo span {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .va-baseline { vertical-align: baseline; background: #fff; padding: 2px 4px; }
+        .va-top { vertical-align: top; background: #fff; padding: 2px 4px; }
+        .va-middle { vertical-align: middle; background: #fff; padding: 2px 4px; }
+        .va-bottom { vertical-align: bottom; background: #fff; padding: 2px 4px; }
+        .va-super { vertical-align: super; background: #fff; padding: 2px 4px; }
+        .va-sub { vertical-align: sub; background: #fff; padding: 2px 4px; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 10. Выравнивание текста</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить text-align, vertical-align,           -->
+    <!-- text-indent, white-space и другие свойства выравнивания.   -->
+    <!-- ========================================================= -->
+
+    <h2>1. <code>text-align</code> — горизонтальное выравнивание</h2>
+
+    <p>
+        Выравнивает <strong>строчный контент</strong> (текст, <code>inline</code>-элементы)
+        внутри блочного элемента по горизонтали.
+    </p>
+
+    <pre><code>.left    { text-align: left; }     /* по левому краю (по умолчанию) */
+.center  { text-align: center; }   /* по центру */
+.right   { text-align: right; }    /* по правому краю */
+.justify { text-align: justify; }  /* по обоим краям */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все значения:</div>
+        <div class="align-demo" style="text-align: left;">
+            <strong>left:</strong> Этот текст выровнен по левому краю. Обычный вариант для большинства текстов. Читается слева направо.
+        </div>
+        <div class="align-demo" style="text-align: center;">
+            <strong>center:</strong> Этот текст выровнен по центру. Хорошо для заголовков и коротких фраз.
+        </div>
+        <div class="align-demo" style="text-align: right;">
+            <strong>right:</strong> Этот текст выровнен по правому краю. Используется редко — для цен, дат.
+        </div>
+        <div class="align-demo" style="text-align: justify;">
+            <strong>justify:</strong> Этот текст выровнен по обоим краям. Строки растягиваются на всю ширину блока. Используется в газетах и книгах. Но в вебе осторожно — могут быть «дыры» между словами.
+        </div>
+    </div>
+
+    <h3>Когда что использовать</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Когда</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>left</code></td><td>Основной текст (по умолчанию)</td></tr>
+            <tr><td><code>center</code></td><td>Заголовки, короткие фразы, кнопки</td></tr>
+            <tr><td><code>right</code></td><td>Цены, даты, подписи справа</td></tr>
+            <tr><td><code>justify</code></td><td>Книги, длинные статьи (осторожно)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Не используй <code>justify</code> для коротких текстов!</strong>
+        На узких блоках между словами появляются огромные «дыры». Также <code>justify</code>
+        плохо работает с кириллицей (нет переносов по умолчанию). Для длинных текстов —
+        добавь <code>hyphens: auto</code>.
+    </div>
+
+    <h3>Выравнивание вложенных элементов</h3>
+
+    <p>
+        <code>text-align</code> применяется к <strong>содержимому</strong> блока, а не
+        к самому блоку. Чтобы выровнять <strong>сам блок</strong> — используй <code>margin</code>
+        (урок 14) или Flexbox (урок 27+).
+    </p>
+
+    <pre><code>/* ПЛОХО: не выровняет блок */
+.box {
+    text-align: center;   /* выровняет текст внутри, не блок */
+}
+
+/* ХОРОШО: выровнять блок */
+.box {
+    width: 300px;
+    margin: 0 auto;       /* блок по центру */
+    text-align: center;   /* текст внутри — по центру */
+}</code></pre>
+
+    <h2>2. <code>vertical-align</code> — вертикальное выравнивание</h2>
+
+    <p>
+        Выравнивает <strong>строчные</strong> (<code>inline</code>) элементы по вертикали
+        относительно <strong>строки</strong>.
+    </p>
+
+    <pre><code>.top     { vertical-align: top; }
+.middle  { vertical-align: middle; }
+.bottom  { vertical-align: bottom; }
+.baseline { vertical-align: baseline; }   /* по умолчанию */
+.super   { vertical-align: super; }
+.sub     { vertical-align: sub; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные значения vertical-align (в строке с текстом):</div>
+        <div class="inline-demo">
+            Текст <span class="va-baseline">baseline</span>
+            <span class="va-top">top</span>
+            <span class="va-middle">middle</span>
+            <span class="va-bottom">bottom</span>
+            <span class="va-super">super</span>
+            <span class="va-sub">sub</span> ещё текст.
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>baseline</code></td><td>По базовой линии текста (по умолчанию)</td></tr>
+            <tr><td><code>top</code></td><td>По верху строки</td></tr>
+            <tr><td><code>middle</code></td><td>По середине строки</td></tr>
+            <tr><td><code>bottom</code></td><td>По низу строки</td></tr>
+            <tr><td><code>text-top</code></td><td>По верху текста</td></tr>
+            <tr><td><code>text-bottom</code></td><td>По низу текста</td></tr>
+            <tr><td><code>super</code></td><td>Надстрочный (как степень)</td></tr>
+            <tr><td><code>sub</code></td><td>Подстрочный (как индекс)</td></tr>
+            <tr><td><code>px</code>, <code>em</code>, <code>%</code></td><td>Сдвиг от baseline</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Важно:</strong> <code>vertical-align</code> работает <strong>только</strong>
+        для <code>inline</code> и <code>inline-block</code> элементов. Для <code>block</code>
+        — не работает!
+    </div>
+
+    <pre><code>/* ПЛОХО: div — block, vertical-align не сработает */
+div {
+    display: block;
+    vertical-align: middle;   /* ← игнорируется */
+}
+
+/* ХОРОШО: inline-block */
+span {
+    display: inline-block;
+    vertical-align: middle;   /* ← работает */
+}</code></pre>
+
+    <h3>Частое применение: иконка + текст</h3>
+
+    <pre><code>&lt;button&gt;
+    &lt;svg style="vertical-align: middle;"&gt;...&lt;/svg&gt;
+    Текст кнопки
+&lt;/button&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Иконка выровнена по тексту:</div>
+        <button style="font-size: 16px; padding: 8px 16px; border: 1px solid #1565c0; background: #fff; border-radius: 6px; cursor: pointer;">
+            <span style="vertical-align: middle; font-size: 20px;">📥</span>
+            <span style="vertical-align: middle;">Скачать</span>
+        </button>
+    </div>
+
+    <div class="note">
+        <strong>Современный способ:</strong> для выравнивания элементов в строке лучше
+        использовать <strong>Flexbox</strong> (<code>align-items: center</code>). <code>vertical-align</code>
+        — для <code>inline</code> и таблиц. Подробно — в уроке 27+.
+    </div>
+
+    <h2>3. <code>text-indent</code> — отступ первой строки</h2>
+
+    <p>Отступ <strong>первой строки</strong> параграфа. Как в книгах.</p>
+
+    <pre><code>p {
+    text-indent: 2em;   /* отступ первой строки 2em */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">text-indent: 2em:</div>
+        <p style="text-indent: 2em; background: #f9f9f9; padding: 12px; border-radius: 6px;">
+            Это параграф с отступом первой строки. Как в книгах — начало абзаца сдвинуто вправо. Остальные строки выровнены по левому краю.
+        </p>
+        <p style="text-indent: 2em; background: #f9f9f9; padding: 12px; border-radius: 6px; margin-top: 8px;">
+            Второй параграф тоже с отступом первой строки. Можно задавать в <code>em</code>, <code>rem</code>, <code>px</code> или <code>%</code>.
+        </p>
+    </div>
+
+    <p><strong>Когда:</strong> книги, статьи, длинные тексты. Для веба — реже, чем <code>margin</code> между параграфами.</p>
+
+    <h2>4. <code>white-space</code> — обработка пробелов</h2>
+
+    <p>
+        Управляет тем, как браузер обрабатывает <strong>пробелы и переносы</strong>
+        внутри элемента.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>normal</code></td><td>Схлопывает пробелы, переносит строки (по умолчанию)</td></tr>
+            <tr><td><code>nowrap</code></td><td>Не переносит строки — всё в одну</td></tr>
+            <tr><td><code>pre</code></td><td>Сохраняет всё как в <code>&lt;pre&gt;</code></td></tr>
+            <tr><td><code>pre-wrap</code></td><td>Сохраняет пробелы + переносит длинные строки</td></tr>
+            <tr><td><code>pre-line</code></td><td>Схлопывает пробелы, но сохраняет переносы</td></tr>
+            <tr><td><code>break-spaces</code></td><td>Как <code>pre-wrap</code>, но и в конце строк</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Сравнение:</div>
+        <div style="white-space: normal; background: #f9f9f9; padding: 8px; margin: 4px 0; border-radius: 4px;">
+            <strong>normal:</strong> много     пробелов     схлопываются.
+        </div>
+        <div style="white-space: nowrap; background: #f9f9f9; padding: 8px; margin: 4px 0; border-radius: 4px; overflow-x: auto;">
+            <strong>nowrap:</strong> длинная строка не переносится и вылезает за край — нужна горизонтальная прокрутка.
+        </div>
+        <div style="white-space: pre; background: #f9f9f9; padding: 8px; margin: 4px 0; border-radius: 4px; overflow-x: auto; font-family: monospace;">
+            <strong>pre:</strong>
+    пробелы    сохраняются
+        и переносы
+</div>
+        <div style="white-space: pre-wrap; background: #f9f9f9; padding: 8px; margin: 4px 0; border-radius: 4px; font-family: monospace;">
+            <strong>pre-wrap:</strong>
+    пробелы    сохраняются,
+    и длинные строки переносятся.
+</div>
+    </div>
+
+    <h3>Применение <code>white-space</code></h3>
+
+    <ul>
+        <li><strong><code>nowrap</code></strong> — кнопки, чтобы текст не переносился.</li>
+        <li><strong><code>pre</code></strong> — код, стихи, ASCII-арт.</li>
+        <li><strong><code>pre-wrap</code></strong> — код с переносами, но чтобы влезал.</li>
+        <li><strong><code>normal</code></strong> — обычный текст.</li>
+    </ul>
+
+    <h2>5. <code>word-break</code> и <code>overflow-wrap</code></h2>
+
+    <p>
+        Управляют переносом <strong>длинных слов</strong> (URL, длинные термины), которые
+        не влезают в блок.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Значения</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>overflow-wrap</code></td>
+                <td><code>normal</code>, <code>break-word</code>, <code>anywhere</code></td>
+                <td>Перенос длинных слов, если не влезают</td>
+            </tr>
+            <tr>
+                <td><code>word-break</code></td>
+                <td><code>normal</code>, <code>break-all</code>, <code>keep-all</code></td>
+                <td>Разрешить перенос в любом месте</td>
+            </tr>
+            <tr>
+                <td><code>hyphens</code></td>
+                <td><code>none</code>, <code>manual</code>, <code>auto</code></td>
+                <td>Автоматические переносы с дефисом</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>.url {
+    overflow-wrap: break-word;   /* перенос длинного URL */
+}
+
+.code {
+    word-break: break-all;       /* перенос в любом месте */
+}
+
+.text {
+    hyphens: auto;               /* автоматические переносы */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Длинный URL без переноса:</div>
+        <div style="background: #f9f9f9; padding: 8px; border-radius: 4px; overflow: hidden;">
+            https://example.com/very/long/path/that/does/not/fit/in/the/container/and/overflows
+        </div>
+
+        <div class="demo-label" style="margin-top: 12px;">С overflow-wrap: break-word:</div>
+        <div style="background: #e3f2fd; padding: 8px; border-radius: 4px; overflow-wrap: break-word;">
+            https://example.com/very/long/path/that/does/not/fit/in/the/container/and/overflows
+        </div>
+    </div>
+
+    <h2>6. <code>text-overflow</code> — обрезка текста</h2>
+
+    <p>Показывает, что текст обрезан, через <code>...</code> (многоточие).</p>
+
+    <pre><code>.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Обрезка с многоточием:</div>
+        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #f9f9f9; padding: 8px; border-radius: 4px; max-width: 300px;">
+            Очень длинный текст, который не влезает в блок и обрезается многоточием.
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Три свойства вместе:</strong> <code>white-space: nowrap</code> +
+        <code>overflow: hidden</code> + <code>text-overflow: ellipsis</code>. Без
+        <code>overflow: hidden</code> — не работает.
+    </div>
+
+    <h2>7. <code>direction</code> и <code>unicode-bidi</code></h2>
+
+    <p>Для языков с письмом справа налево (арабский, иврит):</p>
+
+    <pre><code>.rtl {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">direction: rtl:</div>
+        <div style="direction: rtl; text-align: right; background: #f9f9f9; padding: 8px; border-radius: 4px;">
+            Это текст справа налево. Начало справа.
+        </div>
+    </div>
+
+    <p>Подробно — в HTML-курсе (атрибут <code>dir</code>).</p>
+
+    <h2>8. Полный стек выравнивания</h2>
+
+    <pre><code>body {
+    text-align: left;
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+.price {
+    text-align: right;
+}
+
+.article p {
+    text-align: justify;
+    hyphens: auto;
+}
+
+.btn {
+    white-space: nowrap;
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.url {
+    overflow-wrap: break-word;
+}</code></pre>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>text-align: center</code> для выравнивания блока</td>
+                <td>Выравнивает содержимое, не блок. Для блока — <code>margin: 0 auto</code></td>
+            </tr>
+            <tr>
+                <td><code>text-align: justify</code> для коротких текстов</td>
+                <td>Огромные «дыры» между словами</td>
+            </tr>
+            <tr>
+                <td><code>vertical-align</code> на <code>block</code>-элементах</td>
+                <td>Не работает — только для inline</td>
+            </tr>
+            <tr>
+                <td><code>text-overflow: ellipsis</code> без <code>overflow: hidden</code></td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td><code>text-indent</code> на всех <code>p</code></td>
+                <td>В вебе чаще используют <code>margin</code> между параграфами</td>
+            </tr>
+            <tr>
+                <td><code>word-break: break-all</code> без причины</td>
+                <td>Ломает слова посреди — плохо читается</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>hyphens: auto</code> при <code>justify</code></td>
+                <td>Большие расстояния между словами</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>text-align</code></strong> — <code>left</code>, <code>center</code>, <code>right</code>, <code>justify</code>.</li>
+        <li><strong><code>text-align: center</code></strong> — выравнивает <strong>содержимое</strong>, не блок.</li>
+        <li><strong>Для блока по центру</strong> — <code>margin: 0 auto</code>.</li>
+        <li><strong><code>justify</code></strong> — только для длинных текстов, с <code>hyphens: auto</code>.</li>
+        <li><strong><code>vertical-align</code></strong> — только для <code>inline</code> и <code>inline-block</code>.</li>
+        <li><strong><code>text-indent</code></strong> — отступ первой строки (как в книгах).</li>
+        <li><strong><code>white-space</code></strong> — обработка пробелов: <code>normal</code>, <code>nowrap</code>, <code>pre</code>, <code>pre-wrap</code>.</li>
+        <li><strong><code>overflow-wrap: break-word</code></strong> — перенос длинных URL.</li>
+        <li><strong><code>text-overflow: ellipsis</code></strong> — многоточие при обрезке (с <code>overflow: hidden</code>).</li>
+        <li><strong>Для современного выравнивания</strong> — Flexbox и Grid, не <code>vertical-align</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 10 · Следующий урок: <em>Блочная модель — content, padding, border, margin</em>
+    </p>
+
+</body>
+</html>

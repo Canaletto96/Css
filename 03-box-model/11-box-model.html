@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 11: блочная модель — content, padding, border, margin. Как браузер считает размеры.">
+    <title>CSS Урок 11. Блочная модель</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Диаграмма блочной модели */
+        .box-diagram {
+            margin: 24px auto;
+            max-width: 500px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+        .box-margin {
+            background: #ffcdd2;
+            padding: 24px;
+            border: 2px dashed #e53935;
+            position: relative;
+        }
+        .box-border {
+            background: #ffe0b2;
+            padding: 20px;
+            border: 2px dashed #ef6c00;
+            position: relative;
+        }
+        .box-padding {
+            background: #c8e6c9;
+            padding: 20px;
+            border: 2px dashed #43a047;
+            position: relative;
+        }
+        .box-content {
+            background: #bbdefb;
+            padding: 20px;
+            border: 2px dashed #1565c0;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+        .diagram-label {
+            display: block;
+            font-size: 11px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        /* Живой пример */
+        .live-box {
+            width: 200px;
+            padding: 20px;
+            border: 5px solid #1565c0;
+            margin: 30px;
+            background: #e3f2fd;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 11. Блочная модель</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, как браузер считает размеры блоков    -->
+    <!-- и почему width — не всегда то, что кажется.                -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое блочная модель</h2>
+
+    <p>
+        <strong>Блочная модель</strong> (box model) — это способ, которым браузер
+        рассчитывает размеры и положение <strong>каждого</strong> элемента на странице.
+    </p>
+
+    <p>Каждый элемент — это <strong>прямоугольник</strong>, состоящий из четырёх слоёв:</p>
+
+    <div class="box-diagram">
+        <div class="box-margin">
+            <span class="diagram-label">margin</span>
+            <div class="box-border">
+                <span class="diagram-label">border</span>
+                <div class="box-padding">
+                    <span class="diagram-label">padding</span>
+                    <div class="box-content">
+                        content<br>
+                        (width × height)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Слой</th>
+                <th>Что это</th>
+                <th>Свойства</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Content</strong></td>
+                <td>Содержимое: текст, картинка, вложенные элементы</td>
+                <td><code>width</code>, <code>height</code></td>
+            </tr>
+            <tr>
+                <td><strong>Padding</strong></td>
+                <td>Внутренний отступ (от содержимого до рамки)</td>
+                <td><code>padding</code></td>
+            </tr>
+            <tr>
+                <td><strong>Border</strong></td>
+                <td>Рамка вокруг padding</td>
+                <td><code>border</code></td>
+            </tr>
+            <tr>
+                <td><strong>Margin</strong></td>
+                <td>Внешний отступ (от рамки до других элементов)</td>
+                <td><code>margin</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Аналогия.</strong> Представь <strong>коробку с подарком</strong>:
+        <ul>
+            <li><strong>Content</strong> — сам подарок.</li>
+            <li><strong>Padding</strong> — поролон внутри коробки (защита).</li>
+            <li><strong>Border</strong> — стенки коробки.</li>
+            <li><strong>Margin</strong> — расстояние от коробки до других коробок на полке.</li>
+        </ul>
+    </div>
+
+    <h2>2. Живой пример</h2>
+
+    <div class="demo">
+        <div class="demo-label">Блок с width: 200px, padding: 20px, border: 5px, margin: 30px:</div>
+        <div class="live-box">
+            content: 200px<br>
+            + padding: 20px × 2 = 40px<br>
+            + border: 5px × 2 = 10px<br>
+            = 250px общая ширина
+        </div>
+    </div>
+
+    <p>
+        <strong>Важно:</strong> <code>width: 200px</code> — это ширина <strong>только
+        content</strong>! Если добавить <code>padding</code> и <code>border</code>,
+        общая ширина станет <strong>больше</strong>.
+    </p>
+
+    <h2>3. <code>width</code> и <code>height</code></h2>
+
+    <p>Задают размеры <strong>content area</strong> (по умолчанию).</p>
+
+    <pre><code>.box {
+    width: 300px;
+    height: 200px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">width: 300px, height: 100px, background:</div>
+        <div style="width: 300px; height: 100px; background: #e3f2fd; border: 1px solid #1565c0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: monospace;">
+            300 × 100
+        </div>
+    </div>
+
+    <h3>Значения <code>width</code>/<code>height</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>300px</code></td><td>Фиксированная ширина</td></tr>
+            <tr><td><code>50%</code></td><td>От родителя</td></tr>
+            <tr><td><code>auto</code></td><td>По содержимому / по умолчанию</td></tr>
+            <tr><td><code>max-content</code></td><td>По максимальному содержимому</td></tr>
+            <tr><td><code>min-content</code></td><td>По минимальному содержимому</td></tr>
+            <tr><td><code>fit-content</code></td><td>По содержимому, но не больше родителя</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Совет:</strong> вместо <code>width</code> часто лучше использовать
+        <code>max-width</code> — тогда элемент адаптируется к маленьким экранам.
+    </div>
+
+    <h2>4. <code>padding</code> — внутренний отступ</h2>
+
+    <p>
+        Пространство между <strong>содержимым</strong> и <strong>рамкой</strong>.
+        Увеличивает размер блока (по умолчанию).
+    </p>
+
+    <pre><code>.box {
+    padding: 20px;              /* все стороны */
+    padding: 10px 20px;         /* верх/низ 10, право/лево 20 */
+    padding: 10px 20px 30px;    /* верх 10, право/лево 20, низ 30 */
+    padding: 10px 20px 30px 40px; /* верх право низ лево */
+}
+
+/* Или отдельно */
+.box {
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    padding-left: 40px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разный padding:</div>
+        <div style="background: #e3f2fd; padding: 0; border: 1px solid #1565c0; border-radius: 4px; margin: 8px 0;">
+            <div style="background: #fff; margin: 0; padding: 4px;">padding: 4px</div>
+        </div>
+        <div style="background: #e3f2fd; padding: 0; border: 1px solid #1565c0; border-radius: 4px; margin: 8px 0;">
+            <div style="background: #fff; margin: 0; padding: 16px;">padding: 16px</div>
+        </div>
+        <div style="background: #e3f2fd; padding: 0; border: 1px solid #1565c0; border-radius: 4px; margin: 8px 0;">
+            <div style="background: #fff; margin: 0; padding: 32px;">padding: 32px</div>
+        </div>
+    </div>
+
+    <h3>Порядок в shorthand</h3>
+
+    <p><strong>Верх → Право → Низ → Лево</strong> (по часовой стрелке).</p>
+
+    <div class="note">
+        <strong>Мнемоника:</strong> «Верх Право Низ Лево» — «ТРБЛ» (по часовой).<br>
+        Или «Top Right Bottom Left» — TRBL — «Trouble» (проблема).
+    </div>
+
+    <h3>Отрицательный padding?</h3>
+
+    <div class="warn">
+        <strong>Нельзя!</strong> <code>padding: -10px;</code> — невалидно. Padding не может
+        быть отрицательным. Только <code>margin</code>.
+    </div>
+
+    <h2>5. <code>border</code> — рамка</h2>
+
+    <p>Рамка вокруг padding. Состоит из <strong>трёх</strong> свойств:</p>
+
+    <pre><code>.box {
+    border: 2px solid #1565c0;
+    /*      ↑    ↑     ↑
+        ширина  стиль  цвет */
+}</code></pre>
+
+    <h3>Стили рамки</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Стиль</th>
+                <th>Пример</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>solid</code></td><td><span style="border: 2px solid #1565c0; padding: 2px 6px;">сплошная</span></td></tr>
+            <tr><td><code>dashed</code></td><td><span style="border: 2px dashed #1565c0; padding: 2px 6px;">пунктирная</span></td></tr>
+            <tr><td><code>dotted</code></td><td><span style="border: 2px dotted #1565c0; padding: 2px 6px;">точками</span></td></tr>
+            <tr><td><code>double</code></td><td><span style="border: 3px double #1565c0; padding: 2px 6px;">двойная</span></td></tr>
+            <tr><td><code>groove</code></td><td><span style="border: 3px groove #1565c0; padding: 2px 6px;">желоб</span></td></tr>
+            <tr><td><code>ridge</code></td><td><span style="border: 3px ridge #1565c0; padding: 2px 6px;">гребень</span></td></tr>
+            <tr><td><code>inset</code></td><td><span style="border: 3px inset #1565c0; padding: 2px 6px;">вдавленная</span></td></tr>
+            <tr><td><code>outset</code></td><td><span style="border: 3px outset #1565c0; padding: 2px 6px;">выпуклая</span></td></tr>
+            <tr><td><code>none</code></td><td><span style="border: none; padding: 2px 6px;">нет</span></td></tr>
+        </tbody>
+    </table>
+
+    <h3>Отдельные стороны</h3>
+
+    <pre><code>.box {
+    border-top: 1px solid red;
+    border-right: 2px dashed green;
+    border-bottom: 3px dotted blue;
+    border-left: 4px double orange;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные стороны:</div>
+        <div style="border-top: 1px solid red; border-right: 2px dashed green; border-bottom: 3px dotted blue; border-left: 4px double orange; padding: 16px; border-radius: 4px;">
+            Разные рамки с каждой стороны
+        </div>
+    </div>
+
+    <h3><code>border-radius</code> — скругление</h3>
+
+    <pre><code>.box {
+    border-radius: 8px;              /* все углы */
+    border-radius: 50%;              /* круг (если квадрат) */
+    border-radius: 8px 16px 24px 32px; /* по часовой */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Скругления:</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <div style="width: 80px; height: 80px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 4px;"></div>
+            <div style="width: 80px; height: 80px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 16px;"></div>
+            <div style="width: 80px; height: 80px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 50%;"></div>
+            <div style="width: 80px; height: 80px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 50% 0 50% 0;"></div>
+        </div>
+    </div>
+
+    <h2>6. <code>margin</code> — внешний отступ</h2>
+
+    <p>
+        Пространство <strong>вне</strong> рамки, до других элементов. <strong>Не входит</strong>
+        в размер блока.
+    </p>
+
+    <pre><code>.box {
+    margin: 20px;               /* все стороны */
+    margin: 10px 20px;          /* верх/низ 10, право/лево 20 */
+    margin: 0 auto;             /* по центру (если есть width) */
+    margin: -10px;              /* отрицательный — работает! */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">margin: 16px:</div>
+        <div style="background: #f9f9f9; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <div style="background: #e3f2fd; margin: 16px; padding: 8px; border: 1px solid #1565c0; border-radius: 4px; font-family: monospace;">
+                margin: 16px (отступ снаружи)
+            </div>
+            <div style="background: #e3f2fd; margin: 16px; padding: 8px; border: 1px solid #1565c0; border-radius: 4px; font-family: monospace;">
+                margin: 16px
+            </div>
+        </div>
+    </div>
+
+    <h3>Центрирование через margin</h3>
+
+    <pre><code>.box {
+    width: 300px;
+    margin: 0 auto;   /* блок по центру родителя */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">margin: 0 auto:</div>
+        <div style="background: #f9f9f9; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <div style="width: 200px; margin: 0 auto; background: #e3f2fd; padding: 8px; border: 1px solid #1565c0; border-radius: 4px; text-align: center; font-family: monospace;">
+                width: 200px, margin: 0 auto
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Почему <code>margin: 0 auto</code> центрирует:</strong> <code>auto</code>
+        в horizontal margin означает «взять оставшееся место и разделить пополам».
+        Работает только если у блока задана <code>width</code> (иначе он и так занимает всю ширину).
+    </div>
+
+    <h3>Отрицательный margin</h3>
+
+    <p>
+        <code>margin</code> может быть <strong>отрицательным</strong> — элемент «сдвинется»
+        в обратную сторону, наезжая на соседей.
+    </p>
+
+    <pre><code>.pull-up {
+    margin-top: -20px;   /* сдвинуть вверх на 20px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Отрицательный margin (наезд на предыдущий):</div>
+        <div style="background: #f9f9f9; padding: 16px; border-radius: 6px;">
+            <div style="background: #1565c0; color: white; padding: 16px; text-align: center; border-radius: 4px;">
+                Первый блок
+            </div>
+            <div style="background: #e53935; color: white; padding: 16px; text-align: center; border-radius: 4px; margin-top: -20px; position: relative; z-index: 1;">
+                Второй с margin-top: -20px
+            </div>
+        </div>
+    </div>
+
+    <h2>7. Схлопывание margin (margin collapse)</h2>
+
+    <p>
+        <strong>Странная</strong> особенность CSS: вертикальные <code>margin</code>
+        <strong>схлопываются</strong>, если два блока идут подряд.
+    </p>
+
+    <pre><code>.first {
+    margin-bottom: 30px;
+}
+
+.second {
+    margin-top: 20px;
+}</code></pre>
+
+    <p>
+        Расстояние между ними будет <strong>30px</strong>, а не 50px! Браузер берёт
+        <strong>максимум</strong>, а не сумму.
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">margin-bottom: 30px + margin-top: 20px = 30px (не 50px):</div>
+        <div style="background: #f9f9f9; padding: 8px; border-radius: 4px;">
+            <div style="background: #e3f2fd; padding: 8px; margin-bottom: 30px; border: 1px solid #1565c0; border-radius: 4px; font-family: monospace;">
+                первый: margin-bottom: 30px
+            </div>
+            <div style="background: #c8e6c9; padding: 8px; margin-top: 20px; border: 1px solid #43a047; border-radius: 4px; font-family: monospace;">
+                второй: margin-top: 20px (расстояние между ними = 30px)
+            </div>
+        </div>
+    </div>
+
+    <h3>Когда margin НЕ схлопываются</h3>
+
+    <ul>
+        <li>Горизонтальные <code>margin</code> (left/right) — <strong>никогда</strong>.</li>
+        <li>Если у одного из блоков есть <code>border</code> или <code>padding</code> между ними.</li>
+        <li>В Flexbox и Grid — <strong>никогда</strong> (внутри контейнера).</li>
+        <li>Если между блоками есть <strong>содержимое</strong> (не пустая строка).</li>
+    </ul>
+
+    <div class="note">
+        <strong>Схлопывание</strong> — одна из самых частых причин «почему отступ не работает».
+        Если увидел, что <code>margin</code> не даёт нужного расстояния — проверь, не схлопывается
+        ли он с соседом.
+    </div>
+
+    <h3>Как бороться со схлопыванием</h3>
+
+    <ul>
+        <li>Использовать <code>padding</code> вместо <code>margin</code>.</li>
+        <li>Добавить <code>border</code> (даже прозрачный) между блоками.</li>
+        <li>Использовать <code>display: flex</code> на родителе — отменяет схлопывание.</li>
+        <li>Использовать <code>gap</code> вместо <code>margin</code> (в Flexbox/Grid).</li>
+    </ul>
+
+    <h2>8. Как браузер считает общий размер</h2>
+
+    <p>По умолчанию (<code>box-sizing: content-box</code>):</p>
+
+    <pre><code>общая ширина = width + padding-left + padding-right + border-left + border-right
+общая высота = height + padding-top + padding-bottom + border-top + border-bottom
+margin НЕ входит в размер блока!</code></pre>
+
+    <p>Пример:</p>
+
+    <pre><code>.box {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid;
+    margin: 30px;
+}
+
+/* Общая ширина = 200 + 20 + 20 + 5 + 5 = 250px */
+/* Общая высота зависит от содержимого */
+/* margin = 30px снаружи (не входит в размер) */</code></pre>
+
+    <div class="warn">
+        <strong>Проблема:</strong> если ты хочешь блок ровно 300px, а добавил padding и border,
+        он станет <strong>больше 300px</strong>. Это ломает сетки.
+
+        <strong>Решение:</strong> <code>box-sizing: border-box</code> — в уроке 12.
+    </div>
+
+    <h2>9. Практика: карточка</h2>
+
+    <pre><code>.card {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 16px;
+    background: #fff;
+}
+
+.card h3 {
+    margin: 0 0 12px 0;
+}
+
+.card p {
+    margin: 0;
+    color: #666;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка:</div>
+        <div style="width: 300px; max-width: 100%; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin: 16px 0; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 12px 0; font-size: 18px;">Заголовок карточки</h3>
+            <p style="margin: 0; color: #666;">Описание карточки. Здесь padding: 20px, border: 1px, margin: 16px.</p>
+        </div>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Думать, что <code>width</code> = общая ширина</td>
+                <td><code>width</code> — только content. Padding и border добавляются</td>
+            </tr>
+            <tr>
+                <td>Путать <code>padding</code> и <code>margin</code></td>
+                <td>Padding — внутри, margin — снаружи</td>
+            </tr>
+            <tr>
+                <td>Пытаться сделать <code>padding: -10px</code></td>
+                <td>Невалидно. Отрицательный — только margin</td>
+            </tr>
+            <tr>
+                <td>Удивляться, что margin не работает</td>
+                <td>Схлопывание margin. См. раздел 7</td>
+            </tr>
+            <tr>
+                <td><code>margin: 0 auto</code> без <code>width</code></td>
+                <td>Не центрирует — блок и так занимает всю ширину</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>border-style</code></td>
+                <td>Без стиля рамки нет (по умолчанию <code>none</code>)</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>width</code> вместо <code>max-width</code></td>
+                <td>Не адаптируется к маленьким экранам</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Блочная модель</strong> — 4 слоя: content, padding, border, margin.</li>
+        <li><strong><code>width</code>/<code>height</code></strong> — размер content (по умолчанию).</li>
+        <li><strong><code>padding</code></strong> — внутренний отступ, <strong>входит</strong> в размер блока.</li>
+        <li><strong><code>border</code></strong> — рамка, <strong>входит</strong> в размер блока.</li>
+        <li><strong><code>margin</code></strong> — внешний отступ, <strong>НЕ входит</strong> в размер блока.</li>
+        <li><strong>Порядок shorthand:</strong> верх → право → низ → лево (по часовой).</li>
+        <li><strong><code>padding</code> не может быть отрицательным</strong>, <code>margin</code> — может.</li>
+        <li><strong>Общая ширина</strong> = <code>width + padding + border</code> (по умолчанию).</li>
+        <li><strong><code>margin: 0 auto</code></strong> центрирует блок (с <code>width</code>).</li>
+        <li><strong>Схлопывание margin</strong> — вертикальные <code>margin</code> соседних блоков объединяются по максимуму.</li>
+        <li><strong>Для точных размеров</strong> — <code>box-sizing: border-box</code> (урок 12).</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 11 · Следующий урок: <em>box-sizing — почему border-box спасает жизнь</em>
+    </p>
+
+</body>
+</html>

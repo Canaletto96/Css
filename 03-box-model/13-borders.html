@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 13: границы — border, border-radius, outline, box-shadow. Все стили и приёмы.">
+    <title>CSS Урок 13. Границы и тени</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .box {
+            background: #fff;
+            padding: 16px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 13. Границы и тени</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить border, border-radius, outline,      -->
+    <!-- box-shadow — всё, что создаёт "рамку" вокруг элемента.    -->
+    <!-- ========================================================= -->
+
+    <h2>1. <code>border</code> — рамка</h2>
+
+    <p>
+        Рамка вокруг элемента. Состоит из <strong>трёх</strong> свойств:
+    </p>
+
+    <pre><code>.box {
+    border: 2px solid #1565c0;
+    /*      ↑    ↑     ↑
+        ширина  стиль  цвет */
+}</code></pre>
+
+    <h3>Три компонента border</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Значения</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>border-width</code></td>
+                <td><code>1px</code>, <code>2px</code>, <code>thin</code>, <code>medium</code>, <code>thick</code></td>
+            </tr>
+            <tr>
+                <td><code>border-style</code></td>
+                <td><code>solid</code>, <code>dashed</code>, <code>dotted</code>, <code>double</code>, <code>groove</code>, <code>ridge</code>, <code>inset</code>, <code>outset</code>, <code>none</code></td>
+            </tr>
+            <tr>
+                <td><code>border-color</code></td>
+                <td>любой цвет (HEX, RGB, HSL, named)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Важно:</strong> если не указать <code>border-style</code> — рамки не будет.
+        По умолчанию <code>none</code>. <code>border: 2px #1565c0;</code> — не сработает,
+        нужен стиль.
+    </div>
+
+    <h2>2. Стили рамки</h2>
+
+    <div class="demo">
+        <div class="demo-label">Все стили border:</div>
+        <div class="grid">
+            <div class="box" style="border: 2px solid #1565c0;">solid</div>
+            <div class="box" style="border: 2px dashed #1565c0;">dashed</div>
+            <div class="box" style="border: 2px dotted #1565c0;">dotted</div>
+            <div class="box" style="border: 3px double #1565c0;">double</div>
+            <div class="box" style="border: 3px groove #1565c0;">groove</div>
+            <div class="box" style="border: 3px ridge #1565c0;">ridge</div>
+            <div class="box" style="border: 3px inset #1565c0;">inset</div>
+            <div class="box" style="border: 3px outset #1565c0;">outset</div>
+            <div class="box" style="border: 2px solid transparent;">transparent</div>
+            <div class="box" style="border: none; background: #f0f0f0;">none</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Стиль</th>
+                <th>Что выглядит</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>solid</code></td><td>Сплошная линия</td></tr>
+            <tr><td><code>dashed</code></td><td>Пунктир (штрихи)</td></tr>
+            <tr><td><code>dotted</code></td><td>Точками</td></tr>
+            <tr><td><code>double</code></td><td>Двойная линия</td></tr>
+            <tr><td><code>groove</code></td><td>«Желоб» — вдавленная</td></tr>
+            <tr><td><code>ridge</code></td><td>«Гребень» — выпуклая</td></tr>
+            <tr><td><code>inset</code></td><td>Вдавленная</td></tr>
+            <tr><td><code>outset</code></td><td>Выпуклая</td></tr>
+            <tr><td><code>none</code></td><td>Нет рамки (по умолчанию)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Практика:</strong> 99% случаев — <code>solid</code>. Остальные стили —
+        для декора (например, <code>dashed</code> для «вырезать здесь»).
+    </div>
+
+    <h2>3. Отдельные стороны</h2>
+
+    <pre><code>.box {
+    border-top: 1px solid red;
+    border-right: 2px dashed green;
+    border-bottom: 3px dotted blue;
+    border-left: 4px double orange;
+}
+
+/* Или через отдельные свойства */
+.box {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: red;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные стороны:</div>
+        <div style="border-top: 1px solid red; border-right: 2px dashed green; border-bottom: 3px dotted blue; border-left: 4px double orange; padding: 16px; border-radius: 4px; background: #fff;">
+            Разные рамки с каждой стороны
+        </div>
+    </div>
+
+    <h3>Shorthand для сторон</h3>
+
+    <pre><code>.box {
+    /* Только width */
+    border-width: 1px 2px 3px 4px;   /* верх право низ лево */
+    border-width: 1px 2px;           /* верх/низ, право/лево */
+
+    /* Только style */
+    border-style: solid dashed dotted double;
+
+    /* Только color */
+    border-color: red green blue orange;
+}</code></pre>
+
+    <h2>4. <code>border-radius</code> — скругление</h2>
+
+    <p>Скругляет углы. Значение — радиус в <code>px</code>, <code>%</code>, <code>em</code>.</p>
+
+    <pre><code>.box {
+    border-radius: 8px;               /* все углы */
+    border-radius: 50%;               /* круг (если квадрат) */
+    border-radius: 8px 16px 24px 32px; /* верх-лево, верх-право, низ-право, низ-лево */
+    border-radius: 8px 16px;          /* по диагонали: 8 16 8 16 */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные значения border-radius:</div>
+        <div class="grid">
+            <div class="box" style="border-radius: 0; background: #e3f2fd; border: 2px solid #1565c0;">0</div>
+            <div class="box" style="border-radius: 8px; background: #e3f2fd; border: 2px solid #1565c0;">8px</div>
+            <div class="box" style="border-radius: 16px; background: #e3f2fd; border: 2px solid #1565c0;">16px</div>
+            <div class="box" style="border-radius: 50%; background: #e3f2fd; border: 2px solid #1565c0;">50%</div>
+            <div class="box" style="border-radius: 8px 24px; background: #e3f2fd; border: 2px solid #1565c0;">8 24</div>
+            <div class="box" style="border-radius: 24px 0 24px 0; background: #e3f2fd; border: 2px solid #1565c0;">24 0 24 0</div>
+            <div class="box" style="border-radius: 100% 0 0 0; background: #e3f2fd; border: 2px solid #1565c0;">100% 0 0 0</div>
+        </div>
+    </div>
+
+    <h3>Порядок в shorthand</h3>
+
+    <p>
+        Как и в <code>margin</code>/<code>padding</code> — <strong>по часовой стрелке</strong>
+        от верхнего левого угла:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Запись</th>
+                <th>Верх-лево</th>
+                <th>Верх-право</th>
+                <th>Низ-право</th>
+                <th>Низ-лево</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>8px</code></td><td>8</td><td>8</td><td>8</td><td>8</td></tr>
+            <tr><td><code>8px 16px</code></td><td>8</td><td>16</td><td>8</td><td>16</td></tr>
+            <tr><td><code>8px 16px 24px</code></td><td>8</td><td>16</td><td>24</td><td>16</td></tr>
+            <tr><td><code>8px 16px 24px 32px</code></td><td>8</td><td>16</td><td>24</td><td>32</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Эллиптические скругления</h3>
+
+    <p>Можно задать разные радиусы по X и Y через <code>/</code>:</p>
+
+    <pre><code>.box {
+    border-radius: 50% / 30%;   /* эллипс — 50% по X, 30% по Y */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Эллипс:</div>
+        <div class="grid">
+            <div class="box" style="border-radius: 50%; background: #e3f2fd; border: 2px solid #1565c0;">круг</div>
+            <div class="box" style="border-radius: 50% / 30%; background: #e3f2fd; border: 2px solid #1565c0;">эллипс</div>
+            <div class="box" style="border-radius: 50% / 15%; background: #e3f2fd; border: 2px solid #1565c0;">сильно сплюснут</div>
+        </div>
+    </div>
+
+    <h3>Отдельные углы</h3>
+
+    <pre><code>.box {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 24px;
+    border-bottom-left-radius: 32px;
+}</code></pre>
+
+    <h2>5. <code>outline</code> — контур</h2>
+
+    <p>
+        Похож на <code>border</code>, но <strong>не занимает места</strong> в блочной
+        модели. Рисуется <strong>поверх</strong> границ, не сдвигает другие элементы.
+    </p>
+
+    <pre><code>.box {
+    outline: 2px solid #1565c0;
+}
+
+/* С отступом от border */
+.box {
+    outline: 2px solid #1565c0;
+    outline-offset: 4px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">outline vs border:</div>
+        <div class="grid">
+            <div class="box" style="border: 2px solid #1565c0; background: #e3f2fd;">border: 2px solid</div>
+            <div class="box" style="outline: 2px solid #1565c0; background: #e3f2fd;">outline: 2px solid</div>
+            <div class="box" style="border: 2px solid #1565c0; outline: 2px solid #ff9800; outline-offset: 4px; background: #e3f2fd;">border + outline-offset</div>
+        </div>
+    </div>
+
+    <h3>Когда использовать outline</h3>
+
+    <ul>
+        <li><strong>Фокус</strong> — <code>:focus</code> показывает outline (доступность!).</li>
+        <li><strong>Выделение</strong> — рамка вокруг активного элемента.</li>
+        <li><strong>Аккордеон</strong> — обводка вокруг раскрытого блока.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Не убирай <code>outline</code> у ссылок и кнопок без замены!</strong>
+        Это ломает клавиатурную навигацию. Если хочешь изменить стиль фокуса —
+        замени на свой (например, <code>box-shadow</code>).
+    </div>
+
+    <pre><code>/* ПЛОХО */
+a:focus { outline: none; }
+
+/* ХОРОШО: заменить на свой стиль фокуса */
+a:focus {
+    outline: 2px solid #1565c0;
+    outline-offset: 2px;
+}
+
+/* Или через box-shadow */
+a:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.3);
+}</code></pre>
+
+    <h3><code>outline-offset</code></h3>
+
+    <p>Расстояние между outline и border:</p>
+
+    <pre><code>.box {
+    border: 2px solid #1565c0;
+    outline: 2px dashed #ff9800;
+    outline-offset: 4px;   /* 4px между border и outline */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">outline-offset:</div>
+        <div class="grid">
+            <div class="box" style="border: 2px solid #1565c0; outline: 2px dashed #ff9800; background: #e3f2fd;">offset: 0</div>
+            <div class="box" style="border: 2px solid #1565c0; outline: 2px dashed #ff9800; outline-offset: 4px; background: #e3f2fd;">offset: 4px</div>
+            <div class="box" style="border: 2px solid #1565c0; outline: 2px dashed #ff9800; outline-offset: 8px; background: #e3f2fd;">offset: 8px</div>
+        </div>
+    </div>
+
+    <h2>6. <code>box-shadow</code> — тень</h2>
+
+    <p>
+        Тень вокруг блока. Не занимает места (как outline), но выглядит как тень.
+    </p>
+
+    <pre><code>.box {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /*          ↑  ↑  ↑    ↑
+            x-off y-off blur цвет */
+}</code></pre>
+
+    <h3>Параметры <code>box-shadow</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>x-offset</code></td><td>Сдвиг по X (горизонталь)</td></tr>
+            <tr><td><code>y-offset</code></td><td>Сдвиг по Y (вертикаль)</td></tr>
+            <tr><td><code>blur</code></td><td>Размытие (0 = резкая)</td></tr>
+            <tr><td><code>spread</code> (опционально)</td><td>Расширение тени (может быть отрицательным)</td></tr>
+            <tr><td><code>color</code></td><td>Цвет тени</td></tr>
+            <tr><td><code>inset</code> (опционально)</td><td>Тень внутри блока</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Разные тени:</div>
+        <div class="grid">
+            <div class="box" style="background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">лёгкая</div>
+            <div class="box" style="background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">средняя</div>
+            <div class="box" style="background: #fff; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">сильная</div>
+            <div class="box" style="background: #fff; box-shadow: 0 0 8px rgba(21,101,192,0.5);">цветная</div>
+            <div class="box" style="background: #fff; box-shadow: 4px 4px 0 #1565c0;">жёсткая (без blur)</div>
+            <div class="box" style="background: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">inset (внутри)</div>
+        </div>
+    </div>
+
+    <h3>Несколько теней</h3>
+
+    <p>Через запятую можно задать несколько теней:</p>
+
+    <pre><code>.box {
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.24);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Двойная тень (как в Material Design):</div>
+        <div class="grid">
+            <div class="box" style="background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);">двойная</div>
+            <div class="box" style="background: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);">средняя</div>
+            <div class="box" style="background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);">сильная</div>
+        </div>
+    </div>
+
+    <h3>Применение <code>box-shadow</code></h3>
+
+    <ul>
+        <li><strong>Карточки</strong> — лёгкая тень для объёма.</li>
+        <li><strong>Кнопки</strong> — тень при hover.</li>
+        <li><strong>Модальные окна</strong> — большая тень для «парения».</li>
+        <li><strong>Фокус</strong> — замена outline.</li>
+        <li><strong>Выделение</strong> — обводка вокруг активного элемента.</li>
+    </ul>
+
+    <h3>box-shadow vs outline</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>box-shadow</code></th>
+                <th><code>outline</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Занимает место</td>
+                <td>Нет</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td>Размытие</td>
+                <td>Да</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td>Скругления</td>
+                <td>Повторяет <code>border-radius</code></td>
+                <td>Нет (прямые углы)</td>
+            </tr>
+            <tr>
+                <td>Внутрь</td>
+                <td>Да (<code>inset</code>)</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td>Когда</td>
+                <td>Красивая тень, фокус</td>
+                <td>Фокус (доступность)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Современный подход:</strong> для фокуса используют <code>box-shadow</code>
+        вместо <code>outline</code> — красивее и скругляется вместе с элементом.
+    </div>
+
+    <h2>7. Практика: карточка с тенью</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card h3 {
+    margin: 0 0 12px 0;
+    color: #1565c0;
+}
+
+.card p {
+    margin: 0;
+    color: #666;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с тенью и hover-эффектом:</div>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <div class="card" style="background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); max-width: 300px; flex: 1; min-width: 200px;">
+                <h3 style="margin: 0 0 12px 0; color: #1565c0; font-size: 18px;">Карточка</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">С тенью и скруглением</p>
+            </div>
+            <div class="card" style="background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-width: 300px; flex: 1; min-width: 200px;">
+                <h3 style="margin: 0 0 12px 0; color: #1565c0; font-size: 18px;">С hover</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">Тень усиливается</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Практика: кнопка</h2>
+
+    <pre><code>.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #1565c0;
+    color: white;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+.btn:hover {
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.3);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кнопка:</div>
+        <button style="padding: 10px 20px; border: none; border-radius: 8px; background: #1565c0; color: white; cursor: pointer; font-size: 14px; font-family: inherit;">
+            Кнопка с box-shadow при hover
+        </button>
+    </div>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>border: 2px #1565c0;</code> без стиля</td>
+                <td>Не сработает — стиль обязателен</td>
+            </tr>
+            <tr>
+                <td>Убирать <code>outline: none</code> у ссылок</td>
+                <td>Ломает клавиатурную навигацию</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>outline</code> для красоты</td>
+                <td>Не скругляется, не размывается. Для красоты — <code>box-shadow</code></td>
+            </tr>
+            <tr>
+                <td>Слишком тяжёлая тень</td>
+                <td>Выглядит «грязно». Тень должна быть лёгкой</td>
+            </tr>
+            <tr>
+                <td><code>border-radius</code> не работает</td>
+                <td>Забыл <code>overflow: hidden</code> на родителе, если фон вылезает</td>
+            </tr>
+            <tr>
+                <td><code>box-shadow</code> съедается скроллом</td>
+                <td>Тень не занимает места — может обрезаться <code>overflow</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>border</code></strong> = width + style + color. <strong>Стиль обязателен!</strong></li>
+        <li><strong>Стили:</strong> <code>solid</code> (99%), <code>dashed</code>, <code>dotted</code>, <code>double</code>, <code>groove</code>, <code>ridge</code>, <code>inset</code>, <code>outset</code>.</li>
+        <li><strong><code>border-radius</code></strong> — скругление. <code>50%</code> = круг (если квадрат).</li>
+        <li><strong>Порядок <code>border-radius</code>:</strong> верх-лево → верх-право → низ-право → низ-лево (по часовой).</li>
+        <li><strong><code>50% / 30%</code></strong> — эллипс (разные радиусы по X и Y).</li>
+        <li><strong><code>outline</code></strong> — контур, <strong>не занимает места</strong>. Для фокуса.</li>
+        <li><strong><code>outline-offset</code></strong> — отступ между border и outline.</li>
+        <li><strong>Не убирай <code>outline</code></strong> без замены — доступность.</li>
+        <li><strong><code>box-shadow</code></strong> = x-offset + y-offset + blur + color.</li>
+        <li><strong><code>inset</code></strong> — тень внутри блока.</li>
+        <li><strong>Несколько теней</strong> через запятую — для объёма.</li>
+        <li><strong>Для фокуса</strong> лучше <code>box-shadow</code>, чем <code>outline</code> — скругляется.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 13 · Следующий урок: <em>Отступы — margin и padding, схлопывание margin</em>
+    </p>
+
+</body>
+</html>

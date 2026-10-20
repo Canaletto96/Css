@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 7: единицы измерения — px, %, em, rem, vw, vh, ch, ex. Когда какую использовать.">
+    <title>CSS Урок 7. Единицы измерения</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+        .unit-box {
+            background: #e3f2fd;
+            border: 1px solid #1565c0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 7. Единицы измерения</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить все основные единицы CSS и понять,    -->
+    <!-- когда какую использовать.                                  -->
+    <!-- ========================================================= -->
+
+    <h2>1. Зачем нужны разные единицы</h2>
+
+    <p>
+        В CSS почти каждое числовое значение требует <strong>единицу измерения</strong>:
+    </p>
+
+    <pre><code>width: 300px;      /* пиксели */
+width: 50%;        /* проценты */
+font-size: 2rem;   /* rem */
+margin: 1em;       /* em */</code></pre>
+
+    <p>
+        <strong>Исключение:</strong> <code>0</code> можно писать без единицы — <code>margin: 0</code>.
+        Для всех остальных чисел — единица обязательна.
+    </p>
+
+    <div class="warn">
+        <strong>Ошибка:</strong> <code>font-size: 32;</code> — невалидно. Нужно <code>font-size: 32px;</code>
+        (кроме 0).
+    </div>
+
+    <h2>2. Обзор единиц</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Единица</th>
+                <th>Тип</th>
+                <th>Относительно</th>
+                <th>Когда использовать</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>px</code></td>
+                <td>Абсолютная</td>
+                <td>Пиксели экрана</td>
+                <td>Рамки, тени, точные размеры</td>
+            </tr>
+            <tr>
+                <td><code>%</code></td>
+                <td>Относительная</td>
+                <td>Родителя</td>
+                <td>Ширина, отступы</td>
+            </tr>
+            <tr>
+                <td><code>em</code></td>
+                <td>Относительная</td>
+                <td><code>font-size</code> родителя</td>
+                <td>Отступы, размеры шрифта</td>
+            </tr>
+            <tr>
+                <td><code>rem</code></td>
+                <td>Относительная</td>
+                <td><code>font-size</code> корня (<code>&lt;html&gt;</code>)</td>
+                <td>Шрифты, отступы (рекомендую)</td>
+            </tr>
+            <tr>
+                <td><code>vw</code></td>
+                <td>Относительная</td>
+                <td>1% ширины окна</td>
+                <td>Адаптивные размеры</td>
+            </tr>
+            <tr>
+                <td><code>vh</code></td>
+                <td>Относительная</td>
+                <td>1% высоты окна</td>
+                <td>Полноэкранные блоки</td>
+            </tr>
+            <tr>
+                <td><code>vmin</code>, <code>vmax</code></td>
+                <td>Относительная</td>
+                <td>Минимум / максимум из <code>vw</code> и <code>vh</code></td>
+                <td>Квадратные блоки</td>
+            </tr>
+            <tr>
+                <td><code>ch</code></td>
+                <td>Относительная</td>
+                <td>Ширина символа «0»</td>
+                <td>Ширина текстовых блоков</td>
+            </tr>
+            <tr>
+                <td><code>ex</code></td>
+                <td>Относительная</td>
+                <td>Высота буквы «x»</td>
+                <td>Редко</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. <code>px</code> — пиксели</h2>
+
+    <p>
+        <strong>Абсолютная единица.</strong> <code>1px</code> = 1 пиксель экрана.
+        Не зависит от родителя, окна, шрифта.
+    </p>
+
+    <pre><code>.box {
+    width: 300px;
+    height: 200px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Блок 300×100 px:</div>
+        <div style="width: 300px; height: 100px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: monospace;">
+            300 × 100 px
+        </div>
+    </div>
+
+    <p><strong>Когда использовать:</strong></p>
+    <ul>
+        <li><strong>Рамки:</strong> <code>border: 1px solid</code>.</li>
+        <li><strong>Тени:</strong> <code>box-shadow: 0 2px 4px</code>.</li>
+        <li><strong>Точные размеры:</strong> иконки, логотипы.</li>
+        <li><strong>Медиа-запросы:</strong> <code>@media (min-width: 768px)</code>.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Не используй <code>px</code> для шрифтов!</strong> Пользователь не сможет
+        увеличить текст в настройках браузера. Для шрифтов — <code>rem</code>.
+    </div>
+
+    <h2>4. <code>%</code> — проценты</h2>
+
+    <p>
+        <strong>Относительная единица.</strong> Считается от <strong>родителя</strong>
+        (или другого контекста).
+    </p>
+
+    <pre><code>.parent {
+    width: 400px;
+}
+
+.child {
+    width: 50%;         /* 200px (50% от 400px) */
+    padding: 10%;       /* 40px (10% от 400px — для padding от ширины!) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Родитель 400px, ребёнок 50%:</div>
+        <div style="width: 400px; max-width: 100%; background: #f5f5f5; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <div style="width: 50%; background: #e3f2fd; border: 1px solid #1565c0; padding: 8px; border-radius: 4px; font-family: monospace; text-align: center;">
+                50% (200px)
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> <code>padding</code> и <code>margin</code> в процентах
+        считаются от <strong>ширины</strong> родителя, даже для <code>padding-top</code>!
+        Это часто удивляет.
+    </div>
+
+    <p><strong>Когда:</strong> адаптивные ширины, отступы, размеры относительно родителя.</p>
+
+    <h2>5. <code>em</code> — относительно родителя</h2>
+
+    <p>
+        <strong>1em</strong> = <code>font-size</code> <strong>родителя</strong>.
+        Если у родителя <code>font-size: 16px</code>, то <code>1em = 16px</code>,
+        <code>2em = 32px</code>.
+    </p>
+
+    <pre><code>.parent {
+    font-size: 16px;
+}
+
+.child {
+    font-size: 1.5em;   /* 24px (16 × 1.5) */
+    margin: 1em;        /* 24px (от своего font-size) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Вложенные em (осторожно!):</div>
+        <div style="font-size: 16px; background: #f5f5f5; padding: 12px; border-radius: 4px;">
+            Родитель: 16px
+            <div style="font-size: 1.5em; background: #e3f2fd; padding: 8px; margin-top: 8px; border-radius: 4px;">
+                Ребёнок: 1.5em = 24px
+                <div style="font-size: 1.5em; background: #bbdefb; padding: 8px; margin-top: 8px; border-radius: 4px;">
+                    Внук: 1.5em = 36px (24 × 1.5)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Проблема <code>em</code>:</strong> вложенность <strong>умножается</strong>.
+        <code>1.5em</code> внутри <code>1.5em</code> внутри <code>16px</code> — это
+        <strong>36px</strong>, а не 24px. Легко запутаться.
+    </div>
+
+    <p><strong>Когда:</strong> когда нужно масштабировать относительно шрифта родителя (иконки, отступы внутри компонента).</p>
+
+    <h2>6. <code>rem</code> — относительно корня</h2>
+
+    <p>
+        <strong>1rem</strong> = <code>font-size</code> <strong>корня</strong>
+        (<code>&lt;html&gt;</code>), обычно <code>16px</code>.
+        <strong>Не зависит от родителя.</strong>
+    </p>
+
+    <pre><code>html {
+    font-size: 16px;
+}
+
+.parent {
+    font-size: 24px;
+}
+
+.child {
+    font-size: 1.5rem;   /* 24px (16 × 1.5) — не зависит от родителя! */
+    margin: 2rem;        /* 32px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">rem — не зависит от вложенности:</div>
+        <div style="font-size: 16px; background: #f5f5f5; padding: 12px; border-radius: 4px;">
+            Корень: 16px
+            <div style="font-size: 24px; background: #e3f2fd; padding: 8px; margin-top: 8px; border-radius: 4px;">
+                Родитель: 24px
+                <div style="font-size: 1.5rem; background: #bbdefb; padding: 8px; margin-top: 8px; border-radius: 4px;">
+                    Ребёнок: 1.5rem = 24px (16 × 1.5) — не зависит от родителя
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> для шрифтов и отступов — <code>rem</code>. Он
+        <strong>предсказуемый</strong> и <strong>доступный</strong> (уважает настройки
+        пользователя).
+    </div>
+
+    <h2>7. <code>vw</code> и <code>vh</code> — окно</h2>
+
+    <p>
+        <strong>1vw</strong> = 1% ширины окна.<br>
+        <strong>1vh</strong> = 1% высоты окна.
+    </p>
+
+    <pre><code>.full-screen {
+    width: 100vw;      /* вся ширина окна */
+    height: 100vh;     /* вся высота окна */
+}
+
+.half {
+    width: 50vw;       /* половина ширины */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Блок 100vw × 20vh:</div>
+        <div style="width: 100vw; height: 20vh; background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: monospace;">
+            100vw × 20vh
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Осторожно с <code>100vw</code>:</strong> на некоторых системах
+        <code>100vw</code> шире окна на ширину скроллбара → горизонтальная прокрутка.
+        Используй <code>width: 100%</code> вместо <code>100vw</code>.
+    </div>
+
+    <p><strong>Когда:</strong> полноэкранные секции, hero-блоки, фоновые изображения.</p>
+
+    <h3><code>vmin</code> и <code>vmax</code></h3>
+
+    <ul>
+        <li><code>vmin</code> — минимум из <code>vw</code> и <code>vh</code>.</li>
+        <li><code>vmax</code> — максимум из <code>vw</code> и <code>vh</code>.</li>
+    </ul>
+
+    <p>Удобно для квадратов, которые должны быть одинакового размера на любом экране.</p>
+
+    <h2>8. <code>ch</code> — ширина символа</h2>
+
+    <p>
+        <strong>1ch</strong> = ширина символа «0» в текущем шрифте. Полезно для
+        текстовых блоков:
+    </p>
+
+    <pre><code>.text {
+    max-width: 65ch;   /* ~65 символов в строке — оптимально для чтения */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Текст с max-width: 40ch:</div>
+        <p style="max-width: 40ch; background: #fff8e1; padding: 8px; border-radius: 4px;">
+            Этот текст ограничен шириной 40ch — примерно 40 символов в строке.
+            Оптимально для чтения — 45–75ch.
+        </p>
+    </div>
+
+    <p><strong>Когда:</strong> ограничение ширины текстовых блоков для читаемости.</p>
+
+    <h2>9. Сравнение: одна и та же ширина</h2>
+
+    <p>Одна и та же ширина в разных единицах (при <code>font-size: 16px</code>):</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Результат</th>
+                <th>Относительно</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>320px</code></td>
+                <td>320px</td>
+                <td>Абсолютно</td>
+            </tr>
+            <tr>
+                <td><code>20rem</code></td>
+                <td>320px</td>
+                <td>20 × 16 (корень)</td>
+            </tr>
+            <tr>
+                <td><code>20em</code></td>
+                <td>320px</td>
+                <td>20 × 16 (родитель)</td>
+            </tr>
+            <tr>
+                <td><code>50%</code></td>
+                <td>Зависит от родителя</td>
+                <td>Родителя</td>
+            </tr>
+            <tr>
+                <td><code>20vw</code></td>
+                <td>20% ширины окна</td>
+                <td>Окна</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Советы по выбору</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Что</th>
+                <th>Рекомендую</th>
+                <th>Почему</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Шрифт основного текста</td>
+                <td><code>rem</code></td>
+                <td>Доступность, предсказуемость</td>
+            </tr>
+            <tr>
+                <td>Отступы внутри компонента</td>
+                <td><code>em</code> или <code>rem</code></td>
+                <td>Масштабируются вместе с компонентом</td>
+            </tr>
+            <tr>
+                <td>Ширина контейнера</td>
+                <td><code>%</code> или <code>max-width</code> + <code>rem</code></td>
+                <td>Адаптивность</td>
+            </tr>
+            <tr>
+                <td>Рамки, тени</td>
+                <td><code>px</code></td>
+                <td>Точность</td>
+            </tr>
+            <tr>
+                <td>Полноэкранный блок</td>
+                <td><code>vh</code> / <code>vw</code></td>
+                <td>Зависит от окна</td>
+            </tr>
+            <tr>
+                <td>Ширина текстового блока</td>
+                <td><code>ch</code></td>
+                <td>Читаемость</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Современная практика:</strong> <code>rem</code> для шрифтов и отступов
+        + <code>%</code> / <code>max-width</code> для ширины + <code>px</code> для рамок
+        и теней + <code>vh/vw</code> для полноэкранных секций.
+    </div>
+
+    <h2>11. Функция <code>calc()</code></h2>
+
+    <p>Позволяет смешивать единицы:</p>
+
+    <pre><code>.box {
+    width: calc(100% - 40px);   /* ширина родителя минус 40px */
+    height: calc(100vh - 80px); /* вся высота минус 80px */
+    padding: calc(1rem + 4px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">calc(100% - 40px):</div>
+        <div style="background: #f5f5f5; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <div style="width: calc(100% - 40px); background: #e3f2fd; border: 1px solid #1565c0; padding: 8px; border-radius: 4px; font-family: monospace; text-align: center;">
+                width: calc(100% - 40px)
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> пробелы вокруг <code>-</code> и <code>+</code> в
+        <code>calc()</code> <strong>обязательны</strong>: <code>calc(100% - 40px)</code>,
+        а не <code>calc(100%-40px)</code>.
+    </div>
+
+    <p>Подробно — в уроке 52.</p>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть единицу: <code>font-size: 32;</code></td>
+                <td>Невалидно (кроме 0)</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>px</code> для шрифтов</td>
+                <td>Пользователь не увеличит текст</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>em</code> без понимания вложенности</td>
+                <td>Легко запутаться (умножается)</td>
+            </tr>
+            <tr>
+                <td><code>width: 100vw</code> без учёта скроллбара</td>
+                <td>Горизонтальная прокрутка</td>
+            </tr>
+            <tr>
+                <td><code>calc(100%-40px)</code> без пробелов</td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td>Смешивать <code>em</code> и <code>rem</code> без понимания</td>
+                <td>Разные результаты</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Единица обязательна</strong> после любого числа (кроме 0).</li>
+        <li><strong><code>px</code></strong> — абсолютная. Для рамок, теней, точных размеров.</li>
+        <li><strong><code>%</code></strong> — от родителя. Для ширины, отступов.</li>
+        <li><strong><code>em</code></strong> — от <code>font-size</code> родителя. Может умножаться при вложенности.</li>
+        <li><strong><code>rem</code></strong> — от корня. <strong>Рекомендую для шрифтов и отступов.</strong></li>
+        <li><strong><code>vw</code>/<code>vh</code></strong> — от окна. Для полноэкранных блоков.</li>
+        <li><strong><code>ch</code></strong> — ширина символа. Для текстовых блоков.</li>
+        <li><strong><code>calc()</code></strong> — смешивание единиц. Пробелы вокруг <code>-</code> и <code>+</code> обязательны.</li>
+        <li><strong>Для шрифтов — <code>rem</code></strong>, не <code>px</code> (доступность).</li>
+        <li><strong>Не используй <code>100vw</code></strong> без нужды — лучше <code>100%</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 7 · Следующий урок: <em>Цвет — HEX, RGB, HSL, RGBA, HSLA</em>
+    </p>
+
+</body>
+</html>

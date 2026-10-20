@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 16: переполнение — overflow, overflow-x, overflow-y, clip. Как управлять контентом, который не влезает.">
+    <title>CSS Урок 16. Переполнение</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .overflow-box {
+            width: 200px;
+            height: 80px;
+            background: #e3f2fd;
+            border: 2px solid #1565c0;
+            border-radius: 6px;
+            padding: 8px;
+            margin: 8px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 16. Переполнение</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: научиться управлять контентом, который не     -->
+    <!-- влезает в блок — обрезать, скроллить, показывать.          -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое переполнение</h2>
+
+    <p>
+        <strong>Переполнение</strong> (overflow) — ситуация, когда содержимое
+        <strong>больше</strong> размеров блока (по ширине или высоте).
+    </p>
+
+    <pre><code>.box {
+    width: 200px;
+    height: 80px;
+    /* контент больше — что делать? */
+}</code></pre>
+
+    <p>По умолчанию браузер <strong>показывает</strong> контент, даже если он вылезает за границы блока:</p>
+
+    <div class="demo">
+        <div class="demo-label">Без overflow — контент вылезает:</div>
+        <div class="overflow-box">
+            Этот текст очень длинный и не влезает в блок 200×80. Он вылезает за границы.
+        </div>
+    </div>
+
+    <h2>2. Свойство <code>overflow</code></h2>
+
+    <p>Управляет тем, что делать с переполнением:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>visible</code> (по умолчанию)</td><td>Показывает всё, даже за границами</td></tr>
+            <tr><td><code>hidden</code></td><td>Обрезает всё, что не влезает</td></tr>
+            <tr><td><code>scroll</code></td><td>Всегда показывает скроллбары</td></tr>
+            <tr><td><code>auto</code></td><td>Скроллбары, только если нужно</td></tr>
+            <tr><td><code>clip</code></td><td>Обрезает без возможности скролла (новое)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>3. <code>overflow: visible</code> — по умолчанию</h2>
+
+    <p>Контент вылезает за границы блока. Может наезжать на соседние элементы.</p>
+
+    <div class="demo">
+        <div class="demo-label">overflow: visible:</div>
+        <div class="overflow-box" style="overflow: visible;">
+            Этот текст очень длинный и не влезает в блок. Он вылезает за границы и наезжает на другие элементы.
+        </div>
+    </div>
+
+    <h2>4. <code>overflow: hidden</code> — обрезать</h2>
+
+    <p>Всё, что не влезает — <strong>обрезается</strong>. Прокрутки нет.</p>
+
+    <pre><code>.box {
+    overflow: hidden;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">overflow: hidden:</div>
+        <div class="overflow-box" style="overflow: hidden;">
+            Этот текст очень длинный и не влезает в блок. Он обрезается, и его нельзя увидеть.
+        </div>
+    </div>
+
+    <h3>Где использовать <code>hidden</code></h3>
+
+    <ul>
+        <li><strong>Скруглённые углы</strong> — обрезать контент по <code>border-radius</code>.</li>
+        <li><strong>Картинки</strong> — обрезать по контейнеру.</li>
+        <li><strong>Скрыть горизонтальный скролл</strong> — если он не нужен.</li>
+        <li><strong>Создать BFC</strong> — <code>overflow: hidden</code> создаёт новый контекст форматирования.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Осторожно:</strong> <code>overflow: hidden</code> может обрезать <code>box-shadow</code>
+        и <code>outline</code> — они не входят в размер блока. Если нужна тень, добавь
+        <code>padding</code> или используй <code>overflow: clip</code> с <code>overflow-clip-margin</code>.
+    </div>
+
+    <h2>5. <code>overflow: scroll</code> — всегда скроллбары</h2>
+
+    <p>Скроллбары <strong>всегда</strong> видны, даже если контент влезает.</p>
+
+    <div class="demo">
+        <div class="demo-label">overflow: scroll:</div>
+        <div class="overflow-box" style="overflow: scroll;">
+            Этот текст очень длинный и не влезает в блок. Появились скроллбары.
+        </div>
+    </div>
+
+    <p><strong>Недостаток:</strong> даже если контент маленький, скроллбары занимают место.</p>
+
+    <h2>6. <code>overflow: auto</code> — скроллбары по необходимости</h2>
+
+    <p>Скроллбары появляются <strong>только если нужно</strong>. Это самый популярный вариант.</p>
+
+    <pre><code>.box {
+    overflow: auto;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">overflow: auto — есть переполнение:</div>
+        <div class="overflow-box" style="overflow: auto;">
+            Этот текст очень длинный и не влезает в блок. Появился скроллбар, но только потому что нужно.
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">overflow: auto — нет переполнения (скроллбара нет):</div>
+        <div class="overflow-box" style="overflow: auto;">
+            Короткий текст.
+        </div>
+    </div>
+
+    <h2>7. <code>overflow-x</code> и <code>overflow-y</code></h2>
+
+    <p>Управляют переполнением отдельно по осям:</p>
+
+    <pre><code>.box {
+    overflow-x: auto;   /* горизонталь */
+    overflow-y: hidden; /* вертикаль */
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что контролирует</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>overflow-x</code></td><td>Горизонтальное переполнение</td></tr>
+            <tr><td><code>overflow-y</code></td><td>Вертикальное переполнение</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">overflow-x: auto, overflow-y: hidden:</div>
+        <div class="overflow-box" style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
+            Этот текст очень длинный и не влезает в блок по горизонтали. Появился горизонтальный скроллбар.
+        </div>
+    </div>
+
+    <h3>Частый приём: горизонтальная прокрутка таблиц</h3>
+
+    <pre><code>.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    min-width: 600px;   /* таблица шире контейнера */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Таблица с горизонтальной прокруткой:</div>
+        <div style="overflow-x: auto; border: 1px solid #ddd; border-radius: 6px;">
+            <table style="min-width: 600px; margin: 0; border: none;">
+                <tr>
+                    <th>Столбец 1</th>
+                    <th>Столбец 2</th>
+                    <th>Столбец 3</th>
+                    <th>Столбец 4</th>
+                    <th>Столбец 5</th>
+                </tr>
+                <tr>
+                    <td>Данные 1</td>
+                    <td>Данные 2</td>
+                    <td>Данные 3</td>
+                    <td>Данные 4</td>
+                    <td>Данные 5</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <h2>8. <code>overflow: clip</code> — современное обрезание</h2>
+
+    <p>
+        Похоже на <code>hidden</code>, но <strong>не создаёт скролл-контейнер</strong>
+        и не может быть прокручено даже программно. Можно задать отступ обрезания.
+    </p>
+
+    <pre><code>.box {
+    overflow: clip;
+    overflow-clip-margin: 10px;   /* обрезать на 10px дальше границы */
+}</code></pre>
+
+    <div class="note">
+        <strong>Разница <code>hidden</code> и <code>clip</code>:</strong>
+        <ul>
+            <li><code>hidden</code> — можно программно прокрутить (<code>element.scrollTop = 100</code>).</li>
+            <li><code>clip</code> — нельзя прокрутить вообще.</li>
+            <li><code>clip</code> поддерживается в современных браузерах (Chrome 90+, Firefox 81+).</li>
+        </ul>
+    </div>
+
+    <h2>9. <code>overflow-clip-margin</code></h2>
+
+    <p>Позволяет «отпустить» обрезание на несколько пикселей — полезно для теней.</p>
+
+    <pre><code>.box {
+    overflow: clip;
+    overflow-clip-margin: 20px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">overflow: clip с отступом для тени:</div>
+        <div style="overflow: clip; overflow-clip-margin: 20px; width: 200px; height: 60px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); padding: 8px; margin: 20px; font-family: monospace; font-size: 12px;">
+            Тень видна благодаря overflow-clip-margin
+        </div>
+    </div>
+
+    <h2>10. Скрыть скроллбар</h2>
+
+    <p>Иногда нужна прокрутка, но без видимого скроллбара:</p>
+
+    <pre><code>.scroll {
+    overflow: auto;
+    scrollbar-width: none;   /* Firefox */
+}
+
+.scroll::-webkit-scrollbar {
+    display: none;   /* Chrome, Safari, Edge */
+}</code></pre>
+
+    <div class="warn">
+        <strong>Осторожно:</strong> скрывать скроллбар — плохо для доступности. Пользователь
+        может не понять, что контент прокручивается. Показывай хотя бы индикатор.
+    </div>
+
+    <h2>11. <code>overflow</code> и <code>border-radius</code></h2>
+
+    <p>
+        Если у блока <code>border-radius</code>, а содержимое вылезает — <code>overflow: hidden</code>
+        обрежет по скруглённым углам.
+    </p>
+
+    <pre><code>.box {
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Картинка в круглом контейнере:</div>
+        <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 3px solid #1565c0;">
+            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1565c0, #42a5f5); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">ФОТО</div>
+        </div>
+    </div>
+
+    <h2>12. <code>overflow</code> и <code>box-shadow</code></h2>
+
+    <div class="warn">
+        <strong>Проблема:</strong> <code>overflow: hidden</code> обрезает <code>box-shadow</code>
+        и <code>outline</code> — они не входят в размер блока.
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">overflow: hidden обрезает тень:</div>
+        <div style="overflow: hidden; width: 150px; height: 60px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 6px; margin: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); padding: 8px; font-family: monospace; font-size: 12px;">
+            Тень обрезана
+        </div>
+    </div>
+
+    <p><strong>Решения:</strong></p>
+
+    <ul>
+        <li>Добавить <code>padding</code> вокруг блока — тень не обрежется.</li>
+        <li>Использовать <code>overflow: clip</code> с <code>overflow-clip-margin</code>.</li>
+        <li>Поместить тень на <strong>родителя</strong>, а не на сам блок.</li>
+    </ul>
+
+    <h2>13. <code>overflow</code> и <code>position: sticky</code></h2>
+
+    <p>
+        <code>position: sticky</code> <strong>не работает</strong>, если у любого родителя
+        стоит <code>overflow: hidden</code>, <code>auto</code> или <code>scroll</code>.
+        Это частая проблема.
+    </p>
+
+    <div class="warn">
+        <strong>Правило:</strong> если <code>position: sticky</code> не работает — проверь,
+        нет ли у родителей <code>overflow</code>. Даже невидимый <code>overflow: hidden</code>
+        ломает sticky.
+    </div>
+
+    <h2>14. Практика: карточка с обрезанным текстом</h2>
+
+    <pre><code>.card {
+    width: 300px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;   /* обрезать длинный текст */
+}
+
+.card p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;   /* максимум 3 строки */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Обрезка текста через -webkit-line-clamp:</div>
+        <div style="width: 300px; max-width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 8px; background: #fff;">
+            <h3 style="margin: 0 0 8px 0; font-size: 16px;">Заголовок</h3>
+            <p style="margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #666; font-size: 14px;">
+                Этот текст очень длинный и не влезает в 3 строки. Он обрезается многоточием. Это удобно для карточек, где нужно показать только часть текста. Остальное пользователь увидит на странице статьи.
+            </p>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong><code>-webkit-line-clamp</code></strong> — нестандартное свойство, но работает
+        во всех современных браузерах. Обрезает текст по количеству строк с многоточием.
+    </div>
+
+    <h2>15. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>overflow</code> — контент вылезает</td>
+                <td>Ломает layout, наезжает на соседей</td>
+            </tr>
+            <tr>
+                <td><code>overflow: hidden</code> на родителе <code>sticky</code></td>
+                <td>Sticky не работает</td>
+            </tr>
+            <tr>
+                <td><code>overflow: hidden</code> без учёта тени</td>
+                <td>Тень обрезается</td>
+            </tr>
+            <tr>
+                <td>Скрывать скроллбар без причины</td>
+                <td>Плохо для доступности</td>
+            </tr>
+            <tr>
+                <td><code>overflow: scroll</code> без переполнения</td>
+                <td>Скроллбар занимает место зря</td>
+            </tr>
+            <tr>
+                <td><code>overflow-x: hidden</code> + абсолютные элементы</td>
+                <td>Обрезает выпадающие меню</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>16. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>overflow</code></strong> — что делать с контентом, который не влезает.</li>
+        <li><strong><code>visible</code></strong> — показывать (по умолчанию).</li>
+        <li><strong><code>hidden</code></strong> — обрезать.</li>
+        <li><strong><code>scroll</code></strong> — всегда скроллбары.</li>
+        <li><strong><code>auto</code></strong> — скроллбары по необходимости. <strong>Рекомендую.</strong></li>
+        <li><strong><code>clip</code></strong> — обрезать без возможности прокрутки (новое).</li>
+        <li><strong><code>overflow-x</code> / <code>overflow-y</code></strong> — по осям.</li>
+        <li><strong>Горизонтальная прокрутка таблиц</strong> — <code>overflow-x: auto</code> на обёртке.</li>
+        <li><strong><code>overflow: hidden</code></strong> обрезает <code>box-shadow</code> и <code>outline</code>.</li>
+        <li><strong><code>overflow: hidden</code></strong> ломает <code>position: sticky</code> у детей.</li>
+        <li><strong><code>border-radius</code> + <code>overflow: hidden</code></strong> — обрезка по скруглённым углам.</li>
+        <li><strong><code>-webkit-line-clamp</code></strong> — обрезка текста по строкам.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 16 · Следующий урок: <em>Фон — background-color, image, size, position</em>
+    </p>
+
+</body>
+</html>

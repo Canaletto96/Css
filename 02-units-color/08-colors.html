@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 8: цвет — HEX, RGB, HSL, RGBA, HSLA, named colors, currentColor.">
+    <title>CSS Урок 8. Цвет</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+        .swatch {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .color-card {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+        .color-card .color {
+            height: 80px;
+        }
+        .color-card .code {
+            padding: 8px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        .rgb-bars {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .rgb-bars div {
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            color: #fff;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-weight: bold;
+        }
+        .bar-r { background: #e53935; }
+        .bar-g { background: #43a047; }
+        .bar-b { background: #1565c0; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 8. Цвет</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить все способы задать цвет в CSS.        -->
+    <!-- ========================================================= -->
+
+    <h2>1. Способы задать цвет</h2>
+
+    <p>В CSS есть <strong>5 способов</strong> задать цвет:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Способ</th>
+                <th>Пример</th>
+                <th>Когда</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Named</strong> (именованные)</td>
+                <td><code>red</code>, <code>blue</code>, <code>rebeccapurple</code></td>
+                <td>Быстро, для теста</td>
+            </tr>
+            <tr>
+                <td><strong>HEX</strong></td>
+                <td><code>#ff0000</code>, <code>#f00</code></td>
+                <td>Основной способ</td>
+            </tr>
+            <tr>
+                <td><strong>RGB / RGBA</strong></td>
+                <td><code>rgb(255, 0, 0)</code>, <code>rgba(255, 0, 0, 0.5)</code></td>
+                <td>Когда нужна прозрачность</td>
+            </tr>
+            <tr>
+                <td><strong>HSL / HSLA</strong></td>
+                <td><code>hsl(0, 100%, 50%)</code>, <code>hsla(0, 100%, 50%, 0.5)</code></td>
+                <td>Интуитивно, для тем</td>
+            </tr>
+            <tr>
+                <td><strong>currentColor</strong></td>
+                <td><code>currentColor</code></td>
+                <td>Наследует <code>color</code> родителя</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Именованные цвета (named colors)</h2>
+
+    <p>CSS знает <strong>148 именованных цветов</strong>. Самые частые:</p>
+
+    <div class="demo">
+        <div class="demo-label">Основные:</div>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color" style="background: red;"></div>
+                <div class="code">red</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: blue;"></div>
+                <div class="code">blue</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: green;"></div>
+                <div class="code">green</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: yellow;"></div>
+                <div class="code">yellow</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: black;"></div>
+                <div class="code">black</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: white; border-bottom: 1px solid #ddd;"></div>
+                <div class="code">white</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: orange;"></div>
+                <div class="code">orange</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: purple;"></div>
+                <div class="code">purple</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: gray;"></div>
+                <div class="code">gray</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: transparent; background-image: linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%); background-size: 10px 10px; background-position: 0 0, 5px 5px;"></div>
+                <div class="code">transparent</div>
+            </div>
+        </div>
+    </div>
+
+    <p>Также есть <strong>странные</strong> имена: <code>rebeccapurple</code>, <code>papayawhip</code>, <code>tomato</code>, <code>dodgerblue</code>.</p>
+
+    <div class="note">
+        <strong>Плюс:</strong> читаемо.<br>
+        <strong>Минус:</strong> только 148 цветов. Для дизайна — мало.
+    </div>
+
+    <h2>3. HEX — шестнадцатеричный</h2>
+
+    <p>
+        Самый популярный способ. Цвет записывается как <code>#RRGGBB</code>,
+        где каждая пара — красный, зелёный, синий (00–FF).
+    </p>
+
+    <pre><code>#ff0000   /* красный */
+#00ff00   /* зелёный */
+#0000ff   /* синий */
+#ffffff   /* белый */
+#000000   /* чёрный */</code></pre>
+
+    <h3>Сокращённая запись</h3>
+
+    <p>Если каждая пара — одинаковые символы, можно сократить:</p>
+
+    <pre><code>#ff0000   →   #f00
+#00ff00   →   #0f0
+#ffffff   →   #fff
+#000000   →   #000
+#aabbcc   →   #abc</code></pre>
+
+    <h3>HEX с прозрачностью (8 знаков)</h3>
+
+    <p>Современный формат <code>#RRGGBBAA</code> — последняя пара задаёт прозрачность:</p>
+
+    <pre><code>#ff0000ff   /* красный, непрозрачный */
+#ff000080   /* красный, 50% прозрачности */
+#ff000000   /* красный, полностью прозрачный */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">HEX с прозрачностью:</div>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color" style="background: #ff0000;"></div>
+                <div class="code">#ff0000</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: #ff000080;"></div>
+                <div class="code">#ff000080</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: #ff000040;"></div>
+                <div class="code">#ff000040</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: #ff00001a;"></div>
+                <div class="code">#ff00001a</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Как читать HEX</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>HEX</th>
+                <th>R</th>
+                <th>G</th>
+                <th>B</th>
+                <th>Цвет</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>#ff0000</code></td>
+                <td>255</td>
+                <td>0</td>
+                <td>0</td>
+                <td><span class="swatch" style="background: #ff0000;"></span>Красный</td>
+            </tr>
+            <tr>
+                <td><code>#00ff00</code></td>
+                <td>0</td>
+                <td>255</td>
+                <td>0</td>
+                <td><span class="swatch" style="background: #00ff00;"></span>Зелёный</td>
+            </tr>
+            <tr>
+                <td><code>#0000ff</code></td>
+                <td>0</td>
+                <td>0</td>
+                <td>255</td>
+                <td><span class="swatch" style="background: #0000ff;"></span>Синий</td>
+            </tr>
+            <tr>
+                <td><code>#ffff00</code></td>
+                <td>255</td>
+                <td>255</td>
+                <td>0</td>
+                <td><span class="swatch" style="background: #ffff00;"></span>Жёлтый</td>
+            </tr>
+            <tr>
+                <td><code>#ff00ff</code></td>
+                <td>255</td>
+                <td>0</td>
+                <td>255</td>
+                <td><span class="swatch" style="background: #ff00ff;"></span>Маджента</td>
+            </tr>
+            <tr>
+                <td><code>#00ffff</code></td>
+                <td>0</td>
+                <td>255</td>
+                <td>255</td>
+                <td><span class="swatch" style="background: #00ffff;"></span>Циан</td>
+            </tr>
+            <tr>
+                <td><code>#808080</code></td>
+                <td>128</td>
+                <td>128</td>
+                <td>128</td>
+                <td><span class="swatch" style="background: #808080;"></span>Серый</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Совет:</strong> HEX — <strong>основной</strong> способ. Все дизайнеры
+        дают цвета в HEX. Используй его по умолчанию.
+    </div>
+
+    <h2>4. RGB — красный, зелёный, синий</h2>
+
+    <p>
+        Каждый канал — от <strong>0 до 255</strong>. Смешивая три канала, получаешь цвет.
+    </p>
+
+    <pre><code>rgb(255, 0, 0)       /* красный */
+rgb(0, 255, 0)       /* зелёный */
+rgb(0, 0, 255)       /* синий */
+rgb(255, 255, 255)   /* белый */
+rgb(0, 0, 0)         /* чёрный */
+rgb(128, 128, 128)   /* серый */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">RGB-каналы:</div>
+        <div class="rgb-bars">
+            <div class="bar-r">R: 255</div>
+            <div class="bar-g">G: 0</div>
+            <div class="bar-b">B: 0</div>
+        </div>
+        <p style="text-align: center; font-family: monospace;">= rgb(255, 0, 0) = <span class="swatch" style="background: rgb(255, 0, 0);"></span></p>
+    </div>
+
+    <h3>Современный синтаксис</h3>
+
+    <p>С 2020 можно писать без запятых:</p>
+
+    <pre><code>rgb(255 0 0)
+rgb(255 0 0 / 0.5)    /* с прозрачностью */</code></pre>
+
+    <div class="warn">
+        <strong>Старый синтаксис</strong> (<code>rgb(255, 0, 0)</code>) работает везде.
+        <strong>Новый</strong> (<code>rgb(255 0 0 / 0.5)</code>) — только в современных браузерах.
+        Используй старый для совместимости.
+    </div>
+
+    <h2>5. RGBA — RGB с прозрачностью</h2>
+
+    <p>
+        <code>rgba()</code> — то же, что <code>rgb()</code>, но добавляет <strong>альфа-канал</strong>
+        (прозрачность) от <strong>0 до 1</strong>.
+    </p>
+
+    <pre><code>rgba(255, 0, 0, 1)      /* красный, непрозрачный */
+rgba(255, 0, 0, 0.5)    /* красный, 50% прозрачности */
+rgba(255, 0, 0, 0)      /* красный, полностью прозрачный */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">RGBA с разной прозрачностью (на фоне полосок):</div>
+        <div style="background: repeating-linear-gradient(45deg, #f0f0f0, #f0f0f0 10px, #fff 10px, #fff 20px); padding: 16px; border-radius: 6px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <div style="background: rgba(21, 101, 192, 1); padding: 16px; border-radius: 6px; color: #fff; font-family: monospace; text-align: center; flex: 1; min-width: 100px;">1.0</div>
+            <div style="background: rgba(21, 101, 192, 0.75); padding: 16px; border-radius: 6px; color: #fff; font-family: monospace; text-align: center; flex: 1; min-width: 100px;">0.75</div>
+            <div style="background: rgba(21, 101, 192, 0.5); padding: 16px; border-radius: 6px; color: #fff; font-family: monospace; text-align: center; flex: 1; min-width: 100px;">0.5</div>
+            <div style="background: rgba(21, 101, 192, 0.25); padding: 16px; border-radius: 6px; color: #333; font-family: monospace; text-align: center; flex: 1; min-width: 100px;">0.25</div>
+            <div style="background: rgba(21, 101, 192, 0.1); padding: 16px; border-radius: 6px; color: #333; font-family: monospace; text-align: center; flex: 1; min-width: 100px;">0.1</div>
+        </div>
+    </div>
+
+    <h3>RGBA vs opacity</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>rgba()</code></th>
+                <th><code>opacity</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Что делает прозрачным</td>
+                <td>Только <strong>цвет</strong> (фон, текст)</td>
+                <td><strong>Всё</strong>: фон, текст, границы, тени</td>
+            </tr>
+            <tr>
+                <td>Наследуется</td>
+                <td>Нет</td>
+                <td>Да (дети тоже прозрачные)</td>
+            </tr>
+            <tr>
+                <td>Когда</td>
+                <td>Полупрозрачный фон</td>
+                <td>Полупрозрачный блок целиком</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>6. HSL — оттенок, насыщенность, светлота</h2>
+
+    <p>
+        <strong>HSL</strong> (Hue, Saturation, Lightness) — интуитивно понятный способ:
+    </p>
+
+    <ul>
+        <li><strong>Hue (оттенок)</strong> — 0–360°. 0 = красный, 120 = зелёный, 240 = синий.</li>
+        <li><strong>Saturation (насыщенность)</strong> — 0–100%. 0% = серый, 100% = насыщенный.</li>
+        <li><strong>Lightness (светлота)</strong> — 0–100%. 0% = чёрный, 50% = нормальный, 100% = белый.</li>
+    </ul>
+
+    <pre><code>hsl(0, 100%, 50%)      /* чистый красный */
+hsl(120, 100%, 50%)    /* чистый зелёный */
+hsl(240, 100%, 50%)    /* чистый синий */
+hsl(0, 0%, 50%)        /* серый */
+hsl(0, 0%, 0%)         /* чёрный */
+hsl(0, 0%, 100%)       /* белый */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">HSL-круг (оттенки 0–360):</div>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color" style="background: hsl(0, 100%, 50%);"></div>
+                <div class="code">hsl(0, 100%, 50%)</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(60, 100%, 50%);"></div>
+                <div class="code">hsl(60, 100%, 50%)</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(120, 100%, 50%);"></div>
+                <div class="code">hsl(120, 100%, 50%)</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(180, 100%, 50%);"></div>
+                <div class="code">hsl(180, 100%, 50%)</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(240, 100%, 50%);"></div>
+                <div class="code">hsl(240, 100%, 50%)</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(300, 100%, 50%);"></div>
+                <div class="code">hsl(300, 100%, 50%)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">Изменение насыщенности (S) и светлоты (L):</div>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 100%, 50%);"></div>
+                <div class="code">S: 100%, L: 50%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 50%, 50%);"></div>
+                <div class="code">S: 50%, L: 50%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 100%, 80%);"></div>
+                <div class="code">S: 100%, L: 80%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 100%, 20%);"></div>
+                <div class="code">S: 100%, L: 20%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 0%, 50%);"></div>
+                <div class="code">S: 0%, L: 50%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 100%, 50%, 0.5);"></div>
+                <div class="code">с прозрачностью</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>HSLA</h3>
+
+    <pre><code>hsla(0, 100%, 50%, 0.5)   /* красный с 50% прозрачности */</code></pre>
+
+    <p>Или в современном синтаксисе: <code>hsl(0 100% 50% / 0.5)</code>.</p>
+
+    <h3>Почему HSL удобен</h3>
+
+    <p>
+        В HSL легко <strong>сделать оттенки одного цвета</strong>, меняя только
+        насыщенность или светлоту:
+    </p>
+
+    <pre><code>/* Один цвет, разные состояния */
+:root {
+    --primary: hsl(210, 80%, 50%);
+    --primary-hover: hsl(210, 80%, 40%);
+    --primary-light: hsl(210, 80%, 80%);
+    --primary-dark: hsl(210, 80%, 20%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Палитра из одного цвета:</div>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 80%, 20%);"></div>
+                <div class="code">L: 20%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 80%, 40%);"></div>
+                <div class="code">L: 40%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 80%, 50%);"></div>
+                <div class="code">L: 50%</div>
+            </div>
+            <div class="color-card">
+                <div class="color" style="background: hsl(210, 80%, 80%);"></div>
+                <div class="code">L: 80%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> для дизайн-систем — HSL. Для точного цвета — HEX.
+        Для прозрачности — RGBA или HEX с альфой.
+    </div>
+
+    <h2>7. currentColor</h2>
+
+    <p>
+        <code>currentColor</code> — это <strong>значение <code>color</code> текущего элемента</strong>.
+        Полезно, когда нужно согласовать цвета:
+    </p>
+
+    <pre><code>.card {
+    color: #1565c0;
+    border: 2px solid currentColor;   /* рамка того же цвета, что текст */
+}
+
+.card:hover {
+    color: #e53935;                    /* меняется только color */
+    /* рамка автоматически станет красной */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">currentColor — рамка повторяет цвет текста:</div>
+        <div style="color: #1565c0; border: 2px solid currentColor; padding: 12px; border-radius: 6px;">
+            Этот блок имеет <code>color: #1565c0</code> и <code>border: 2px solid currentColor</code>.
+            Рамка автоматически того же цвета.
+        </div>
+    </div>
+
+    <h2>8. Функции цвета</h2>
+
+    <p>Некоторые функции для работы с цветом:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>rgb()</code>, <code>rgba()</code></td>
+                <td>Цвет в RGB</td>
+            </tr>
+            <tr>
+                <td><code>hsl()</code>, <code>hsla()</code></td>
+                <td>Цвет в HSL</td>
+            </tr>
+            <tr>
+                <td><code>color-mix()</code></td>
+                <td>Смешать два цвета (новое)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>color-mix(in srgb, red 50%, blue 50%)   /* смесь красного и синего */</code></pre>
+
+    <p>Поддержка пока не везде. Но полезно знать.</p>
+
+    <h2>9. Практика: палитра</h2>
+
+    <div class="demo">
+        <div class="demo-label">Как выглядит одна палитра в разных форматах:</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Цвет</th>
+                    <th>HEX</th>
+                    <th>RGB</th>
+                    <th>HSL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="swatch" style="background: #1565c0;"></span></td>
+                    <td><code>#1565c0</code></td>
+                    <td><code>rgb(21, 101, 192)</code></td>
+                    <td><code>hsl(210, 80%, 42%)</code></td>
+                </tr>
+                <tr>
+                    <td><span class="swatch" style="background: #e53935;"></span></td>
+                    <td><code>#e53935</code></td>
+                    <td><code>rgb(229, 57, 53)</code></td>
+                    <td><code>hsl(1, 77%, 55%)</code></td>
+                </tr>
+                <tr>
+                    <td><span class="swatch" style="background: #43a047;"></span></td>
+                    <td><code>#43a047</code></td>
+                    <td><code>rgb(67, 160, 71)</code></td>
+                    <td><code>hsl(123, 41%, 45%)</code></td>
+                </tr>
+                <tr>
+                    <td><span class="swatch" style="background: #ffb300;"></span></td>
+                    <td><code>#ffb300</code></td>
+                    <td><code>rgb(255, 179, 0)</code></td>
+                    <td><code>hsl(42, 100%, 50%)</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>#f60</code> вместо <code>#ff6600</code></td>
+                <td>Работает, но читается хуже</td>
+            </tr>
+            <tr>
+                <td><code>color: #ff0000f</code></td>
+                <td>5 знаков — невалидно. Нужно 3 или 6 (или 8 для альфы)</td>
+            </tr>
+            <tr>
+                <td><code>rgb(255, 0, 0, 0.5)</code></td>
+                <td>4-й аргумент работает только в современном синтаксисе. Используй <code>rgba()</code></td>
+            </tr>
+            <tr>
+                <td><code>hsl(0, 100, 50)</code></td>
+                <td>Забыть <code>%</code> для S и L</td>
+            </tr>
+            <tr>
+                <td><code>rgba(255, 0, 0, 50%)</code></td>
+                <td>Альфа — от 0 до 1, не проценты (кроме нового синтаксиса)</td>
+            </tr>
+            <tr>
+                <td>Слишком низкий контраст</td>
+                <td>Плохо для доступности (минимум 4.5:1)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>5 способов:</strong> named, HEX, RGB, HSL, currentColor.</li>
+        <li><strong>HEX</strong> — основной. <code>#ff0000</code> или <code>#f00</code>. 8 знаков — с альфой.</li>
+        <li><strong>RGB</strong> — 0–255 для каждого канала.</li>
+        <li><strong>RGBA</strong> — то же + прозрачность 0–1.</li>
+        <li><strong>HSL</strong> — hue (0–360), saturation (0–100%), lightness (0–100%).</li>
+        <li><strong>HSLA</strong> — HSL + прозрачность.</li>
+        <li><strong><code>currentColor</code></strong> — наследует <code>color</code> элемента.</li>
+        <li><strong><code>rgba()</code></strong> — прозрачный <strong>только цвет</strong>.</li>
+        <li><strong><code>opacity</code></strong> — прозрачный <strong>весь элемент</strong>.</li>
+        <li><strong>HSL удобен</strong> для создания палитр одного цвета.</li>
+        <li><strong>HEX</strong> — для точного цвета из дизайна.</li>
+        <li><strong>RGBA/HSLA</strong> — для прозрачности.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 8 · Следующий урок: <em>Форматирование текста — font-family, font-size, line-height</em>
+    </p>
+
+</body>
+</html>

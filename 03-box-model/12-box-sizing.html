@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 12: box-sizing — content-box vs border-box. Почему border-box спасает вёрстку.">
+    <title>CSS Урок 12. box-sizing</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .comparison {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .comparison > div {
+            flex: 1;
+            min-width: 200px;
+        }
+        .comparison h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .box {
+            width: 200px;
+            padding: 20px;
+            border: 5px solid #1565c0;
+            background: #e3f2fd;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+            box-sizing: content-box;
+        }
+        .box-border {
+            box-sizing: border-box;
+        }
+        .measure {
+            font-size: 12px;
+            color: #c62828;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 12. box-sizing</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, почему border-box — это стандарт,      -->
+    <!-- и как он спасает вёрстку от "внезапно" больших блоков.     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема, которую решает box-sizing</h2>
+
+    <p>В прошлом уроке мы выяснили:</p>
+
+    <pre><code>.box {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid;
+}</code></pre>
+
+    <p>
+        Какая <strong>общая</strong> ширина блока? Не 200px, а <strong>250px</strong>:
+    </p>
+
+    <pre><code>200 (content) + 20 (padding-left) + 20 (padding-right) + 5 (border-left) + 5 (border-right) = 250px</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Box с width: 200px, padding: 20px, border: 5px (по умолчанию):</div>
+        <div class="box">
+            content: 200px<br>
+            + padding: 40px<br>
+            + border: 10px<br>
+            = 250px
+        </div>
+        <div class="measure">Измерь через DevTools: 250px (а не 200px!)</div>
+    </div>
+
+    <p>
+        Это <strong>главная боль</strong> новичков. Ты пишешь <code>width: 200px</code>,
+        а блок получается 250px. Если у тебя сетка из 3 колонок по 33.33% — они
+        <strong>не поместятся</strong> в ряд из-за padding.
+    </p>
+
+    <h2>2. Решение: <code>box-sizing: border-box</code></h2>
+
+    <p>
+        Свойство <code>box-sizing</code> меняет <strong>способ подсчёта</strong> размеров.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>content-box</code></td>
+                <td><strong>По умолчанию.</strong> <code>width</code> = только content. Padding и border добавляются</td>
+            </tr>
+            <tr>
+                <td><code>border-box</code></td>
+                <td><code>width</code> = content + padding + border. Padding и border «входят» в ширину</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. Сравнение</h2>
+
+    <div class="demo">
+        <div class="demo-label">Одинаковый код, разный box-sizing:</div>
+
+        <div class="comparison">
+            <div>
+                <h4>content-box (по умолчанию)</h4>
+                <div class="box" style="box-sizing: content-box;">
+                    width: 200px
+                </div>
+                <div class="measure">Общая: 250px</div>
+            </div>
+
+            <div>
+                <h4>border-box</h4>
+                <div class="box box-border">
+                    width: 200px
+                </div>
+                <div class="measure" style="color: #2e7d32;">Общая: 200px</div>
+            </div>
+        </div>
+    </div>
+
+    <p><strong>С <code>border-box</code>:</strong></p>
+
+    <pre><code>общая ширина = width (200px)
+content = 200 - padding (40) - border (10) = 150px
+</code></pre>
+
+    <p>
+        Браузер «съедает» padding и border <strong>внутри</strong> 200px.
+        Content становится меньше, но <strong>общая ширина ровно 200px</strong>.
+    </p>
+
+    <h2>4. Почему это спасает вёрстку</h2>
+
+    <p>Классический пример: сетка из 3 колонок.</p>
+
+    <h3>С <code>content-box</code> — ломается</h3>
+
+    <pre><code>.column {
+    width: 33.33%;
+    padding: 16px;
+    border: 1px solid #ddd;
+}</code></pre>
+
+    <p>
+        Каждая колонка = <code>33.33% + 32px + 2px</code>  33.33%. Три колонки
+        <strong>не поместятся</strong> в ряд — третья «упадёт» на новую строку.
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки по 33.33% с padding (content-box) — ломается:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0; background: #f0f0f0; padding: 8px; border-radius: 6px;">
+            <div style="width: 33.33%; padding: 8px; border: 1px solid #1565c0; background: #e3f2fd; box-sizing: content-box; font-family: monospace; font-size: 12px; text-align: center;">33.33%</div>
+            <div style="width: 33.33%; padding: 8px; border: 1px solid #1565c0; background: #e3f2fd; box-sizing: content-box; font-family: monospace; font-size: 12px; text-align: center;">33.33%</div>
+            <div style="width: 33.33%; padding: 8px; border: 1px solid #1565c0; background: #e3f2fd; box-sizing: content-box; font-family: monospace; font-size: 12px; text-align: center;">33.33% — упала</div>
+        </div>
+        <p style="font-size: 13px; color: #c62828; margin: 8px 0 0 0;">Третья колонка не поместилась в ряд.</p>
+    </div>
+
+    <h3>С <code>border-box</code> — работает</h3>
+
+    <pre><code>* {
+    box-sizing: border-box;
+}
+
+.column {
+    width: 33.33%;
+    padding: 16px;
+    border: 1px solid #ddd;
+}</code></pre>
+
+    <p>Каждая колонка = ровно 33.33%. Всё влезает.</p>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки по 33.33% с border-box — работает:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0; background: #f0f0f0; padding: 8px; border-radius: 6px;">
+            <div style="width: 33.33%; padding: 8px; border: 1px solid #1565c0; background: #e3f2fd; box-sizing: border-box; font-family: monospace; font-size: 12px; text-align: center;">33.33%</div>
+            <div style="width: 33.33%; padding: 8px; border: 1px solid #1565c0; background: #e3f2fd; box-sizing: border-box; font-family: monospace; font-size: 12px; text-align: center;">33.33%</div>
+            <div style="width: 33.33%; padding: 8px; border: 1px solid #1565c0; background: #e3f2fd; box-sizing: border-box; font-family: monospace; font-size: 12px; text-align: center;">33.33%</div>
+        </div>
+        <p style="font-size: 13px; color: #2e7d32; margin: 8px 0 0 0;">Все три колонки в ряду.</p>
+    </div>
+
+    <div class="note">
+        <strong>Именно поэтому</strong> <code>border-box</code> стал стандартом в
+        современной вёрстке. Без него любая сетка требует «вычитаний» из ширины
+        (<code>width: calc(33.33% - 32px)</code>), что неудобно и легко ломается.
+    </div>
+
+    <h2>5. Универсальный сброс</h2>
+
+    <p>
+        Стандартная практика — применить <code>border-box</code> <strong>ко всем</strong>
+        элементам в начале CSS:
+    </p>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}</code></pre>
+
+    <h3>Почему <code>::before</code> и <code>::after</code></h3>
+
+    <p>
+        Псевдоэлементы <code>::before</code> и <code>::after</code> — это «невидимые»
+        элементы, которые часто используются для декора (иконки, фоны). Если у них
+        не будет <code>border-box</code>, они могут сломать layout.
+    </p>
+
+    <p><strong>Поэтому полный сброс:</strong></p>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}</code></pre>
+
+    <p>Это <strong>3 селектора</strong>, которые покрывают <strong>всё</strong>.</p>
+
+    <div class="note">
+        <strong>Можно ли сделать это на <code>html</code>?</strong>
+        <pre style="margin: 8px 0;"><code>html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}</code></pre>
+        Это <strong>лучший вариант</strong> — если компонент захочет
+        <code>content-box</code> для себя, он может «переопределить» через
+        <code>box-sizing: content-box</code>, и дети унаследуют. Но на практике
+        хватает простого <code>*</code>.
+    </div>
+
+    <h2>6. Исключения: когда оставить <code>content-box</code></h2>
+
+    <p>
+        <code>border-box</code> — почти всегда правильный выбор. Но есть <strong>редкие</strong>
+        случаи, когда нужен <code>content-box</code>:
+    </p>
+
+    <ul>
+        <li><strong>Готовые компоненты</strong>, которые написаны под <code>content-box</code>
+            (например, старые библиотеки).</li>
+        <li><strong>Точный контроль content</strong> — когда важно, чтобы content
+            был ровно 200px, независимо от padding.</li>
+        <li><strong>Некоторые стили форм</strong> (редко).</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Правило:</strong> <code>border-box</code> — по умолчанию для всего.
+        <code>content-box</code> — точечно, если <strong>точно знаешь, зачем</strong>.
+    </div>
+
+    <h2>7. Влияние на <code>width</code> и <code>height</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>content-box</code></th>
+                <th><code>border-box</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>width: 200px</code></td>
+                <td>content = 200px</td>
+                <td>content + padding + border = 200px</td>
+            </tr>
+            <tr>
+                <td><code>padding: 20px</code></td>
+                <td>добавляется к 200px → 240px</td>
+                <td>«входит» в 200px → content = 160px</td>
+            </tr>
+            <tr>
+                <td><code>border: 5px</code></td>
+                <td>добавляется → 250px</td>
+                <td>«входит» → content = 150px</td>
+            </tr>
+            <tr>
+                <td>Общая ширина</td>
+                <td>250px</td>
+                <td>200px</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>8. <code>min-width</code>, <code>max-width</code> и <code>box-sizing</code></h2>
+
+    <p>
+        <code>box-sizing</code> влияет и на <code>min-width</code>, <code>max-width</code>,
+        <code>min-height</code>, <code>max-height</code>.
+    </p>
+
+    <pre><code>.box {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* Общая ширина = не больше 600px, включая padding */</code></pre>
+
+    <p>
+        С <code>content-box</code> было бы: content до 600px, а общая — до 640px.
+        С <code>border-box</code> — общая ровно 600px.
+    </p>
+
+    <h2>9. Практика: карточка товара</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.card {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Общая ширина = ровно 300px, включая padding и border */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка 300px (border-box):</div>
+        <div style="width: 300px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 12px 0; font-size: 18px;">Карточка</h3>
+            <p style="margin: 0; color: #666;">width: 300px. С border-box общая ширина ровно 300px.</p>
+        </div>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Не использовать <code>border-box</code> глобально</td>
+                <td>Сетки ломаются, приходится вычитать padding</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>::before</code>/<code>::after</code> в сбросе</td>
+                <td>Псевдоэлементы остаются с <code>content-box</code> — могут ломать</td>
+            </tr>
+            <tr>
+                <td>Пытаться «вычесть» padding вручную</td>
+                <td><code>width: calc(33% - 20px)</code> — хрупко и не нужно с <code>border-box</code></td>
+            </tr>
+            <tr>
+                <td>Думать, что <code>border-box</code> меняет <code>margin</code></td>
+                <td>Margin <strong>не входит</strong> в размер при любом <code>box-sizing</code></td>
+            </tr>
+            <tr>
+                <td>Использовать <code>content-box</code> «по привычке»</td>
+                <td>Устаревший подход, ломает адаптив</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>box-sizing</code></strong> — определяет, как считаются размеры.</li>
+        <li><strong><code>content-box</code></strong> (по умолчанию) — <code>width</code> = только content. Padding и border <strong>добавляются</strong>.</li>
+        <li><strong><code>border-box</code></strong> — <code>width</code> = content + padding + border. Padding и border <strong>входят</strong> в ширину.</li>
+        <li><strong>С <code>border-box</code></strong> <code>width: 200px</code> = <strong>ровно</strong> 200px, независимо от padding/border.</li>
+        <li><strong>Глобальный сброс:</strong> <code>*, *::before, *::after { box-sizing: border-box; }</code>.</li>
+        <li><strong><code>border-box</code> — стандарт</strong> в современной вёрстке.</li>
+        <li><strong>Сетки работают</strong> только с <code>border-box</code> (без вычитаний).</li>
+        <li><strong><code>margin</code></strong> не входит в размер при любом <code>box-sizing</code>.</li>
+        <li><strong><code>content-box</code></strong> — точечно, если точно знаешь, зачем.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 12 · Следующий урок: <em>Границы — border, border-radius, outline, box-shadow</em>
+    </p>
+
+</body>
+</html>

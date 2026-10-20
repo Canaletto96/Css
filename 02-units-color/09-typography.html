@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 9: форматирование текста — font-family, font-size, font-weight, font-style, line-height, letter-spacing.">
+    <title>CSS Урок 9. Форматирование текста</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+        .font-demo {
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 9. Форматирование текста</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить основные свойства для работы с текстом -->
+    <!-- и шрифтом.                                                 -->
+    <!-- ========================================================= -->
+
+    <h2>1. Свойства для текста</h2>
+
+    <p>Основные CSS-свойства для работы с текстом:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>font-family</code></td><td>Шрифт</td></tr>
+            <tr><td><code>font-size</code></td><td>Размер шрифта</td></tr>
+            <tr><td><code>font-weight</code></td><td>Жирность</td></tr>
+            <tr><td><code>font-style</code></td><td>Курсив</td></tr>
+            <tr><td><code>line-height</code></td><td>Межстрочный интервал</td></tr>
+            <tr><td><code>letter-spacing</code></td><td>Расстояние между буквами</td></tr>
+            <tr><td><code>word-spacing</code></td><td>Расстояние между словами</td></tr>
+            <tr><td><code>text-transform</code></td><td>Регистр (CAPS / lowercase)</td></tr>
+            <tr><td><code>text-decoration</code></td><td>Подчёркивание, зачёркивание</td></tr>
+            <tr><td><code>text-align</code></td><td>Выравнивание</td></tr>
+            <tr><td><code>text-indent</code></td><td>Отступ первой строки</td></tr>
+            <tr><td><code>white-space</code></td><td>Обработка пробелов и переносов</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>font-family</code> — шрифт</h2>
+
+    <p>
+        Задаёт <strong>семейство шрифтов</strong>. Можно указать несколько через запятую —
+        браузер возьмёт первый доступный.
+    </p>
+
+    <pre><code>body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}</code></pre>
+
+    <h3>Порядок в списке</h3>
+
+    <ol>
+        <li><strong>Конкретные шрифты</strong> — если есть.</li>
+        <li><strong>Системные</strong> — <code>system-ui</code>, <code>-apple-system</code>.</li>
+        <li><strong>Фолбэк</strong> — <code>sans-serif</code>, <code>serif</code>, <code>monospace</code>.</li>
+    </ol>
+
+    <h3>Семейства шрифтов (фолбэки)</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Фолбэк</th>
+                <th>Пример</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>sans-serif</code></td>
+                <td><span style="font-family: sans-serif;">Без засечек — этот текст</span></td>
+            </tr>
+            <tr>
+                <td><code>serif</code></td>
+                <td><span style="font-family: serif;">С засечками — как в книгах</span></td>
+            </tr>
+            <tr>
+                <td><code>monospace</code></td>
+                <td><span style="font-family: monospace;">Монospace — для кода</span></td>
+            </tr>
+            <tr>
+                <td><code>cursive</code></td>
+                <td><span style="font-family: cursive;">Рукописный</span></td>
+            </tr>
+            <tr>
+                <td><code>fantasy</code></td>
+                <td><span style="font-family: fantasy;">Декоративный</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Разные шрифты:</div>
+        <div class="font-demo" style="font-family: system-ui, sans-serif;">system-ui — современный системный шрифт</div>
+        <div class="font-demo" style="font-family: Georgia, serif;">Georgia — классический serif</div>
+        <div class="font-demo" style="font-family: 'Courier New', monospace;">Courier New — моноширинный</div>
+        <div class="font-demo" style="font-family: 'Comic Sans MS', cursive;">Comic Sans — рукописный</div>
+    </div>
+
+    <h3>Шрифты с пробелами — в кавычках</h3>
+
+    <pre><code>font-family: "Times New Roman", serif;
+font-family: "Segoe UI", sans-serif;</code></pre>
+
+    <div class="note">
+        <strong>Совет:</strong> используй <code>system-ui</code> для основного текста —
+        это нативный шрифт системы (SF Pro на Mac, Segoe UI на Windows, Roboto на Android).
+        Выглядит «родным» и не требует загрузки.
+    </div>
+
+    <h2>3. <code>font-size</code> — размер</h2>
+
+    <p>
+        Размер шрифта. <strong>Используй <code>rem</code></strong>, а не <code>px</code> —
+        так пользователь сможет увеличить текст в настройках браузера.
+    </p>
+
+    <pre><code>html {
+    font-size: 16px;   /* базовый размер */
+}
+
+body {
+    font-size: 1rem;      /* 16px */
+}
+
+h1 {
+    font-size: 2.5rem;    /* 40px */
+}
+
+.small {
+    font-size: 0.875rem;  /* 14px */
+}</code></pre>
+
+    <h3>Значения <code>font-size</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>16px</code></td><td>Абсолютно (плохо для доступности)</td></tr>
+            <tr><td><code>1rem</code></td><td>От корня — <strong>рекомендую</strong></td></tr>
+            <tr><td><code>1em</code></td><td>От родителя</td></tr>
+            <tr><td><code>100%</code></td><td>От родителя (как <code>em</code>)</td></tr>
+            <tr><td><code>larger</code>, <code>smaller</code></td><td>Относительно родителя</td></tr>
+            <tr><td><code>x-small</code>, <code>small</code>, <code>medium</code>, <code>large</code>, <code>x-large</code></td><td>Ключевые слова</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Разные размеры:</div>
+        <div style="font-size: 0.75rem;">0.75rem = 12px</div>
+        <div style="font-size: 1rem;">1rem = 16px (базовый)</div>
+        <div style="font-size: 1.5rem;">1.5rem = 24px</div>
+        <div style="font-size: 2rem;">2rem = 32px</div>
+        <div style="font-size: 3rem;">3rem = 48px</div>
+    </div>
+
+    <div class="warn">
+        <strong>Не используй <code>px</code> для шрифтов!</strong> Пользователь не сможет
+        увеличить текст в настройках браузера (для слабовидящих). Всегда — <code>rem</code>.
+    </div>
+
+    <h2>4. <code>font-weight</code> — жирность</h2>
+
+    <p>Задаёт <strong>толщину</strong> шрифта.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+                <th>Соответствие</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>100</code></td><td>Thin</td><td>Очень тонкий</td></tr>
+            <tr><td><code>200</code></td><td>Extra Light</td><td>Очень светлый</td></tr>
+            <tr><td><code>300</code></td><td>Light</td><td>Светлый</td></tr>
+            <tr><td><code>400</code> / <code>normal</code></td><td>Regular</td><td>Обычный (по умолчанию)</td></tr>
+            <tr><td><code>500</code></td><td>Medium</td><td>Средний</td></tr>
+            <tr><td><code>600</code></td><td>Semi Bold</td><td>Полужирный</td></tr>
+            <tr><td><code>700</code> / <code>bold</code></td><td>Bold</td><td>Жирный</td></tr>
+            <tr><td><code>800</code></td><td>Extra Bold</td><td>Очень жирный</td></tr>
+            <tr><td><code>900</code></td><td>Black</td><td>Максимально жирный</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.normal { font-weight: 400; }
+.bold   { font-weight: 700; }
+.light  { font-weight: 300; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разная жирность:</div>
+        <div style="font-weight: 300; font-size: 1.2rem; margin: 8px 0;">font-weight: 300 — светлый</div>
+        <div style="font-weight: 400; font-size: 1.2rem; margin: 8px 0;">font-weight: 400 — обычный</div>
+        <div style="font-weight: 600; font-size: 1.2rem; margin: 8px 0;">font-weight: 600 — полужирный</div>
+        <div style="font-weight: 700; font-size: 1.2rem; margin: 8px 0;">font-weight: 700 — жирный</div>
+        <div style="font-weight: 900; font-size: 1.2rem; margin: 8px 0;">font-weight: 900 — чёрный</div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> не все шрифты поддерживают все веса. Если у шрифта нет
+        <code>font-weight: 300</code>, браузер подставит ближайший доступный (обычно 400).
+        Для полного контроля нужны <code>@font-face</code> и подключение всех весов.
+    </div>
+
+    <h2>5. <code>font-style</code> — курсив</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>normal</code></td><td>Обычный (по умолчанию)</td></tr>
+            <tr><td><code>italic</code></td><td>Курсив (если есть курсивная версия шрифта)</td></tr>
+            <tr><td><code>oblique</code></td><td>Наклонный (если курсива нет — наклоняет обычный)</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.italic { font-style: italic; }
+.oblique { font-style: oblique; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <p style="font-style: normal;">Обычный текст</p>
+        <p style="font-style: italic;">Курсив (italic)</p>
+        <p style="font-style: oblique;">Наклонный (oblique)</p>
+    </div>
+
+    <h2>6. <code>line-height</code> — межстрочный интервал</h2>
+
+    <p>
+        Задаёт <strong>высоту строки</strong>. Это <strong>критично</strong> для читаемости.
+    </p>
+
+    <pre><code>body {
+    line-height: 1.6;   /* 1.6 × font-size = 25.6px при 16px */
+}</code></pre>
+
+    <h3>Значения <code>line-height</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>normal</code></td><td>Зависит от шрифта (~1.2)</td></tr>
+            <tr><td><code>1.5</code></td><td>Без единиц — <strong>множитель</strong> от <code>font-size</code></td></tr>
+            <tr><td><code>1.5em</code></td><td>От <code>font-size</code> (но <strong>умножается</strong> при вложенности!)</td></tr>
+            <tr><td><code>24px</code></td><td>Фиксированная высота</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Рекомендую <code>line-height: 1.5</code> или <code>1.6</code></strong> для
+        основного текста. Без единиц — множитель. Это <strong>лучший</strong> вариант:
+        масштабируется с <code>font-size</code>, не умножается при вложенности.
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">Разный line-height:</div>
+        <div style="line-height: 1; background: #f9f9f9; padding: 12px; border-radius: 6px; margin: 8px 0;">
+            line-height: 1 — строки слипаются. Этот текст читать тяжело. Особенно когда строк много.
+        </div>
+        <div style="line-height: 1.6; background: #f9f9f9; padding: 12px; border-radius: 6px; margin: 8px 0;">
+            line-height: 1.6 — комфортно. Этот текст легко читается. Строки не слипаются, но и не разлетаются.
+        </div>
+        <div style="line-height: 2.5; background: #f9f9f9; padding: 12px; border-radius: 6px; margin: 8px 0;">
+            line-height: 2.5 — слишком много воздуха. Строки разлетаются, теряется связь.
+        </div>
+    </div>
+
+    <h3>Почему <code>line-height: 1.5</code> без единиц</h3>
+
+    <pre><code>/* ПЛОХО: 1.5em умножается при вложенности */
+body {
+    font-size: 16px;
+    line-height: 1.5em;   /* 24px */
+}
+
+.big {
+    font-size: 32px;
+    /* line-height остаётся 24px — унаследовалось! */
+    /* Строки слипаются */
+}
+
+/* ХОРОШО: 1.5 без единиц */
+body {
+    font-size: 16px;
+    line-height: 1.5;   /* множитель */
+}
+
+.big {
+    font-size: 32px;
+    /* line-height = 32 × 1.5 = 48px — пересчиталось */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Демо: проблема с em:</div>
+        <div style="line-height: 1.5em; font-size: 16px; background: #fff8e1; padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+            line-height: 1.5em при font-size: 16px → 24px
+            <div style="font-size: 32px; background: #ffecb3; padding: 8px; margin-top: 8px; border-radius: 4px;">
+                font-size: 32px, но line-height унаследовался 24px — строки слипаются
+            </div>
+        </div>
+        <div style="line-height: 1.5; font-size: 16px; background: #e8f5e9; padding: 12px; border-radius: 6px;">
+            line-height: 1.5 (без единиц) при font-size: 16px → 24px
+            <div style="font-size: 32px; background: #c8e6c9; padding: 8px; margin-top: 8px; border-radius: 4px;">
+                font-size: 32px → line-height пересчитался = 48px — комфортно
+            </div>
+        </div>
+    </div>
+
+    <h2>7. <code>letter-spacing</code> — расстояние между буквами</h2>
+
+    <pre><code>.wide {
+    letter-spacing: 0.1em;   /* больше пространства */
+}
+
+.tight {
+    letter-spacing: -0.02em;  /* буквы ближе */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <p style="letter-spacing: -0.05em;">letter-spacing: -0.05em — буквы слипаются</p>
+        <p style="letter-spacing: normal;">letter-spacing: normal — обычное</p>
+        <p style="letter-spacing: 0.1em;">letter-spacing: 0.1em — с пробелами</p>
+        <p style="letter-spacing: 0.3em; text-transform: uppercase; font-weight: bold;">ЗАГОЛОВОК С РАЗРЯДКОЙ</p>
+    </div>
+
+    <div class="note">
+        <strong>Применение:</strong> заголовки с разрядкой (<code>0.1em</code>) выглядят
+        стильно. Но для основного текста — не трогай <code>letter-spacing</code>, он
+        уже оптимизирован шрифтом.
+    </div>
+
+    <h2>8. <code>text-transform</code> — регистр</h2>
+
+    <pre><code>.upper   { text-transform: uppercase; }
+.lower   { text-transform: lowercase; }
+.capital { text-transform: capitalize; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <p style="text-transform: uppercase;">uppercase — всё большими буквами</p>
+        <p style="text-transform: lowercase;">LOWERCASE — всё маленькими буквами</p>
+        <p style="text-transform: capitalize;">capitalize — каждое слово с большой</p>
+    </div>
+
+    <h2>9. <code>text-decoration</code> — декор</h2>
+
+    <pre><code>.underline  { text-decoration: underline; }
+.overline   { text-decoration: overline; }
+.line-through { text-decoration: line-through; }
+.none       { text-decoration: none; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <p style="text-decoration: underline;">Подчёркнутый</p>
+        <p style="text-decoration: overline;">Надчёркнутый</p>
+        <p style="text-decoration: line-through;">Зачёркнутый</p>
+        <p><a href="#" style="text-decoration: none; color: #1565c0;">Ссылка без подчёркивания (text-decoration: none)</a></p>
+    </div>
+
+    <div class="warn">
+        <strong>Осторожно:</strong> убирать <code>text-decoration</code> у ссылок — плохо
+        для доступности. Пользователь не поймёт, что это ссылка. Оставь подчёркивание
+        или замени на <code>border-bottom</code>.
+    </div>
+
+    <h2>10. Полный шрифтовой стек</h2>
+
+    <pre><code>/* Базовые стили для текста */
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 1rem;         /* 16px */
+    line-height: 1.6;
+    color: #222;
+}
+
+h1 {
+    font-size: 2.5rem;       /* 40px */
+    font-weight: 700;
+    line-height: 1.2;        /* для заголовков — плотнее */
+}
+
+h2 {
+    font-size: 2rem;         /* 32px */
+    line-height: 1.3;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+.small {
+    font-size: 0.875rem;     /* 14px */
+    color: #666;
+}
+
+code {
+    font-family: "SF Mono", Consolas, Monaco, monospace;
+    font-size: 0.9em;        /* чуть меньше основного */
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+}</code></pre>
+
+    <div class="note">
+        <strong>Правило:</strong> <code>line-height</code> для заголовков — <strong>меньше</strong>
+        (1.2–1.3), для текста — <strong>больше</strong> (1.5–1.7). Заголовки плотнее, текст
+        «дышит».
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>font-size: 16px</code> для основного текста</td>
+                <td>Пользователь не увеличит (доступность). Используй <code>rem</code></td>
+            </tr>
+            <tr>
+                <td><code>line-height: 1.5em</code></td>
+                <td>Умножается при вложенности. Используй <code>1.5</code> без единиц</td>
+            </tr>
+            <tr>
+                <td><code>font-family: Arial</code> без фолбэка</td>
+                <td>Если Arial нет — браузер возьмёт что попало. Добавь <code>sans-serif</code></td>
+            </tr>
+            <tr>
+                <td><code>font-family: Times New Roman</code> без кавычек</td>
+                <td>Пробел в имени — нужны кавычки</td>
+            </tr>
+            <tr>
+                <td><code>text-decoration: none</code> на ссылках</td>
+                <td>Плохо для доступности</td>
+            </tr>
+            <tr>
+                <td>Слишком мелкий текст (<code>12px</code>)</td>
+                <td>Плохо читается</td>
+            </tr>
+            <tr>
+                <td>Слишком длинные строки</td>
+                <td>Оптимально 45–75 символов (<code>max-width: 65ch</code>)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>font-family</code></strong> — список шрифтов через запятую. Последний — фолбэк (<code>sans-serif</code>).</li>
+        <li><strong><code>system-ui</code></strong> — нативный системный шрифт. Рекомендую для основного текста.</li>
+        <li><strong><code>font-size</code></strong> — используй <code>rem</code>, не <code>px</code>.</li>
+        <li><strong><code>font-weight</code></strong> — 100–900 или <code>normal</code>/<code>bold</code>.</li>
+        <li><strong><code>font-style</code></strong> — <code>normal</code>, <code>italic</code>, <code>oblique</code>.</li>
+        <li><strong><code>line-height</code></strong> — <strong>без единиц</strong> (<code>1.5</code>) — множитель, не умножается при вложенности.</li>
+        <li><strong><code>line-height</code> для текста</strong> — 1.5–1.7, для заголовков — 1.2–1.3.</li>
+        <li><strong><code>letter-spacing</code></strong> — для разрядки заголовков, не для текста.</li>
+        <li><strong><code>text-transform</code></strong> — <code>uppercase</code>, <code>lowercase</code>, <code>capitalize</code>.</li>
+        <li><strong><code>text-decoration</code></strong> — подчёркивание/зачёркивание. Не убирай у ссылок.</li>
+        <li><strong>Шрифты с пробелами</strong> — в кавычках: <code>"Segoe UI"</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 9 · Следующий урок: <em>Выравнивание — text-align, vertical-align, text-transform</em>
+    </p>
+
+</body>
+</html>

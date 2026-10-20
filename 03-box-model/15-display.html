@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 15: display — block, inline, inline-block, none, flex, grid. Как это влияет на layout.">
+    <title>CSS Урок 15. display</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Демо-стили */
+        .demo-box {
+            background: #e3f2fd;
+            border: 2px solid #1565c0;
+            padding: 8px;
+            margin: 4px 0;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+        .demo-inline {
+            background: #c8e6c9;
+            border: 2px solid #43a047;
+            padding: 4px 8px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+        .demo-inline-block {
+            display: inline-block;
+            background: #ffe0b2;
+            border: 2px solid #ef6c00;
+            padding: 8px;
+            margin: 4px;
+            width: 120px;
+            height: 60px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+        .demo-none {
+            display: none;
+        }
+        .demo-hidden {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 15. display</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, как display меняет поведение элемента -->
+    <!-- и как это влияет на layout.                                -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое <code>display</code></h2>
+
+    <p>
+        <code>display</code> определяет <strong>как элемент ведёт себя в потоке</strong>:
+        занимает ли всю ширину, может ли стоять в строке с другими элементами,
+        можно ли задавать размеры.
+    </p>
+
+    <p>Основные значения:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>block</code></td><td>Блочный — вся ширина, новая строка</td></tr>
+            <tr><td><code>inline</code></td><td>Строчный — по содержимому, в строке</td></tr>
+            <tr><td><code>inline-block</code></td><td>Гибрид — в строке, но можно задавать размеры</td></tr>
+            <tr><td><code>none</code></td><td>Скрыть полностью (убрать из потока)</td></tr>
+            <tr><td><code>flex</code></td><td>Flexbox-контейнер (урок 27)</td></tr>
+            <tr><td><code>grid</code></td><td>Grid-контейнер (урок 33)</td></tr>
+            <tr><td><code>table</code>, <code>table-cell</code></td><td>Как таблица (редко)</td></tr>
+            <tr><td><code>contents</code></td><td>«Растворить» элемент, оставив детей</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>display: block</code> — блочный</h2>
+
+    <p>
+        Занимает <strong>всю ширину</strong> родителя. Начинается с <strong>новой строки</strong>.
+        Можно задавать <code>width</code>, <code>height</code>, все <code>margin</code> и <code>padding</code>.
+    </p>
+
+    <pre><code>.box {
+    display: block;
+    width: 200px;
+    height: 100px;
+    margin: 16px;
+    padding: 20px;
+}</code></pre>
+
+    <p><strong>По умолчанию <code>block</code>:</strong></p>
+
+    <ul>
+        <li><code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code></li>
+        <li><code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;li&gt;</code></li>
+        <li><code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code></li>
+        <li><code>&lt;form&gt;</code>, <code>&lt;fieldset&gt;</code>, <code>&lt;table&gt;</code></li>
+        <li><code>&lt;blockquote&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;hr&gt;</code></li>
+    </ul>
+
+    <div class="demo">
+        <div class="demo-label">Три блока display: block — каждый на новой строке:</div>
+        <div class="demo-box">Блок 1</div>
+        <div class="demo-box">Блок 2</div>
+        <div class="demo-box">Блок 3</div>
+    </div>
+
+    <h2>3. <code>display: inline</code> — строчный</h2>
+
+    <p>
+        Занимает <strong>только ширину содержимого</strong>. Стоит <strong>в строке</strong> с другими.
+        <strong>Нельзя</strong> задавать <code>width</code>, <code>height</code>, вертикальные <code>margin</code>.
+    </p>
+
+    <pre><code>.text {
+    display: inline;
+    /* width: 200px;  ← не работает */
+    /* height: 100px; ← не работает */
+    /* margin-top: 20px; ← не работает */
+    /* padding-top: 20px; ← работает визуально, но не сдвигает строки */
+}</code></pre>
+
+    <p><strong>По умолчанию <code>inline</code>:</strong></p>
+
+    <ul>
+        <li><code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code></li>
+        <li><code>&lt;code&gt;</code>, <code>&lt;small&gt;</code>, <code>&lt;mark&gt;</code>, <code>&lt;sub&gt;</code>, <code>&lt;sup&gt;</code></li>
+        <li><code>&lt;br&gt;</code>, <code>&lt;img&gt;</code> (по факту inline, но с размерами)</li>
+        <li><code>&lt;input&gt;</code>, <code>&lt;button&gt;</code>, <code>&lt;select&gt;</code> (по факту inline-block)</li>
+    </ul>
+
+    <div class="demo">
+        <div class="demo-label">Три inline-элемента — в одной строке:</div>
+        <p>Текст до. <span class="demo-inline">inline 1</span> <span class="demo-inline">inline 2</span> <span class="demo-inline">inline 3</span> Текст после.</p>
+    </div>
+
+    <h2>4. <code>display: inline-block</code> — гибрид</h2>
+
+    <p>
+        Стоит <strong>в строке</strong> (как inline), но <strong>можно задавать размеры</strong>
+        (как block).
+    </p>
+
+    <pre><code>.card {
+    display: inline-block;
+    width: 120px;
+    height: 60px;
+    padding: 8px;
+    margin: 4px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">inline-block — в строке, но с размерами:</div>
+        <div class="demo-inline-block">inline-block 1</div>
+        <div class="demo-inline-block">inline-block 2</div>
+        <div class="demo-inline-block">inline-block 3</div>
+    </div>
+
+    <h3>Когда использовать <code>inline-block</code></h3>
+
+    <ul>
+        <li><strong>Кнопки</strong> в ряд.</li>
+        <li><strong>Карточки</strong> в сетке (до Grid).</li>
+        <li><strong>Иконки</strong> рядом с текстом.</li>
+        <li><strong>Навигация</strong> горизонтальная (до Flexbox).</li>
+    </ul>
+
+    <div class="note">
+        <strong>Современный подход:</strong> для рядов элементов используй <strong>Flexbox</strong>
+        (<code>display: flex</code>), а не <code>inline-block</code>. Flexbox проще и мощнее.
+        <code>inline-block</code> — для случаев, когда нужен именно строчный элемент
+        с размерами.
+    </div>
+
+    <h3>Проблема inline-block: пробелы</h3>
+
+    <p>
+        Между <code>inline-block</code> элементами появляется <strong>пробел</strong>
+        (от переноса строки в HTML). Это может ломать сетку.
+    </p>
+
+    <pre><code>&lt;div class="card"&gt;1&lt;/div&gt;
+&lt;div class="card"&gt;2&lt;/div&gt;   &lt;!-- пробел между ними --&gt;</code></pre>
+
+    <p><strong>Решение:</strong> убрать пробел в HTML, или использовать <code>font-size: 0</code> на родителе, или — <strong>Flexbox</strong>.</p>
+
+    <h2>5. <code>display: none</code> — скрыть</h2>
+
+    <p>
+        Полностью <strong>убирает элемент из потока</strong>. Он не занимает места,
+        не виден, не доступен для screen reader'ов.
+    </p>
+
+    <pre><code>.hidden {
+    display: none;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">display: none — элемента нет на странице:</div>
+        <div class="demo-box">Видимый блок</div>
+        <div class="demo-box demo-none">display: none — меня не видно</div>
+        <div class="demo-box">Ещё видимый блок (нет пустого места между ними)</div>
+    </div>
+
+    <h3><code>display: none</code> vs <code>visibility: hidden</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>display: none</code></th>
+                <th><code>visibility: hidden</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Занимает место</td>
+                <td>Нет</td>
+                <td>Да (пустое место остаётся)</td>
+            </tr>
+            <tr>
+                <td>Видно</td>
+                <td>Нет</td>
+                <td>Нет</td>
+            </tr>
+            <tr>
+                <td>Screen reader</td>
+                <td>Не читает</td>
+                <td>Не читает</td>
+            </tr>
+            <tr>
+                <td>Анимация</td>
+                <td>Не работает</td>
+                <td>Работает</td>
+            </tr>
+            <tr>
+                <td>Дети наследуют</td>
+                <td>—</td>
+                <td>Да (можно переопределить <code>visibility: visible</code>)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Сравнение:</div>
+        <div class="demo-box">Видимый блок</div>
+        <div class="demo-box demo-hidden">visibility: hidden — место осталось</div>
+        <div class="demo-box">Следующий блок (есть пустое место)</div>
+    </div>
+
+    <h2>6. <code>display: flex</code> и <code>display: grid</code></h2>
+
+    <p>
+        Современные способы раскладки. Подробно — в уроках 27–39.
+    </p>
+
+    <pre><code>.flex-container {
+    display: flex;   /* включает Flexbox */
+}
+
+.grid-container {
+    display: grid;   /* включает Grid */
+}</code></pre>
+
+    <div class="note">
+        <strong>Кратко:</strong>
+        <ul>
+            <li><strong>Flexbox</strong> — для <strong>одномерных</strong> раскладок (ряд или колонка).</li>
+            <li><strong>Grid</strong> — для <strong>двумерных</strong> (строки и колонки одновременно).</li>
+            <li><strong>inline-block</strong> — legacy, заменяется Flexbox.</li>
+            <li><strong>table</strong> — legacy, заменяется Grid.</li>
+        </ul>
+    </div>
+
+    <h2>7. <code>display: contents</code> — «растворить»</h2>
+
+    <p>
+        Элемент «исчезает» из layout, но <strong>дети остаются</strong>. Полезно, когда
+        обёртка мешает раскладке.
+    </p>
+
+    <pre><code>.wrapper {
+    display: contents;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">display: contents на обёртке (дети ведут себя как прямые дети родителя):</div>
+        <div style="display: flex; gap: 8px; background: #f9f9f9; padding: 8px; border-radius: 6px;">
+            <div style="display: contents;">
+                <div class="demo-box" style="flex: 1;">Ребёнок 1</div>
+                <div class="demo-box" style="flex: 1;">Ребёнок 2</div>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Обёртка с display: contents «исчезла» — дети ведут себя как прямые дети flex-контейнера.</p>
+    </div>
+
+    <h2>8. Как <code>display</code> влияет на другие свойства</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th><code>block</code></th>
+                <th><code>inline</code></th>
+                <th><code>inline-block</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>width</code> / <code>height</code></td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>margin-top</code> / <code>bottom</code></td>
+                <td>✅</td>
+                <td>⚠️ Не сдвигает строку</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>margin-left</code> / <code>right</code></td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>padding</code> (все стороны)</td>
+                <td>✅</td>
+                <td>⚠️ Визуально, но не сдвигает</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>text-align</code></td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><code>vertical-align</code></td>
+                <td>❌</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>9. Как узнать <code>display</code> элемента</h2>
+
+    <p>
+        В <strong>DevTools</strong> (<kbd>F12</kbd>) → Elements → выбери элемент →
+        вкладка <strong>Computed</strong>. Найди <code>display</code>.
+    </p>
+
+    <p>Или в <strong>Console</strong>:</p>
+
+    <pre><code>getComputedStyle(document.querySelector('div')).display
+// "block"</code></pre>
+
+    <h2>10. Изменение <code>display</code> — не всегда хорошо</h2>
+
+    <div class="warn">
+        <strong>Семантика важнее.</strong> Если ты меняешь <code>display</code> тега,
+        подумай, не сломает ли это смысл:
+        <ul>
+            <li><code>&lt;h1&gt;</code> с <code>display: inline</code> — перестанет быть блочным заголовком.</li>
+            <li><code>&lt;a&gt;</code> с <code>display: block</code> — станет блочной ссылкой (иногда нужно).</li>
+            <li><code>&lt;button&gt;</code> с <code>display: block</code> — станет на всю ширину.</li>
+        </ul>
+        Менять <code>display</code> — можно, но <strong>осознанно</strong>.
+    </div>
+
+    <h2>11. Практика: карточки</h2>
+
+    <h3>Способ 1: <code>inline-block</code> (legacy)</h3>
+
+    <pre><code>.card {
+    display: inline-block;
+    width: 200px;
+    margin: 8px;
+    vertical-align: top;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки через inline-block:</div>
+        <div style="font-size: 0;">
+            <div style="display: inline-block; width: 150px; margin: 4px; padding: 12px; background: #e3f2fd; border: 1px solid #1565c0; border-radius: 6px; vertical-align: top; font-size: 13px; font-family: monospace; text-align: center;">Карточка 1</div>
+            <div style="display: inline-block; width: 150px; margin: 4px; padding: 12px; background: #e3f2fd; border: 1px solid #1565c0; border-radius: 6px; vertical-align: top; font-size: 13px; font-family: monospace; text-align: center;">Карточка 2</div>
+            <div style="display: inline-block; width: 150px; margin: 4px; padding: 12px; background: #e3f2fd; border: 1px solid #1565c0; border-radius: 6px; vertical-align: top; font-size: 13px; font-family: monospace; text-align: center;">Карточка 3</div>
+        </div>
+    </div>
+
+    <h3>Способ 2: <code>flex</code> (современный)</h3>
+
+    <pre><code>.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.card {
+    flex: 1 1 200px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки через flex:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <div style="flex: 1 1 150px; padding: 12px; background: #c8e6c9; border: 1px solid #43a047; border-radius: 6px; font-size: 13px; font-family: monospace; text-align: center;">Карточка 1</div>
+            <div style="flex: 1 1 150px; padding: 12px; background: #c8e6c9; border: 1px solid #43a047; border-radius: 6px; font-size: 13px; font-family: monospace; text-align: center;">Карточка 2</div>
+            <div style="flex: 1 1 150px; padding: 12px; background: #c8e6c9; border: 1px solid #43a047; border-radius: 6px; font-size: 13px; font-family: monospace; text-align: center;">Карточка 3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Разница:</strong> с <code>inline-block</code> приходится бороться с пробелами
+        и <code>vertical-align</code>. С <code>flex</code> — <code>gap</code> и всё работает
+        из коробки. <strong>Используй flex.</strong>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Задавать <code>width</code> у <code>inline</code></td>
+                <td>Не работает. Нужен <code>inline-block</code> или <code>block</code></td>
+            </tr>
+            <tr>
+                <td>Использовать <code>display: none</code> для скрытия при hover</td>
+                <td>Нельзя анимировать. Нужен <code>opacity</code> + <code>visibility</code></td>
+            </tr>
+            <tr>
+                <td>Забывать пробелы в <code>inline-block</code></td>
+                <td>Сетка «съезжает» из-за пробелов между элементами</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>table</code> для раскладки</td>
+                <td>Legacy. Grid/Flexbox лучше</td>
+            </tr>
+            <tr>
+                <td>Менять <code>display</code> тега без причины</td>
+                <td>Ломает семантику</td>
+            </tr>
+            <tr>
+                <td><code>display: inline</code> + <code>vertical-align</code></td>
+                <td>Работает, но лучше <code>inline-block</code> или flex</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>display</code></strong> — определяет поведение элемента в потоке.</li>
+        <li><strong><code>block</code></strong> — вся ширина, новая строка. Можно задавать размеры.</li>
+        <li><strong><code>inline</code></strong> — по содержимому, в строке. <strong>Нельзя</strong> задавать <code>width</code>/<code>height</code>.</li>
+        <li><strong><code>inline-block</code></strong> — в строке, но можно задавать размеры. Legacy-способ для сеток.</li>
+        <li><strong><code>none</code></strong> — скрыть полностью (убрать из потока).</li>
+        <li><strong><code>visibility: hidden</code></strong> — скрыть, но место остаётся.</li>
+        <li><strong><code>flex</code></strong> — современный способ для рядов. <strong>Используй его.</strong></li>
+        <li><strong><code>grid</code></strong> — современный способ для сеток.</li>
+        <li><strong><code>contents</code></strong> — «растворить» обёртку, оставив детей.</li>
+        <li><strong>По умолчанию:</strong> <code>div</code>, <code>p</code>, <code>h1</code> — block; <code>span</code>, <code>a</code> — inline; <code>button</code>, <code>input</code> — inline-block.</li>
+        <li><strong>Не меняй <code>display</code></strong> без причины — можно сломать семантику.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 15 · Следующий урок: <em>Переполнение — overflow, overflow-x, overflow-y</em>
+    </p>
+
+</body>
+</html>

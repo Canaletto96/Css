@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Практика блока 1 CSS: основы — подключение, синтаксис, селекторы, специфичность, наследование.">
+    <title>Практика блока 1 — Основы CSS</title>
+
+    <style>
+        /* ============================================================ */
+        /* СТИЛИ ДЛЯ ОФОРМЛЕНИЯ СТРАНИЦЫ ПРАКТИКИ                       */
+        /* Эти стили НЕ ТРОГАЙ — они для читаемости заданий.            */
+        /* Твои стили пиши в блоке <style id="your-styles"> ниже.        */
+        /* ============================================================ */
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+
+        h1.page-title {
+            color: #1565c0;
+            border-bottom: 3px solid #1565c0;
+            padding-bottom: 8px;
+        }
+
+        .task {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .task h3 {
+            margin: 0 0 8px 0;
+            color: #1565c0;
+            font-size: 1.05em;
+        }
+
+        .task .level {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .level-easy { background: #c8e6c9; color: #1b5e20; }
+        .level-medium { background: #ffe0b2; color: #e65100; }
+        .level-hard { background: #ffcdd2; color: #b71c1c; }
+
+        .task .hint {
+            background: #fff8e1;
+            border-left: 3px solid #ffb300;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+
+        .task .check {
+            background: #e8f5e9;
+            border-left: 3px solid #43a047;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+
+        .workspace {
+            background: #fff;
+            border: 2px dashed #999;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .workspace-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.92em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .final {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 2px solid #1565c0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .final h3 {
+            margin: 0 0 12px 0;
+            color: #0d47a1;
+        }
+
+    </style>
+
+    <!-- ============================================================ -->
+    <!-- СТИЛИ ДЛЯ ЗАДАНИЙ (НЕ ТРОГАЙ)                                -->
+    <!-- ============================================================ -->
+    <style>
+        /* Дополнительные стили для рабочей зоны, чтобы задания было видно */
+        .workspace .card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            background: #fafafa;
+        }
+    </style>
+
+    <link rel="stylesheet" href="practice-style.css">
+
+
+</head>
+<body>
+
+    <h1 class="page-title">Практика блока 1 — Основы CSS</h1>
+
+    <p>
+        <strong>Как делать:</strong> читай задание, пиши CSS в блоке
+        <code>&lt;style&gt;</code> (там, где комментарии «ЗАДАНИЕ ...»), сохраняй файл
+        и обновляй страницу (<kbd>F5</kbd>). Результат появится в «рабочей зоне» ниже.
+    </p>
+
+    <div class="final">
+        <h3>🎯 Что в этом файле</h3>
+        <p>
+            Сводная практика по <strong>всему блоку 1</strong>: подключение, синтаксис,
+            селекторы, специфичность, наследование. <strong>10 заданий</strong> + финальный
+            мини-проект. От простого к сложному.
+        </p>
+        <p style="margin-bottom: 0;">
+            <strong>Время:</strong> 1.5–2 часа. <strong>Уровень:</strong> от «лёгкое» до «сложное».
+        </p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- РАБОЧАЯ ЗОНА — ЗДЕСЬ ПОЯВИТСЯ РЕЗУЛЬТАТ                     -->
+    <!-- ============================================================ -->
+
+    <h2>Рабочая зона</h2>
+
+    <div class="workspace">
+        <div class="workspace-label">Здесь ты видишь результат своих стилей</div>
+
+        <h1 class="page-title">Заголовок страницы</h1>
+
+        <p>Это обычный параграф. Он должен быть тёмно-серым (#333), если задание 3 выполнено.</p>
+
+        <p class="highlight">Это параграф с классом <code>.highlight</code>. Если задание 4 выполнено — у него жёлтый фон.</p>
+
+        <p id="special-p">Это параграф с id <code>special-p</code>. Если задание 5 выполнено — он синий.</p>
+
+        <h2>Заголовок h2</h2>
+        <p>Этот параграф идёт сразу после h2. Если задание 9 выполнено — у него особый стиль (сосед).</p>
+        <p>Этот параграф — уже не сосед h2 (он второй). Стиль соседа на него не действует.</p>
+
+        <div class="card">
+            <p>Это параграф <strong>внутри</strong> <code>.card</code> (потомок).</p>
+            <div>
+                <p>А это параграф <strong>внутри вложенного</strong> <code>div</code>. Тоже потомок <code>.card</code>.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <p>Это второй <code>.card</code>. Здесь тоже есть параграф.</p>
+        </div>
+
+        <p>
+            Это <a href="#">ссылка внутри параграфа</a>. Если задание 8 выполнено — она без подчёркивания и синяя.
+        </p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ЗАДАНИЯ                                                       -->
+    <!-- ============================================================ -->
+
+    <h2>Задания</h2>
+
+    <!-- ======================== ЗАДАНИЕ 1 ======================== -->
+    <div class="task">
+        <h3>Задание 1. Подключение CSS <span class="level level-easy">лёгкое</span></h3>
+        <p>
+            В этом файле CSS уже подключён — через тег <code>&lt;style&gt;</code> в
+            <code>&lt;head&gt;</code>. Но в реальном проекте лучше выносить CSS в
+            <strong>отдельный файл</strong>.
+        </p>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Создай рядом с этим файлом файл <code>practice-style.css</code>.</li>
+            <li>Перенеси туда <strong>все</strong> свои стили (из блока «ТВОИ СТИЛИ»).</li>
+            <li>Удали блок <code>&lt;style&gt;</code> со своими стилями из HTML.</li>
+            <li>Подключи файл через <code>&lt;link rel="stylesheet" href="practice-style.css"&gt;</code> в <code>&lt;head&gt;</code>.</li>
+            <li>Обнови страницу — стили должны остаться.</li>
+        </ol>
+        <div class="check">
+            <strong>Проверка:</strong> открой DevTools (<kbd>F12</kbd>) → вкладка <strong>Network</strong> →
+            обнови страницу. Должен появиться файл <code>practice-style.css</code> со статусом <code>200</code>.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 2 ======================== -->
+    <div class="task">
+        <h3>Задание 2. Базовые стили <span class="level level-easy">лёгкое</span></h3>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Сделай фон <code>body</code> светло-серым: <code>#f0f0f0</code>.</li>
+            <li>Покрась <code>h1.page-title</code> в <code>#1565c0</code>.</li>
+            <li>Покрась <strong>все</strong> <code>p</code> в <code>#333</code>.</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> используй селектор по тегу для <code>p</code>,
+            по классу — для <code>.page-title</code>. <code>body</code> — селектор по тегу.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 3 ======================== -->
+    <div class="task">
+        <h3>Задание 3. Класс и id <span class="level level-easy">лёгкое</span></h3>
+        <p>
+            В рабочей зоне есть параграф с классом <code>.highlight</code> и параграф
+            с id <code>special-p</code>.
+        </p>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Сделай у <code>.highlight</code> жёлтый фон (<code>#fff8e1</code>) и отступ <code>8px</code>.</li>
+            <li>Сделай у <code>#special-p</code> синий цвет (<code>#1565c0</code>) и жирный шрифт (<code>font-weight: 700</code>).</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> класс — <code>.highlight</code>, id — <code>#special-p</code>.
+            Это разные селекторы с разной специфичностью.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 4 ======================== -->
+    <div class="task">
+        <h3>Задание 4. Потомок и ребёнок <span class="level level-medium">среднее</span></h3>
+        <p>
+            В рабочей зоне есть два <code>.card</code>. В первом — параграф-потомок
+            (вложенный в <code>div</code> внутри <code>.card</code>).
+        </p>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Стилизуй <strong>всех потомков</strong> <code>.card p</code> — цвет <code>#666</code>.</li>
+            <li>Стилизуй <strong>только прямых детей</strong> <code>.card &gt; p</code> — левая граница <code>3px solid #1565c0</code> и отступ слева <code>8px</code>.</li>
+            <li>Проверь: во втором <code>.card</code> параграф прямой — граница есть. В первом — только у прямого, у вложенного в <code>div</code> — нет.</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> <code>.card p</code> — все потомки (дети, внуки, ...).
+            <code>.card &gt; p</code> — только прямые дети. Специфичность у них одинаковая,
+            но <code>&gt;</code> ограничивает выбор.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 5 ======================== -->
+    <div class="task">
+        <h3>Задание 5. Ссылки и соседи <span class="level level-medium">среднее</span></h3>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Убери подчёркивание у ссылки (<code>text-decoration: none</code>).</li>
+            <li>Покрась ссылку в <code>#1565c0</code>.</li>
+            <li>Сделай <code>h2 + p</code> (параграф сразу после h2) курсивом и с левой границей <code>3px solid #ffb300</code>.</li>
+            <li>Проверь: второй параграф после h2 (не сосед) — <strong>не</strong> должен получить курсив.</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> <code>h2 + p</code> — только <strong>первый</strong>
+            <code>p</code> сразу после <code>h2</code>.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 6 ======================== -->
+    <div class="task">
+        <h3>Задание 6. Специфичность <span class="level level-medium">среднее</span></h3>
+        <p>
+            Представь, что у тебя есть правило <code>p { color: red; }</code> и
+            <code>.highlight { color: blue; }</code>. Оба применяются к параграфу с
+            классом <code>.highlight</code>.
+        </p>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Напиши <strong>два</strong> правила: <code>p</code> (цвет красный) и <code>.highlight</code> (цвет синий).</li>
+            <li>Сделай так, чтобы <code>.highlight</code> <strong>победил</strong> (параграф с классом — синий).</li>
+            <li>Теперь напиши третье правило <code>#special-p</code> (цвет зелёный).</li>
+            <li>Проверь: если у элемента <code>#special-p</code> есть и класс <code>.highlight</code>, и id — <strong>какой цвет победит?</strong> (ответ: id).</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> специфичность: <code>p</code> = 0,0,0,1;
+            <code>.highlight</code> = 0,0,1,0; <code>#special-p</code> = 0,1,0,0.
+            Id всегда выше класса и тега.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 7 ======================== -->
+    <div class="task">
+        <h3>Задание 7. Наследование <span class="level level-medium">среднее</span></h3>
+        <p>
+            Наследование — это когда свойства «переходят» от родителя к детям.
+            <code>color</code> наследуется, <code>border</code> — нет.
+        </p>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Задай <code>.card</code> <code>color: #1565c0</code>.</li>
+            <li>Проверь: все <code>p</code> внутри <code>.card</code> — синие (унаследовали).</li>
+            <li>Добавь <code>.card</code> ещё <code>border: 2px solid #43a047</code>.</li>
+            <li>Проверь: у <code>p</code> внутри <code>.card</code> — <strong>нет</strong> своей рамки (border не наследуется).</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> если бы <code>border</code> наследовался, у каждого
+            <code>p</code> была бы своя рамка — выглядело бы странно. Поэтому он не наследуется.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 8 ======================== -->
+    <div class="task">
+        <h3>Задание 8. Каскад и порядок <span class="level level-hard">сложное</span></h3>
+        <p>
+            Если два правила с <strong>одинаковой специфичностью</strong> задают одно
+            свойство — побеждает <strong>то, что ниже</strong>.
+        </p>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Напиши два правила <code>.highlight</code>: первое — фон красный (<code>#ffcdd2</code>), второе — фон жёлтый (<code>#fff8e1</code>).</li>
+            <li>Проверь: параграф с классом <code>.highlight</code> должен стать жёлтым (потому что второе правило ниже).</li>
+            <li>Поменяй порядок правил местами — проверь, что теперь красный.</li>
+            <li>Верни жёлтый (это правильный вариант).</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> это правило каскада — при равной специфичности
+            побеждает <strong>последнее</strong> правило. Порядок в CSS имеет значение.
+        </div>
+    </div>
+
+    <!-- ======================== ЗАДАНИЕ 9 ======================== -->
+    <div class="task">
+        <h3>Задание 9. Комбинирование селекторов <span class="level level-hard">сложное</span></h3>
+        <p><strong>Что сделать:</strong></p>
+        <ol>
+            <li>Стилизуй <strong>только</strong> прямых детей <code>.card &gt; p</code> — цвет <code>#333</code>.</li>
+            <li>Стилизуй <strong>только</strong> параграфы внутри вложенного <code>div</code>: <code>.card div p</code> — цвет <code>#999</code>, курсив.</li>
+            <li>Стилизуй <code>#special-p</code> — красный, жирный.</li>
+            <li>Проверь: параграф с id <code>special-p</code> — какой цвет? (должен быть красный, id победил).</li>
+            <li>Добавь <code>!important</code> к <code>.card p</code> (цвет <code>#666</code>). Проверь: теперь <strong>все</strong> <code>p</code> внутри <code>.card</code> — серые, даже с id? (да, <code>!important</code> перебивает всё).</li>
+            <li>Убери <code>!important</code> — верни нормальную специфичность.</li>
+        </ol>
+        <div class="hint">
+            <strong>Подсказка:</strong> это <strong>плохая практика</strong> — использовать
+            <code>!important</code> для переопределения. Но важно понимать, как это работает.
+            В реальном коде <code>!important</code> — крайняя мера.
+        </div>
+    </div>
+
+    <!-- ======================== ФИНАЛЬНЫЙ ПРОЕКТ ======================== -->
+    <div class="final">
+        <h3>🎯 Финальный мини-проект: страница-визитка</h3>
+        <p>
+            Собери <strong>отдельную</strong> страницу <code>visitka.html</code> (или используй
+            рабочую зону) — простую визитку.
+        </p>
+
+        <p><strong>Что должно быть:</strong></p>
+        <ul>
+            <li><strong>Шапка</strong> с именем (<code>&lt;h1&gt;</code>).</li>
+            <li><strong>Абзац</strong> «О себе» — 2–3 предложения.</li>
+            <li><strong>Список навыков</strong> (<code>&lt;ul&gt;</code>) — минимум 3 пункта.</li>
+            <li><strong>Ссылка</strong> на email через <code>mailto:</code>.</li>
+            <li><strong>Разделы</strong> — заголовки <code>&lt;h2&gt;</code>.</li>
+        </ul>
+
+        <p><strong>Что использовать (из блока 1):</strong></p>
+        <ul>
+            <li>Подключение CSS через <code>&lt;link&gt;</code> (отдельный файл).</li>
+            <li>Селекторы по тегу, классу, id.</li>
+            <li>Наследование: задай <code>color</code> и <code>font-family</code> для <code>body</code>.</li>
+            <li>Специфичность: проверь, что твои стили применяются (DevTools).</li>
+            <li>Каскад: не дублируй правила без причины.</li>
+        </ul>
+
+        <p><strong>Проверка:</strong></p>
+        <ul>
+            <li>Открой в браузере — страница читаемая.</li>
+            <li>DevTools → Network: <code>style.css</code> загружается (200).</li>
+            <li>DevTools → Elements: стили применяются, ничего не «перебито» неожиданно.</li>
+            <li>Валидатор <a href="https://validator.w3.org" target="_blank">validator.w3.org</a> — нет ошибок HTML.</li>
+        </ul>
+
+        <p style="margin-bottom: 0;">
+            <strong>Бонус:</strong> если хочешь, добавь <code>hover</code> для ссылки
+            (измени цвет при наведении) — это уже забегание вперёд, но полезно.
+        </p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ЧЕК-ЛИСТ                                                      -->
+    <!-- ============================================================ -->
+
+    <h2>Чек-лист: что должно быть сделано</h2>
+
+    <ul>
+        <li>☐ CSS вынесен в отдельный файл <code>practice-style.css</code>.</li>
+        <li>☐ Подключён через <code>&lt;link&gt;</code> (задание 1).</li>
+        <li>☐ Фон <code>body</code> — <code>#f0f0f0</code> (задание 2).</li>
+        <li>☐ <code>h1.page-title</code> — синий (задание 2).</li>
+        <li>☐ Все <code>p</code> — <code>#333</code> (задание 2).</li>
+        <li>☐ <code>.highlight</code> — жёлтый фон (задание 3).</li>
+        <li>☐ <code>#special-p</code> — синий, жирный (задание 3).</li>
+        <li>☐ <code>.card p</code> — <code>#666</code> (задание 4).</li>
+        <li>☐ <code>.card &gt; p</code> — левая граница (задание 4).</li>
+        <li>☐ Ссылка без подчёркивания, синяя (задание 5).</li>
+        <li>☐ <code>h2 + p</code> — курсив, граница (задание 5).</li>
+        <li>☐ Проверена специфичность (задание 6).</li>
+        <li>☐ Проверено наследование (задание 7).</li>
+        <li>☐ Проверен каскад (задание 8).</li>
+        <li>☐ Проверено комбинирование селекторов (задание 9).</li>
+        <li>☐ Финальный мини-проект «визитка» готов.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Практика блока 1 · Основы CSS
+    </p>
+
+</body>
+</html>

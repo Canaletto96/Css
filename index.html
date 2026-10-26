@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Оглавление курса CSS — все 60 уроков с прямыми ссылками.">
+    <meta name="description" content="Оглавление курса CSS — все 60 уроков и практика по каждому разделу.">
     <title>Курс CSS — Оглавление</title>
 
     <style>
@@ -17,6 +17,8 @@
             --border: #e0e0e0;
             --done: #43a047;
             --pending: #bdbdbd;
+            --practice: #ff9800;
+            --practice-light: #fff3e0;
         }
 
         * { box-sizing: border-box; }
@@ -116,6 +118,31 @@
         .lesson:last-child { border-bottom: none; }
         .lesson:hover { background: var(--accent-light); }
 
+        /* Практика — особый стиль */
+        .lesson.practice {
+            background: var(--practice-light);
+            border-left: 4px solid var(--practice);
+        }
+
+        .lesson.practice:hover { background: #ffe0b2; }
+
+        .lesson.practice .lesson-number {
+            background: var(--practice);
+            color: #fff;
+        }
+
+        .lesson.practice:hover .lesson-number {
+            background: #e65100;
+        }
+
+        .lesson.practice .lesson-status.done {
+            background: var(--done);
+        }
+
+        .lesson.practice .lesson-status.pending {
+            background: var(--practice);
+        }
+
         .lesson-number {
             font-family: Consolas, Monaco, monospace;
             font-size: 0.9em;
@@ -176,6 +203,7 @@
             margin-top: 16px;
             font-size: 0.85em;
             color: var(--muted);
+            flex-wrap: wrap;
         }
 
         .legend span {
@@ -192,6 +220,74 @@
 
         .legend .dot.done { background: var(--done); }
         .legend .dot.pending { background: var(--pending); }
+        .legend .dot.practice { background: var(--practice); }
+
+        /* Секция практик — отдельный блок */
+        .practice-section {
+            background: var(--practice-light);
+            border: 2px solid var(--practice);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 40px 0;
+        }
+
+        .practice-section h2 {
+            color: #e65100;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .practice-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .practice-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.15s;
+        }
+
+        .practice-link:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .practice-link.done { border-color: var(--done); }
+        .practice-link.pending { opacity: 0.6; }
+
+        .practice-link .p-icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .practice-link .p-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .practice-link .p-title {
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 2px;
+        }
+
+        .practice-link .p-meta {
+            font-size: 0.8em;
+            color: var(--muted);
+        }
 
         @media (max-width: 600px) {
             .lesson-tags { display: none; }
@@ -203,7 +299,7 @@
 
     <header>
         <h1>Курс CSS</h1>
-        <p class="subtitle">Полный курс по каскадным таблицам стилей — 60 уроков</p>
+        <p class="subtitle">Полный курс по каскадным таблицам стилей — 60 уроков + 11 практик</p>
         <div class="stats">
             <div class="stat">
                 <span class="stat-value">60</span>
@@ -212,6 +308,10 @@
             <div class="stat">
                 <span class="stat-value">11</span>
                 <span class="stat-label">блоков</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">11</span>
+                <span class="stat-label">практик</span>
             </div>
         </div>
     </header>
@@ -223,9 +323,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 1. Основы CSS
-            <span class="section-count">6 уроков</span>
+            <span class="section-count">6 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="01-basics/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 1</strong> — все темы раздела в одном файле</span>
+                <span class="lesson-tags">9 заданий + проект</span>
+                <span class="lesson-status done"></span>
+            </a>
 
             <a class="lesson" href="01-basics/01-intro.html">
                 <span class="lesson-number">01</span>
@@ -238,35 +345,35 @@
                 <span class="lesson-number">02</span>
                 <span class="lesson-title">Способы подключения CSS — внешний файл, &lt;style&gt;, style=""</span>
                 <span class="lesson-tags">link style @import</span>
-                <span class="lesson-status pending"></span>
+                <span class="lesson-status done"></span>
             </a>
 
             <a class="lesson" href="01-basics/03-syntax.html">
                 <span class="lesson-number">03</span>
                 <span class="lesson-title">Синтаксис CSS — селектор, свойство, значение</span>
                 <span class="lesson-tags">синтаксис</span>
-                <span class="lesson-status pending"></span>
+                <span class="lesson-status done"></span>
             </a>
 
             <a class="lesson" href="01-basics/04-selectors.html">
                 <span class="lesson-number">04</span>
                 <span class="lesson-title">Селекторы — тег, класс, id, потомок, ребёнок, сосед</span>
                 <span class="lesson-tags">селекторы</span>
-                <span class="lesson-status pending"></span>
+                <span class="lesson-status done"></span>
             </a>
 
             <a class="lesson" href="01-basics/05-specificity.html">
                 <span class="lesson-number">05</span>
                 <span class="lesson-title">Специфичность и каскад — какой стиль победит</span>
                 <span class="lesson-tags">specificity каскад</span>
-                <span class="lesson-status pending"></span>
+                <span class="lesson-status done"></span>
             </a>
 
             <a class="lesson" href="01-basics/06-inheritance.html">
                 <span class="lesson-number">06</span>
                 <span class="lesson-title">Наследование — какие свойства наследуются</span>
                 <span class="lesson-tags">inherit</span>
-                <span class="lesson-status pending"></span>
+                <span class="lesson-status done"></span>
             </a>
 
         </div>
@@ -279,9 +386,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 2. Единицы и цвет
-            <span class="section-count">4 урока</span>
+            <span class="section-count">4 урока + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="02-units-color/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 2</strong> — единицы, цвета, шрифты, выравнивание</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="02-units-color/07-units.html">
                 <span class="lesson-number">07</span>
@@ -321,9 +435,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 3. Блочная модель
-            <span class="section-count">6 уроков</span>
+            <span class="section-count">6 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="03-box-model/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 3</strong> — карточки, отступы, тени, overflow</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="03-box-model/11-box-model.html">
                 <span class="lesson-number">11</span>
@@ -377,9 +498,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 4. Фон и графика
-            <span class="section-count">5 уроков</span>
+            <span class="section-count">5 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="04-background/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 4</strong> — фоны, градиенты, тени, прозрачность</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="04-background/17-background.html">
                 <span class="lesson-number">17</span>
@@ -426,9 +554,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 5. Позиционирование
-            <span class="section-count">5 уроков</span>
+            <span class="section-count">5 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="05-positioning/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 5</strong> — position, z-index, sticky, центрирование</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="05-positioning/22-position.html">
                 <span class="lesson-number">22</span>
@@ -475,9 +610,16 @@
     <div class="section">
         <h2 class="section-title">
             🔥 Блок 6. Flexbox
-            <span class="section-count">6 уроков</span>
+            <span class="section-count">6 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="06-flexbox/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 6</strong> — меню, карточки, sticky footer, центрирование</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="06-flexbox/27-flexbox-intro.html">
                 <span class="lesson-number">27</span>
@@ -531,9 +673,16 @@
     <div class="section">
         <h2 class="section-title">
             🔥 Блок 7. Grid
-            <span class="section-count">7 уроков</span>
+            <span class="section-count">7 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="07-grid/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 7</strong> — макеты страниц, галереи, области</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="07-grid/33-grid-intro.html">
                 <span class="lesson-number">33</span>
@@ -594,9 +743,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 8. Адаптивность
-            <span class="section-count">6 уроков</span>
+            <span class="section-count">6 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="08-responsive/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 8</strong> — media queries, адаптивные сетки, картинки</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="08-responsive/40-responsive-intro.html">
                 <span class="lesson-number">40</span>
@@ -650,9 +806,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 9. Продвинутое
-            <span class="section-count">7 уроков</span>
+            <span class="section-count">7 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="09-advanced/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 9</strong> — псевдоклассы, переходы, анимации, переменные</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="09-advanced/46-pseudo-classes.html">
                 <span class="lesson-number">46</span>
@@ -713,9 +876,16 @@
     <div class="section">
         <h2 class="section-title">
             🟢 Блок 10. Практика и инструменты
-            <span class="section-count">7 уроков</span>
+            <span class="section-count">7 уроков + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="10-practice/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 10</strong> — reset, BEM, DevTools, организация</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="10-practice/53-reset.html">
                 <span class="lesson-number">53</span>
@@ -776,9 +946,16 @@
     <div class="section">
         <h2 class="section-title">
             🎯 Блок 11. Итоговый проект
-            <span class="section-count">1 урок</span>
+            <span class="section-count">1 урок + практика</span>
         </h2>
         <div class="lessons">
+
+            <a class="lesson practice" href="11-project/00-practice.html">
+                <span class="lesson-number">📝</span>
+                <span class="lesson-title"><strong>Практика блока 11</strong> — подготовка к финальному проекту</span>
+                <span class="lesson-tags">мини-проект</span>
+                <span class="lesson-status pending"></span>
+            </a>
 
             <a class="lesson" href="11-project/60-final-project.html">
                 <span class="lesson-number">60</span>
@@ -790,11 +967,115 @@
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- БЫСТРЫЙ ДОСТУП КО ВСЕМ ПРАКТИКАМ                              -->
+    <!-- ============================================================ -->
+
+    <div class="practice-section">
+        <h2>📝 Все практики курса</h2>
+        <p style="margin-top: 0; color: #666;">
+            Сводные задания по каждому разделу. Один файл — все темы блока.
+        </p>
+
+        <div class="practice-list">
+
+            <a class="practice-link done" href="01-basics/00-practice.html">
+                <span class="p-icon">✅</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 1. Основы CSS</div>
+                    <div class="p-meta">9 заданий + визитка</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="02-units-color/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 2. Единицы и цвет</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="03-box-model/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 3. Блочная модель</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="04-background/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 4. Фон и графика</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="05-positioning/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 5. Позиционирование</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="06-flexbox/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 6. Flexbox</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="07-grid/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 7. Grid</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="08-responsive/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 8. Адаптивность</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="09-advanced/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 9. Продвинутое</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="10-practice/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 10. Практика и инструменты</div>
+                    <div class="p-meta">мини-проект</div>
+                </div>
+            </a>
+
+            <a class="practice-link pending" href="11-project/00-practice.html">
+                <span class="p-icon">⏳</span>
+                <div class="p-info">
+                    <div class="p-title">Блок 11. Итоговый проект</div>
+                    <div class="p-meta">подготовка</div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
     <div class="footer">
-        <p>Курс CSS · Оглавление</p>
+        <p>Курс CSS · Оглавление + практики</p>
         <div class="legend">
-            <span><span class="dot done"></span> Урок готов</span>
-            <span><span class="dot pending"></span> Ещё не сгенерирован</span>
+            <span><span class="dot done"></span> Готово</span>
+            <span><span class="dot pending"></span> В процессе</span>
+            <span><span class="dot practice"></span> Практика</span>
         </div>
     </div>
 

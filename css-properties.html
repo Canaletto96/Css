@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS-свойства — перевод и назначение</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 {
+            background: #1565c0;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-top: 40px;
+            font-size: 1.1em;
+        }
+        h3 { color: #555; margin-top: 24px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.9em;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 12px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; font-weight: 600; }
+        td:first-child {
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            white-space: nowrap;
+            width: 220px;
+        }
+        td:nth-child(2) {
+            width: 220px;
+            color: #555;
+            font-style: italic;
+        }
+        .note {
+            background: #fff8e1;
+            border-left: 4px solid #ffb300;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .toc {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px 0;
+        }
+        .toc h3 { margin-top: 0; border: none; padding: 0; color: #1565c0; }
+        .toc ul { columns: 2; padding-left: 20px; }
+        .toc a { color: #1565c0; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS-свойства — перевод и назначение</h1>
+
+    <p>Шпаргалка: что означает каждое CSS-свойство. Сгруппировано по темам.</p>
+
+    <div class="toc">
+        <h3>Содержание</h3>
+        <ul>
+            <li><a href="#text">Текст и шрифт</a></li>
+            <li><a href="#box">Блок и отступы</a></li>
+            <li><a href="#border">Границы и тени</a></li>
+            <li><a href="#bg">Фон</a></li>
+            <li><a href="#size">Размеры</a></li>
+            <li><a href="#display">Отображение и позиция</a></li>
+            <li><a href="#flex">Flexbox</a></li>
+            <li><a href="#grid">Grid</a></li>
+            <li><a href="#other">Разное</a></li>
+        </ul>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ТЕКСТ И ШРИФТ                                                 -->
+    <!-- ============================================================ -->
+
+    <h2 id="text">📝 Текст и шрифт</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>color</td><td>цвет</td><td>Цвет текста</td></tr>
+            <tr><td>font-family</td><td>семейство шрифта</td><td>Какой шрифт использовать</td></tr>
+            <tr><td>font-size</td><td>размер шрифта</td><td>Размер текста</td></tr>
+            <tr><td>font-weight</td><td>вес шрифта</td><td>Жирность (100–900, normal, bold)</td></tr>
+            <tr><td>font-style</td><td>стиль шрифта</td><td>Курсив (normal, italic, oblique)</td></tr>
+            <tr><td>font</td><td>шрифт</td><td>Сокращённая запись всех font-*</td></tr>
+            <tr><td>line-height</td><td>высота строки</td><td>Межстрочный интервал</td></tr>
+            <tr><td>letter-spacing</td><td>расстояние между буквами</td><td>Пробелы между символами</td></tr>
+            <tr><td>word-spacing</td><td>расстояние между словами</td><td>Пробелы между словами</td></tr>
+            <tr><td>text-align</td><td>выравнивание текста</td><td>left, center, right, justify</td></tr>
+            <tr><td>text-decoration</td><td>оформление текста</td><td>Подчёркивание, зачёркивание</td></tr>
+            <tr><td>text-transform</td><td>преобразование текста</td><td>uppercase, lowercase, capitalize</td></tr>
+            <tr><td>text-indent</td><td>отступ текста</td><td>Отступ первой строки</td></tr>
+            <tr><td>text-overflow</td><td>переполнение текста</td><td>ellipsis — многоточие при обрезке</td></tr>
+            <tr><td>text-shadow</td><td>тень текста</td><td>Тень у букв</td></tr>
+            <tr><td>white-space</td><td>белое пространство</td><td>Обработка пробелов и переносов</td></tr>
+            <tr><td>word-break</td><td>разрыв слов</td><td>Как переносить длинные слова</td></tr>
+            <tr><td>overflow-wrap</td><td>перенос при переполнении</td><td>break-word — перенос длинных слов</td></tr>
+            <tr><td>vertical-align</td><td>вертикальное выравнивание</td><td>Выравнивание inline-элементов</td></tr>
+            <tr><td>hyphens</td><td>переносы</td><td>Автоматические переносы с дефисом</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- БЛОК И ОТСТУПЫ                                                -->
+    <!-- ============================================================ -->
+
+    <h2 id="box">📦 Блок и отступы</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>width</td><td>ширина</td><td>Ширина блока</td></tr>
+            <tr><td>height</td><td>высота</td><td>Высота блока</td></tr>
+            <tr><td>min-width</td><td>мин. ширина</td><td>Минимальная ширина</td></tr>
+            <tr><td>max-width</td><td>макс. ширина</td><td>Максимальная ширина</td></tr>
+            <tr><td>min-height</td><td>мин. высота</td><td>Минимальная высота</td></tr>
+            <tr><td>max-height</td><td>макс. высота</td><td>Максимальная высота</td></tr>
+            <tr><td>margin</td><td>внешний отступ</td><td>Отступ снаружи блока</td></tr>
+            <tr><td>margin-top</td><td>отступ сверху</td><td>Снаружи сверху</td></tr>
+            <tr><td>margin-right</td><td>отступ справа</td><td>Снаружи справа</td></tr>
+            <tr><td>margin-bottom</td><td>отступ снизу</td><td>Снаружи снизу</td></tr>
+            <tr><td>margin-left</td><td>отступ слева</td><td>Снаружи слева</td></tr>
+            <tr><td>padding</td><td>внутренний отступ</td><td>Отступ внутри блока</td></tr>
+            <tr><td>padding-top</td><td>внутр. отступ сверху</td><td>Внутри сверху</td></tr>
+            <tr><td>padding-right</td><td>внутр. отступ справа</td><td>Внутри справа</td></tr>
+            <tr><td>padding-bottom</td><td>внутр. отступ снизу</td><td>Внутри снизу</td></tr>
+            <tr><td>padding-left</td><td>внутр. отступ слева</td><td>Внутри слева</td></tr>
+            <tr><td>box-sizing</td><td>расчёт размеров блока</td><td>content-box / border-box</td></tr>
+            <tr><td>overflow</td><td>переполнение</td><td>Что делать с контентом вне блока</td></tr>
+            <tr><td>overflow-x</td><td>переполнение по X</td><td>Горизонтальное</td></tr>
+            <tr><td>overflow-y</td><td>переполнение по Y</td><td>Вертикальное</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- ГРАНИЦЫ И ТЕНИ                                                -->
+    <!-- ============================================================ -->
+
+    <h2 id="border">🔲 Границы и тени</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>border</td><td>граница</td><td>Рамка вокруг блока</td></tr>
+            <tr><td>border-width</td><td>ширина границы</td><td>Толщина рамки</td></tr>
+            <tr><td>border-style</td><td>стиль границы</td><td>solid, dashed, dotted и др.</td></tr>
+            <tr><td>border-color</td><td>цвет границы</td><td>Цвет рамки</td></tr>
+            <tr><td>border-top / -right / -bottom / -left</td><td>граница сверху / справа / снизу / слева</td><td>Отдельные стороны</td></tr>
+            <tr><td>border-radius</td><td>радиус границы</td><td>Скругление углов</td></tr>
+            <tr><td>border-collapse</td><td>схлопывание границ</td><td>Для таблиц — убрать двойные рамки</td></tr>
+            <tr><td>outline</td><td>контур</td><td>Обводка (не занимает места)</td></tr>
+            <tr><td>outline-offset</td><td>смещение контура</td><td>Отступ между border и outline</td></tr>
+            <tr><td>box-shadow</td><td>тень блока</td><td>Тень вокруг блока</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- ФОН                                                           -->
+    <!-- ============================================================ -->
+
+    <h2 id="bg">🎨 Фон</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>background</td><td>фон</td><td>Сокращённая запись всех background-*</td></tr>
+            <tr><td>background-color</td><td>цвет фона</td><td>Цвет заливки</td></tr>
+            <tr><td>background-image</td><td>изображение фона</td><td>Картинка или градиент</td></tr>
+            <tr><td>background-size</td><td>размер фона</td><td>cover, contain, px, %</td></tr>
+            <tr><td>background-position</td><td>позиция фона</td><td>Где расположить картинку</td></tr>
+            <tr><td>background-repeat</td><td>повтор фона</td><td>repeat, no-repeat, repeat-x, repeat-y</td></tr>
+            <tr><td>background-attachment</td><td>прикрепление фона</td><td>scroll, fixed — прокручивается ли</td></tr>
+            <tr><td>background-clip</td><td>обрезка фона</td><td>Где заканчивается фон</td></tr>
+            <tr><td>background-origin</td><td>начало фона</td><td>Откуда начинается фон</td></tr>
+            <tr><td>opacity</td><td>прозрачность</td><td>0–1, прозрачность всего блока</td></tr>
+            <tr><td>filter</td><td>фильтр</td><td>blur, brightness, grayscale и др.</td></tr>
+            <tr><td>mix-blend-mode</td><td>режим смешивания</td><td>Как фон смешивается с содержимым</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- РАЗМЕРЫ                                                       -->
+    <!-- ============================================================ -->
+
+    <h2 id="size">📐 Размеры и единицы</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Единица</th>
+                <th>Перевод</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>px</td><td>пиксели</td><td>Абсолютная единица</td></tr>
+            <tr><td>%</td><td>проценты</td><td>От родителя</td></tr>
+            <tr><td>em</td><td>относительно шрифта родителя</td><td>1em = font-size родителя</td></tr>
+            <tr><td>rem</td><td>относительно корневого шрифта</td><td>1rem = font-size &lt;html&gt;</td></tr>
+            <tr><td>vw</td><td>1% ширины окна</td><td>viewport width</td></tr>
+            <tr><td>vh</td><td>1% высоты окна</td><td>viewport height</td></tr>
+            <tr><td>vmin</td><td>минимум из vw и vh</td><td>—</td></tr>
+            <tr><td>vmax</td><td>максимум из vw и vh</td><td>—</td></tr>
+            <tr><td>ch</td><td>ширина символа «0»</td><td>—</td></tr>
+            <tr><td>fr</td><td>фракция</td><td>В Grid — доля свободного места</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- ОТОБРАЖЕНИЕ И ПОЗИЦИЯ                                         -->
+    <!-- ============================================================ -->
+
+    <h2 id="display">🧱 Отображение и позиция</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>display</td><td>отображение</td><td>block, inline, inline-block, none, flex, grid</td></tr>
+            <tr><td>visibility</td><td>видимость</td><td>visible, hidden — скрыть, но место остаётся</td></tr>
+            <tr><td>position</td><td>позиция</td><td>static, relative, absolute, fixed, sticky</td></tr>
+            <tr><td>top</td><td>сверху</td><td>Сдвиг от верхнего края</td></tr>
+            <tr><td>right</td><td>справа</td><td>Сдвиг от правого края</td></tr>
+            <tr><td>bottom</td><td>снизу</td><td>Сдвиг от нижнего края</td></tr>
+            <tr><td>left</td><td>слева</td><td>Сдвиг от левого края</td></tr>
+            <tr><td>z-index</td><td>ось Z</td><td>Порядок наложения (кто выше)</td></tr>
+            <tr><td>float</td><td>обтекание</td><td>left, right, none (legacy)</td></tr>
+            <tr><td>clear</td><td>очистка</td><td>Запретить обтекание</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- FLEXBOX                                                       -->
+    <!-- ============================================================ -->
+
+    <h2 id="flex">📏 Flexbox</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>display: flex</td><td>включить flex</td><td>Родитель становится flex-контейнером</td></tr>
+            <tr><td>flex-direction</td><td>направление flex</td><td>row, column, row-reverse, column-reverse</td></tr>
+            <tr><td>flex-wrap</td><td>перенос flex</td><td>nowrap, wrap, wrap-reverse</td></tr>
+            <tr><td>flex-flow</td><td>поток flex</td><td>Сокращение direction + wrap</td></tr>
+            <tr><td>justify-content</td><td>выравнивание по главной оси</td><td>flex-start, center, space-between, space-around</td></tr>
+            <tr><td>align-items</td><td>выравнивание элементов</td><td>По поперечной оси</td></tr>
+            <tr><td>align-content</td><td>выравнивание контента</td><td>Для многострочных</td></tr>
+            <tr><td>align-self</td><td>выравнивание себя</td><td>Для конкретного элемента</td></tr>
+            <tr><td>flex-grow</td><td>растяжение flex</td><td>Сколько «съесть» свободного места</td></tr>
+            <tr><td>flex-shrink</td><td>сжатие flex</td><td>Сколько «отдать» при нехватке</td></tr>
+            <tr><td>flex-basis</td><td>базовый размер flex</td><td>Начальный размер</td></tr>
+            <tr><td>flex</td><td>flex</td><td>Сокращение grow + shrink + basis</td></tr>
+            <tr><td>gap</td><td>промежуток</td><td>Отступ между элементами</td></tr>
+            <tr><td>order</td><td>порядок</td><td>Изменить порядок элементов</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- GRID                                                          -->
+    <!-- ============================================================ -->
+
+    <h2 id="grid">🔲 Grid</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>display: grid</td><td>включить grid</td><td>Родитель становится grid-контейнером</td></tr>
+            <tr><td>grid-template-columns</td><td>шаблон колонок</td><td>Сколько и какие колонки</td></tr>
+            <tr><td>grid-template-rows</td><td>шаблон строк</td><td>Сколько и какие строки</td></tr>
+            <tr><td>grid-template-areas</td><td>шаблон областей</td><td>Именованные области</td></tr>
+            <tr><td>grid-column</td><td>колонка grid</td><td>Позиция по колонкам</td></tr>
+            <tr><td>grid-row</td><td>строка grid</td><td>Позиция по строкам</td></tr>
+            <tr><td>grid-area</td><td>область grid</td><td>Короткая запись row + column</td></tr>
+            <tr><td>grid-auto-flow</td><td>авто-поток grid</td><td>row, column, dense</td></tr>
+            <tr><td>grid-auto-rows</td><td>авто-строки grid</td><td>Размер автоматических строк</td></tr>
+            <tr><td>grid-auto-columns</td><td>авто-колонки grid</td><td>Размер автоматических колонок</td></tr>
+            <tr><td>justify-items</td><td>выравнивание по главной</td><td>По горизонтали</td></tr>
+            <tr><td>align-items</td><td>выравнивание элементов</td><td>По вертикали</td></tr>
+            <tr><td>place-items</td><td>разместить элементы</td><td>justify-items + align-items</td></tr>
+        </tbody>
+    </table>
+
+    <!-- ============================================================ -->
+    <!-- РАЗНОЕ                                                        -->
+    <!-- ============================================================ -->
+
+    <h2 id="other">⚙️ Разное</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>cursor</td><td>курсор</td><td>pointer, default, text, not-allowed</td></tr>
+            <tr><td>transition</td><td>переход</td><td>Плавное изменение свойств</td></tr>
+            <tr><td>transform</td><td>преобразование</td><td>translate, rotate, scale, skew</td></tr>
+            <tr><td>animation</td><td>анимация</td><td>Сокращение для @keyframes</td></tr>
+            <tr><td>transform-origin</td><td>центр преобразования</td><td>Точка вращения/масштаба</td></tr>
+            <tr><td>transition-property</td><td>свойство перехода</td><td>Какое свойство анимировать</td></tr>
+            <tr><td>transition-duration</td><td>длительность перехода</td><td>Сколько длится</td></tr>
+            <tr><td>transition-timing-function</td><td>функция времени</td><td>ease, linear, ease-in-out</td></tr>
+            <tr><td>content</td><td>содержимое</td><td>Для ::before и ::after</td></tr>
+            <tr><td>object-fit</td><td>вписать объект</td><td>cover, contain — для картинок</td></tr>
+            <tr><td>object-position</td><td>позиция объекта</td><td>Где показать картинку</td></tr>
+            <tr><td>aspect-ratio</td><td>соотношение сторон</td><td>16/9, 1/1 и др.</td></tr>
+            <tr><td>user-select</td><td>выделение пользователем</td><td>Можно ли выделять текст</td></tr>
+            <tr><td>pointer-events</td><td>события указателя</td><td>none — отключить клики</td></tr>
+            <tr><td>list-style</td><td>стиль списка</td><td>Маркеры у &lt;ul&gt; / &lt;ol&gt;</td></tr>
+            <tr><td>scroll-behavior</td><td>поведение прокрутки</td><td>smooth — плавная прокрутка</td></tr>
+            <tr><td>resize</td><td>изменение размера</td><td>Можно ли растягивать</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Совет:</strong> не пытайся запомнить всё сразу. Держи эту таблицу открытой,
+        когда пишешь CSS. Постепенно всё запомнится само.
+    </div>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Шпаргалка CSS · Сохрани в закладки
+    </p>
+
+</body>
+</html>

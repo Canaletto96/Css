@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 40: адаптивность — mobile-first, desktop-first, брейкпоинты, meta viewport.">
+    <title>CSS Урок 40. Адаптивность — введение</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .device {
+            text-align: center;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border: 2px solid #999;
+        }
+        .device-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .device-name {
+            font-weight: bold;
+            color: #1565c0;
+        }
+        .device-size {
+            font-size: 12px;
+            color: #666;
+            font-family: Consolas, Monaco, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 40. Адаптивность — введение</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, что такое адаптивность, зачем она     -->
+    <!-- нужна, и какие есть подходы (mobile-first, desktop-first). -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое адаптивность</h2>
+
+    <p>
+        <strong>Адаптивность</strong> (responsive design) — это способность сайта
+        <strong>подстраиваться под размер экрана</strong>: мобильный, планшет,
+        десктоп.
+    </p>
+
+    <p>
+        Один и тот же HTML, но <strong>разные стили</strong> для разных ширин.
+    </p>
+
+    <div class="note">
+        <strong>Зачем:</strong>
+        <ul>
+            <li><strong>60% трафика</strong> — мобильные.</li>
+            <li>Google ранжирует по <strong>mobile-first</strong> (с 2021).</li>
+            <li>Неадаптивный сайт = плохой UX = потеря пользователей.</li>
+        </ul>
+    </div>
+
+    <h2>2. Типы устройств</h2>
+
+    <div class="demo">
+        <div class="demo-label">Основные брейкпоинты:</div>
+        <div class="device-grid">
+            <div class="device">
+                <div class="device-icon">📱</div>
+                <div class="device-name">Мобильный</div>
+                <div class="device-size">&lt; 576px</div>
+            </div>
+            <div class="device">
+                <div class="device-icon">📱</div>
+                <div class="device-name">Большой телефон</div>
+                <div class="device-size">576–767px</div>
+            </div>
+            <div class="device">
+                <div class="device-icon">📟</div>
+                <div class="device-name">Планшет</div>
+                <div class="device-size">768–991px</div>
+            </div>
+            <div class="device">
+                <div class="device-icon">💻</div>
+                <div class="device-name">Ноутбук</div>
+                <div class="device-size">992–1199px</div>
+            </div>
+            <div class="device">
+                <div class="device-icon">🖥</div>
+                <div class="device-name">Десктоп</div>
+                <div class="device-size">≥ 1200px</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>3. <code>meta viewport</code></h2>
+
+    <p>
+        <strong>Первое</strong>, что нужно для адаптивности — <code>meta viewport</code>
+        в <code>&lt;head&gt;</code>.
+    </p>
+
+    <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>width=device-width</code></td>
+                <td>Ширина страницы = ширина экрана</td>
+            </tr>
+            <tr>
+                <td><code>initial-scale=1.0</code></td>
+                <td>Начальный масштаб 100%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Без <code>viewport</code></strong> мобильный браузер покажет
+        «десктопную» версию, сжатую до размера экрана. Текст будет
+        <strong>микроскопическим</strong>.
+    </div>
+
+    <h2>4. Два подхода: mobile-first vs desktop-first</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mobile-first</th>
+                <th>Desktop-first</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>С чего начинать</td>
+                <td>С мобильного</td>
+                <td>С десктопа</td>
+            </tr>
+            <tr>
+                <td>Базовые стили</td>
+                <td>Мобильные</td>
+                <td>Десктопные</td>
+            </tr>
+            <tr>
+                <td>Media queries</td>
+                <td><code>min-width</code></td>
+                <td><code>max-width</code></td>
+            </tr>
+            <tr>
+                <td>Сложность</td>
+                <td>Проще</td>
+                <td>Сложнее</td>
+            </tr>
+            <tr>
+                <td>Производительность</td>
+                <td>Лучше (меньше CSS на мобильных)</td>
+                <td>Хуже (много CSS на мобильных)</td>
+            </tr>
+            <tr>
+                <td>Рекомендация</td>
+                <td><strong>Да</strong></td>
+                <td>Для legacy-проектов</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Mobile-first</h2>
+
+    <p>
+        <strong>Базовые стили</strong> — для мобильных. Потом через
+        <code>@media (min-width: ...)</code> добавляем стили для больших экранов.
+    </p>
+
+    <pre><code>/* Базовые стили — мобильные */
+.container {
+    padding: 16px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr;   /* одна колонка */
+    gap: 16px;
+}
+
+/* Планшет */
+@media (min-width: 768px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);   /* две колонки */
+    }
+}
+
+/* Десктоп */
+@media (min-width: 1024px) {
+    .container {
+        padding: 32px;
+    }
+    .cards {
+        grid-template-columns: repeat(3, 1fr);   /* три колонки */
+    }
+}</code></pre>
+
+    <div class="note">
+        <strong>Логика:</strong> мобильные — «по умолчанию». Потом
+        <strong>добавляем</strong> стили для больших экранов. <code>min-width</code>
+        означает «от этого размера и больше».
+    </div>
+
+    <h2>6. Desktop-first</h2>
+
+    <p>
+        <strong>Базовые стили</strong> — для десктопа. Потом через
+        <code>@media (max-width: ...)</code> — для меньших.
+    </p>
+
+    <pre><code>/* Базовые стили — десктоп */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Планшет */
+@media (max-width: 1023px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Мобильный */
+@media (max-width: 767px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}</code></pre>
+
+    <div class="warn">
+        <strong>Не рекомендуется:</strong> на мобильных грузится много CSS,
+        который не используется. Плюс сложнее поддерживать. Используй только
+        для legacy-проектов.
+    </div>
+
+    <h2>7. Как выбрать брейкпоинты</h2>
+
+    <p>
+        <strong>Не подгоняй под конкретные устройства</strong> (iPhone, Samsung).
+        Подгоняй под <strong>контент</strong>: когда вёрстка «ломается» — ставь
+        брейкпоинт.
+    </p>
+
+    <pre><code>/* Не так: */
+@media (max-width: 375px) { }   /* iPhone SE */
+@media (max-width: 414px) { }   /* iPhone Pro Max */
+
+/* А так: */
+@media (min-width: 768px) { }   /* планшет */
+@media (min-width: 1024px) { }  /* десктоп */</code></pre>
+
+    <div class="note">
+        <strong>Правило:</strong> открой DevTools → сузь окно. Когда
+        вёрстка «ломается» — это твой брейкпоинт.
+    </div>
+
+    <h2>8. Стандартные брейкпоинты</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Размер</th>
+                <th>Устройство</th>
+                <th>Колонки</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>&lt; 576px</td><td>Мобильный</td><td>1</td></tr>
+            <tr><td>576–767px</td><td>Большой телефон</td><td>2</td></tr>
+            <tr><td>768–991px</td><td>Планшет</td><td>2–3</td></tr>
+            <tr><td>992–1199px</td><td>Ноутбук</td><td>3–4</td></tr>
+            <tr><td>≥ 1200px</td><td>Десктоп</td><td>4+</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Это не догма.</strong> Bootstrap использует эти брейкпоинты, но
+        ты можешь выбрать свои. Главное — <strong>под контент</strong>.
+    </div>
+
+    <h2>9. Практика: адаптивная сетка карточек</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+}
+
+@media (min-width: 576px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .cards {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        padding: 32px;
+    }
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Адаптивная сетка (сузь окно):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 1</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 2</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 3</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>10. Что НЕ адаптивность</h2>
+
+    <div class="warn">
+        <strong>Плохие способы:</strong>
+        <ul>
+            <li><strong>Отдельный сайт для мобильных</strong> (m.site.com) — устарело, плохо для SEO.</li>
+            <li><strong>Фиксированная ширина 1200px</strong> — горизонтальный скролл на мобильных.</li>
+            <li><strong>Уменьшение всего</strong> через <code>transform: scale()</code> — не работает для текста.</li>
+            <li><strong>Скрытие контента</strong> на мобильных — плохо для SEO.</li>
+            <li><strong>Только <code>meta viewport</code></strong> без media queries — недостаточно.</li>
+        </ul>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>meta viewport</code></td>
+                <td>Мобильный браузер покажет «десктопную» версию</td>
+            </tr>
+            <tr>
+                <td>Фиксированные <code>width</code> в px</td>
+                <td>Горизонтальный скролл</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>max-width</code> для mobile-first</td>
+                <td>Путаница. Для mobile-first — <code>min-width</code></td>
+            </tr>
+            <tr>
+                <td>Подгонять под конкретные устройства</td>
+                <td>Устройств тысячи. Подгоняй под контент</td>
+            </tr>
+            <tr>
+                <td>Слишком много брейкпоинтов</td>
+                <td>Сложно поддерживать. 3–5 хватает</td>
+            </tr>
+            <tr>
+                <td>Скрывать контент на мобильных</td>
+                <td>Плохо для SEO и UX</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Адаптивность</strong> — сайт подстраивается под экран.</li>
+        <li><strong><code>meta viewport</code></strong> — обязательна. <code>width=device-width, initial-scale=1.0</code>.</li>
+        <li><strong>Mobile-first</strong> — базовые стили для мобильных, <code>min-width</code> для десктопа. <strong>Рекомендую.</strong></li>
+        <li><strong>Desktop-first</strong> — базовые для десктопа, <code>max-width</code> для мобильных. Legacy.</li>
+        <li><strong>Брейкпоинты</strong> — под контент, не под устройства.</li>
+        <li><strong>Стандартные:</strong> 576, 768, 992, 1200px.</li>
+        <li><strong>Не используй</strong> отдельный сайт для мобильных.</li>
+        <li><strong>Не скрывай</strong> контент на мобильных.</li>
+        <li><strong>Проверяй в DevTools</strong> — сузь окно.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 40 · Следующий урок: <em>Media queries — @media, min-width, max-width</em>
+    </p>
+
+</body>
+</html>

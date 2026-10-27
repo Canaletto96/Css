@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 42: относительные единицы для адаптива — %, rem, vw, vh, clamp, min, max.">
+    <title>CSS Урок 42. Относительные единицы</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .unit-box {
+            background: #1565c0;
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+            margin: 8px 0;
+        }
+        .clamp-demo {
+            font-size: clamp(16px, 4vw, 32px);
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+            color: #1565c0;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        .vh-demo {
+            height: 30vh;
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 42. Относительные единицы</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить %, rem, vw, vh, clamp, min, max —     -->
+    <!-- единицы для адаптивных размеров.                          -->
+    <!-- ========================================================= -->
+
+    <h2>1. Зачем относительные единицы</h2>
+
+    <p>
+        <strong>Фиксированные</strong> <code>px</code> не адаптируются. <strong>Относительные</strong>
+        единицы подстраиваются под:
+    </p>
+
+    <ul>
+        <li><strong>Родителя</strong> — <code>%</code>, <code>em</code>.</li>
+        <li><strong>Корня</strong> — <code>rem</code>.</li>
+        <li><strong>Окна</strong> — <code>vw</code>, <code>vh</code>.</li>
+        <li><strong>Контента</strong> — <code>ch</code>.</li>
+    </ul>
+
+    <h2>2. <code>%</code> — проценты</h2>
+
+    <p>Считается от <strong>родителя</strong>.</p>
+
+    <pre><code>.parent {
+    width: 400px;
+}
+
+.child {
+    width: 50%;       /* 200px (50% от 400px) */
+    padding: 10%;     /* 40px (10% от ширины родителя!) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Родитель 400px, ребёнок 50%:</div>
+        <div style="width: 400px; max-width: 100%; background: #f5f5f5; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <div class="unit-box" style="width: 50%;">50% (200px)</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> <code>padding</code> и <code>margin</code> в процентах
+        считаются от <strong>ширины</strong> родителя, даже для <code>padding-top</code>!
+    </div>
+
+    <h2>3. <code>rem</code> — от корня</h2>
+
+    <p>
+        <strong>1rem</strong> = <code>font-size</code> <strong>корня</strong>
+        (<code>&lt;html&gt;</code>), обычно <code>16px</code>.
+        <strong>Не зависит от родителя.</strong>
+    </p>
+
+    <pre><code>html {
+    font-size: 16px;
+}
+
+.parent {
+    font-size: 24px;
+}
+
+.child {
+    font-size: 1.5rem;   /* 24px — не зависит от родителя! */
+    padding: 2rem;        /* 32px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">rem не зависит от вложенности:</div>
+        <div style="font-size: 24px; background: #f5f5f5; padding: 12px; border-radius: 4px;">
+            Родитель: 24px
+            <div class="unit-box" style="font-size: 1.5rem;">1.5rem = 24px (не зависит от родителя)</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> для шрифтов и отступов — <code>rem</code>.
+        Предсказуемый и доступный (уважает настройки пользователя).
+    </div>
+
+    <h2>4. <code>vw</code> и <code>vh</code> — от окна</h2>
+
+    <p>
+        <strong>1vw</strong> = 1% ширины окна.<br>
+        <strong>1vh</strong> = 1% высоты окна.
+    </p>
+
+    <pre><code>.full-screen {
+    width: 100vw;      /* вся ширина окна */
+    height: 100vh;     /* вся высота окна */
+}
+
+.half {
+    width: 50vw;       /* половина ширины */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">30vh (сузь окно по высоте):</div>
+        <div class="vh-demo">30vh</div>
+    </div>
+
+    <div class="warn">
+        <strong>Осторожно с <code>100vw</code>:</strong> на некоторых системах
+        <code>100vw</code> шире окна на ширину скроллбара → горизонтальная прокрутка.
+        Используй <code>width: 100%</code> вместо <code>100vw</code>.
+    </div>
+
+    <h3>Новые единицы: <code>dvh</code>, <code>svh</code>, <code>lvh</code></h3>
+
+    <p>
+        На мобильных <code>100vh</code> может «ломаться» из-за адресной строки браузера.
+        Решение — <strong>новые единицы</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Единица</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>dvh</code></td><td><strong>Dynamic</strong> viewport — подстраивается под адресную строку</td></tr>
+            <tr><td><code>svh</code></td><td><strong>Small</strong> viewport — минимальная высота (без адресной строки)</td></tr>
+            <tr><td><code>lvh</code></td><td><strong>Large</strong> viewport — максимальная высота (с адресной строкой)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> <code>100dvh</code> вместо <code>100vh</code> —
+        лучше для мобильных.
+    </div>
+
+    <h2>5. <code>clamp()</code> — «зажать» в диапазон</h2>
+
+    <p>
+        <code>clamp(min, preferred, max)</code> — значение <strong>не меньше min</strong>,
+        <strong>не больше max</strong>, но <strong>адаптируется</strong> между ними.
+    </p>
+
+    <pre><code>font-size: clamp(16px, 4vw, 32px);
+/* не меньше 16px, не больше 32px, но 4vw между ними */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">font-size: clamp(16px, 4vw, 32px) — сузь окно:</div>
+        <div class="clamp-demo">Адаптивный текст</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Условие</th>
+                <th>Размер</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>4vw &lt; 16px</code></td><td>16px (min)</td></tr>
+            <tr><td><code>16px ≤ 4vw ≤ 32px</code></td><td>4vw (адаптив)</td></tr>
+            <tr><td><code>4vw &gt; 32px</code></td><td>32px (max)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Главное преимущество:</strong> <strong>без media queries</strong>.
+        Одна строка — и размер адаптируется. <strong>Рекомендую</strong> для заголовков.
+    </div>
+
+    <h2>6. <code>min()</code> и <code>max()</code></h2>
+
+    <pre><code>width: min(100%, 600px);   /* не больше 600px, но не шире 100% */
+width: max(300px, 50%);     /* не меньше 300px, но не меньше 50% */
+</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>min(a, b)</code></td><td>Берёт <strong>меньшее</strong> из a и b</td></tr>
+            <tr><td><code>max(a, b)</code></td><td>Берёт <strong>большее</strong> из a и b</td></tr>
+            <tr><td><code>clamp(min, val, max)</code></td><td>= <code>max(min, min(val, max))</code></td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">width: min(100%, 400px) — сузь окно:</div>
+        <div class="unit-box" style="width: min(100%, 400px); margin: 0 auto;">min(100%, 400px)</div>
+    </div>
+
+    <div class="note">
+        <strong><code>min(100%, 600px)</code></strong> — <strong>лучше</strong>, чем
+        <code>width: 600px</code>. Блок не вылезет за экран.
+    </div>
+
+    <h2>7. Что где использовать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Что</th>
+                <th>Единица</th>
+                <th>Почему</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Шрифт основного текста</td><td><code>rem</code></td><td>Доступность</td></tr>
+            <tr><td>Заголовки</td><td><code>clamp()</code></td><td>Адаптив без media queries</td></tr>
+            <tr><td>Отступы</td><td><code>rem</code> или <code>em</code></td><td>Масштабируются</td></tr>
+            <tr><td>Ширина контейнера</td><td><code>%</code> + <code>min()</code></td><td>Адаптив</td></tr>
+            <tr><td>Рамки, тени</td><td><code>px</code></td><td>Точность</td></tr>
+            <tr><td>Полноэкранные блоки</td><td><code>dvh</code> / <code>vh</code></td><td>От окна</td></tr>
+            <tr><td>Текст</td><td><code>ch</code></td><td>Читаемость</td></tr>
+        </tbody>
+    </table>
+
+    <h2>8. Практика: адаптивный заголовок</h2>
+
+    <pre><code>h1 {
+    font-size: clamp(24px, 5vw, 48px);
+}
+
+h2 {
+    font-size: clamp(20px, 3vw, 32px);
+}
+
+p {
+    font-size: clamp(14px, 2vw, 18px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Адаптивные заголовки (сузь окно):</div>
+        <h1 style="font-size: clamp(24px, 5vw, 48px); color: #1565c0; margin: 8px 0;">Заголовок h1</h1>
+        <h2 style="font-size: clamp(20px, 3vw, 32px); color: #333; margin: 8px 0;">Заголовок h2</h2>
+        <p style="font-size: clamp(14px, 2vw, 18px); color: #666; margin: 8px 0;">Параграф текста. Сузь окно — размеры уменьшатся, но не выйдут за min.</p>
+    </div>
+
+    <h2>9. Практика: адаптивный контейнер</h2>
+
+    <pre><code>.container {
+    width: min(100% - 32px, 1200px);
+    margin: 0 auto;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">width: min(100% - 32px, 1200px):</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px;">
+            <div class="unit-box" style="width: min(100% - 32px, 1200px); margin: 0 auto;">Контейнер</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Классический приём:</strong> <code>width: min(100% - 32px, 1200px)</code> —
+        контейнер не шире 1200px и не вылезает за экран (отступ 16px с каждой стороны).
+    </div>
+
+    <h2>10. Практика: hero-блок</h2>
+
+    <pre><code>.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: clamp(16px, 4vw, 64px);
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 6vw, 64px);
+    margin: 0 0 clamp(8px, 2vw, 24px) 0;
+}
+
+.hero p {
+    font-size: clamp(16px, 2.5vw, 24px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero с clamp:</div>
+        <div style="display: flex; align-items: center; justify-content: center; min-height: 200px; padding: clamp(16px, 4vw, 64px); background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; text-align: center; color: white;">
+            <div>
+                <h2 style="font-size: clamp(20px, 4vw, 36px); margin: 0 0 clamp(8px, 2vw, 24px) 0;">Заголовок</h2>
+                <p style="font-size: clamp(14px, 2vw, 18px); margin: 0; opacity: 0.9;">Адаптивный текст через clamp</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>width: 100vw</code> на странице со скроллом</td>
+                <td>Горизонтальная прокрутка</td>
+            </tr>
+            <tr>
+                <td><code>font-size</code> в <code>px</code></td>
+                <td>Не адаптируется, плохо для доступности</td>
+            </tr>
+            <tr>
+                <td><code>100vh</code> на мобильных</td>
+                <td>Ломается из-за адресной строки. Используй <code>100dvh</code></td>
+            </tr>
+            <tr>
+                <td><code>clamp()</code> без <code>min</code> и <code>max</code></td>
+                <td>Не работает — нужны все три значения</td>
+            </tr>
+            <tr>
+                <td>Слишком мелкий текст через <code>vw</code></td>
+                <td>На мобильных <code>2vw</code> может быть &lt; 12px. Используй <code>clamp</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>%</code></strong> — от родителя. Для ширины.</li>
+        <li><strong><code>rem</code></strong> — от корня. Для шрифтов и отступов.</li>
+        <li><strong><code>vw</code>/<code>vh</code></strong> — от окна. Для полноэкранных блоков.</li>
+        <li><strong><code>dvh</code></strong> — лучше для мобильных.</li>
+        <li><strong><code>clamp(min, val, max)</code></strong> — адаптив без media queries.</li>
+        <li><strong><code>min(a, b)</code></strong> — меньшее. Для контейнеров.</li>
+        <li><strong><code>max(a, b)</code></strong> — большее.</li>
+        <li><strong><code>width: min(100% - 32px, 1200px)</code></strong> — классический контейнер.</li>
+        <li><strong><code>clamp</code> для заголовков</strong> — <code>clamp(24px, 5vw, 48px)</code>.</li>
+        <li><strong>Осторожно с <code>100vw</code></strong> — может дать скролл.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 42 · Следующий урок: <em>Изображения в адаптиве — max-width, picture, srcset</em>
+    </p>
+
+</body>
+</html>

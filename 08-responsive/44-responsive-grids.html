@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 44: адаптивные сетки — repeat(auto-fit, minmax()), auto-fill vs auto-fit, grid без media queries.">
+    <title>CSS Урок 44. Адаптивные сетки</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #1565c0;
+            border: none;
+            padding: 0;
+        }
+        .card p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 44. Адаптивные сетки</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить repeat(auto-fit, minmax()) —          -->
+    <!-- «магию» адаптивных сеток без media queries.               -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: сетка ломается на мобильных</h2>
+
+    <p>
+        Сетка <code>repeat(3, 1fr)</code> на мобильном (375px) даст <strong>3 узкие колонки</strong> —
+        некрасиво и нечитаемо.
+    </p>
+
+    <pre><code>.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* на мобильном — 3 колонки по 125px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">repeat(3, 1fr) на узком экране:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 300px;">
+            <div class="card" style="padding: 12px;"><h3 style="font-size: 13px;">Колонка</h3><p style="font-size: 11px;">Узко</p></div>
+            <div class="card" style="padding: 12px;"><h3 style="font-size: 13px;">Колонка</h3><p style="font-size: 11px;">Узко</p></div>
+            <div class="card" style="padding: 12px;"><h3 style="font-size: 13px;">Колонка</h3><p style="font-size: 11px;">Узко</p></div>
+        </div>
+    </div>
+
+    <p><strong>До <code>auto-fit</code></strong> делали через media queries:</p>
+
+    <pre><code>.cards {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}</code></pre>
+
+    <p>Работает, но <strong>много кода</strong>. Можно проще.</p>
+
+    <h2>2. <code>repeat(auto-fit, minmax())</code> — «магия»</h2>
+
+    <p>
+        Одна строка — и сетка <strong>сама</strong> подстраивается под ширину экрана.
+    </p>
+
+    <pre><code>.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}</code></pre>
+
+    <p><strong>Что это означает:</strong></p>
+
+    <ol>
+        <li><strong><code>repeat(auto-fit, ...)</code></strong> — «создай столько колонок, сколько поместится».</li>
+        <li><strong><code>minmax(200px, 1fr)</code></strong> — каждая колонка <strong>не меньше 200px</strong>, но <strong>растягивается</strong> на свободное место.</li>
+    </ol>
+
+    <div class="demo">
+        <div class="demo-label">repeat(auto-fit, minmax(200px, 1fr)) — сузь окно:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div class="card"><h3>Карточка 1</h3><p>Описание</p></div>
+            <div class="card"><h3>Карточка 2</h3><p>Описание</p></div>
+            <div class="card"><h3>Карточка 3</h3><p>Описание</p></div>
+            <div class="card"><h3>Карточка 4</h3><p>Описание</p></div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Как это работает:</strong> браузер смотрит, сколько колонок по <strong>200px</strong>
+        поместится. На широком экране — 4, на планшете — 2–3, на мобильном — 1.
+        <strong>Автоматически.</strong> Без media queries.
+    </div>
+
+    <h2>3. <code>auto-fit</code> vs <code>auto-fill</code></h2>
+
+    <p>
+        Оба значения «создают столько колонок, сколько поместится». Но ведут себя
+        <strong>по-разному</strong> с пустыми колонками.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>auto-fit</code></th>
+                <th><code>auto-fill</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Пустые колонки</td>
+                <td><strong>Схлопываются</strong></td>
+                <td><strong>Остаются</strong></td>
+            </tr>
+            <tr>
+                <td>Элементы</td>
+                <td>Растягиваются на всю ширину</td>
+                <td>Остаются «узкими»</td>
+            </tr>
+            <tr>
+                <td>Когда</td>
+                <td><strong>Карточки, галереи</strong></td>
+                <td>Фиксированная сетка</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">auto-fit (3 карточки на широком экране — растянуты):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;">
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3</div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">auto-fill (3 карточки — «узкие», пустые колонки остались):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px;">
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Правило:</strong> для <strong>карточек и галерей</strong> — <code>auto-fit</code>.
+        Он «схлопывает» пустые колонки, и элементы растягиваются.
+    </div>
+
+    <h2>4. Что выбрать в <code>minmax()</code></h2>
+
+    <p>
+        <code>minmax(200px, 1fr)</code> — <strong>минимальная ширина</strong> и
+        <strong>максимальная</strong>. От этого зависит, сколько колонок поместится.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th><code>minmax</code></th>
+                <th>Сколько колонок на 1200px</th>
+                <th>На 375px</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>minmax(100px, 1fr)</code></td><td>~11</td><td>~3</td></tr>
+            <tr><td><code>minmax(150px, 1fr)</code></td><td>~7</td><td>~2</td></tr>
+            <tr><td><code>minmax(200px, 1fr)</code></td><td>~5</td><td>~1</td></tr>
+            <tr><td><code>minmax(300px, 1fr)</code></td><td>~3</td><td>~1</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">minmax(100px, 1fr) — много узких колонок:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">4</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">5</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">6</div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">minmax(250px, 1fr) — мало широких колонок:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 8px;">
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3</div>
+            <div class="card" style="padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">4</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Практика:</strong> для <strong>карточек</strong> — <code>minmax(250px, 1fr)</code>.
+        Для <strong>галереи</strong> — <code>minmax(150px, 1fr)</code>.
+        Для <strong>больших блоков</strong> — <code>minmax(300px, 1fr)</code>.
+    </div>
+
+    <h2>5. Практика: галерея</h2>
+
+    <pre><code>.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Галерея (сузь окно):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+            <img src="https://picsum.photos/400/400?random=100" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=101" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=102" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=103" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=104" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=105" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+        </div>
+    </div>
+
+    <h2>6. Практика: карточки товаров</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.product-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки товаров:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+            <div style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="https://picsum.photos/300/200?random=110" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+                <div style="padding: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар 1</h3>
+                    <div style="font-weight: bold; color: #1565c0; font-size: 13px;">500 ₽</div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="https://picsum.photos/300/200?random=111" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+                <div style="padding: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар 2</h3>
+                    <div style="font-weight: bold; color: #1565c0; font-size: 13px;">700 ₽</div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="https://picsum.photos/300/200?random=112" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+                <div style="padding: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар 3</h3>
+                    <div style="font-weight: bold; color: #1565c0; font-size: 13px;">900 ₽</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>7. Практика: сетка с «выделенной» карточкой</h2>
+
+    <pre><code>.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.card.featured {
+    grid-column: span 2;   /* ← занимает 2 колонки */
+    grid-row: span 2;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Featured карточка (если помещается):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+            <div class="card" style="grid-column: span 2; grid-row: span 2; display: flex; align-items: center; justify-content: center; font-size: 13px; padding: 12px; text-align: center;">Featured 2×2</div>
+            <div class="card" style="padding: 12px; text-align: center; font-size: 12px;">2</div>
+            <div class="card" style="padding: 12px; text-align: center; font-size: 12px;">3</div>
+            <div class="card" style="padding: 12px; text-align: center; font-size: 12px;">4</div>
+            <div class="card" style="padding: 12px; text-align: center; font-size: 12px;">5</div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Важно:</strong> <code>span 2</code> с <code>auto-fit</code> может «сломать» сетку
+        на мобильных. Используй <code>@media</code> для <code>span</code>:
+        <code>@media (min-width: 768px) { .featured { grid-column: span 2; } }</code>.
+    </div>
+
+    <h2>8. Сравнение: media queries vs auto-fit</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Media queries</th>
+                <th><code>auto-fit</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Код</td>
+                <td>Много</td>
+                <td><strong>Одна строка</strong></td>
+            </tr>
+            <tr>
+                <td>Контроль</td>
+                <td>Полный</td>
+                <td>Ограничен</td>
+            </tr>
+            <tr>
+                <td>Брейкпоинты</td>
+                <td>Фиксированные</td>
+                <td><strong>Автоматические</strong></td>
+            </tr>
+            <tr>
+                <td>Когда</td>
+                <td>Сложные макеты</td>
+                <td><strong>Однотипные карточки</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Правило:</strong> для <strong>однотипных карточек</strong> — <code>auto-fit</code>.
+        Для <strong>сложных макетов</strong> — media queries.
+    </div>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>auto-fill</code> вместо <code>auto-fit</code></td>
+                <td>Остаются пустые колонки</td>
+            </tr>
+            <tr>
+                <td><code>minmax(100px, 1fr)</code> для карточек</td>
+                <td>Слишком много узких колонок</td>
+            </tr>
+            <tr>
+                <td><code>minmax(400px, 1fr)</code> на мобильном</td>
+                <td>Одна колонка, но шире экрана → скролл</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>box-sizing: border-box</code></td>
+                <td>Padding «ломает» размеры</td>
+            </tr>
+            <tr>
+                <td><code>span 2</code> без <code>@media</code></td>
+                <td>Ломается на мобильных</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code></td>
+                <td>Элементы слипаются</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>repeat(auto-fit, minmax(200px, 1fr))</code></strong> — «магия» адаптивных сеток.</li>
+        <li><strong><code>auto-fit</code></strong> — пустые колонки схлопываются.</li>
+        <li><strong><code>auto-fill</code></strong> — пустые колонки остаются.</li>
+        <li><strong>Для карточек</strong> — <code>auto-fit</code>.</li>
+        <li><strong><code>minmax(200px, 1fr)</code></strong> — минимум 200px, растягивается.</li>
+        <li><strong>Для карточек</strong> — <code>minmax(250px, 1fr)</code>.</li>
+        <li><strong>Для галереи</strong> — <code>minmax(150px, 1fr)</code>.</li>
+        <li><strong><code>span 2</code> с <code>auto-fit</code></strong> — только с <code>@media</code>.</li>
+        <li><strong>Для сложных макетов</strong> — media queries.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 44 · Следующий урок: <em>Container queries — современная адаптивность</em>
+    </p>
+
+</body>
+</html>

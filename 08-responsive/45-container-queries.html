@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 45: container queries — @container, container-type, container-name. Адаптивность по размеру контейнера.">
+    <title>CSS Урок 45. Container queries</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Демо container queries */
+        .card-container {
+            container-type: inline-size;
+            container-name: card;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 8px 0;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .card-image {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .card-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #1565c0;
+            border: none;
+            padding: 0;
+        }
+        .card-content p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @container card (min-width: 400px) {
+            .card {
+                flex-direction: row;
+                align-items: center;
+            }
+            .card-image {
+                width: 120px;
+                height: 120px;
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 45. Container queries</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить @container — адаптивность по размеру  -->
+    <!-- контейнера, а не окна.                                     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема media queries</h2>
+
+    <p>
+        <strong>Media queries</strong> реагируют на <strong>размер окна</strong>.
+        Но компонент может быть в <strong>узком сайдбаре</strong> и в <strong>широком контенте</strong>
+        одновременно. Media queries этого не знают.
+    </p>
+
+    <pre><code>.card {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .card {
+        flex-direction: row;   /* ← но карточка может быть в узком сайдбаре */
+    }
+}</code></pre>
+
+    <div class="warn">
+        <strong>Проблема:</strong> на экране 1200px карточка в сайдбаре (300px) получит
+        «десктопные» стили, хотя места мало. <strong>Media queries смотрят на окно, не на контейнер.</strong>
+    </div>
+
+    <h2>2. Что такое container queries</h2>
+
+    <p>
+        <strong>Container queries</strong> (контейнерные запросы) — это
+        <code>@container</code> вместо <code>@media</code>. Они реагируют на
+        <strong>размер родителя</strong>, а не окна.
+    </p>
+
+    <pre><code>.card-container {
+    container-type: inline-size;   /* ← объявляем контейнер */
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+@container (min-width: 400px) {
+    .card {
+        flex-direction: row;   /* ← если контейнер ≥ 400px */
+    }
+}</code></pre>
+
+    <h2>3. Как работает</h2>
+
+    <ol>
+        <li><strong>Объявляешь контейнер</strong> через <code>container-type</code>.</li>
+        <li><strong>Пишешь <code>@container</code></strong> вместо <code>@media</code>.</li>
+        <li>Стили применяются, если <strong>контейнер</strong> соответствует условию.</li>
+    </ol>
+
+    <h3><code>container-type</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>inline-size</code></td>
+                <td>Контейнер по <strong>ширине</strong> (самый частый)</td>
+            </tr>
+            <tr>
+                <td><code>size</code></td>
+                <td>Контейнер по <strong>ширине и высоте</strong></td>
+            </tr>
+            <tr>
+                <td><code>normal</code> (по умолчанию)</td>
+                <td>Не контейнер</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong><code>inline-size</code></strong> — для большинства случаев. Реагирует
+        только на ширину. <strong>Не влияет на высоту</strong> — безопаснее.
+    </div>
+
+    <h2>4. Живой пример</h2>
+
+    <p>
+        Одна и та же карточка в <strong>узком</strong> и <strong>широком</strong> контейнере.
+        Широкая — горизонтальная, узкая — вертикальная.
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">Узкий контейнер (300px) — карточка вертикальная:</div>
+        <div class="card-container" style="max-width: 300px;">
+            <div class="card">
+                <div class="card-image">Фото</div>
+                <div class="card-content">
+                    <h3>Заголовок</h3>
+                    <p>Описание карточки в узком контейнере.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">Широкий контейнер (500px) — карточка горизонтальная:</div>
+        <div class="card-container" style="max-width: 500px;">
+            <div class="card">
+                <div class="card-image">Фото</div>
+                <div class="card-content">
+                    <h3>Заголовок</h3>
+                    <p>Описание карточки в широком контейнере. Карточка перестроилась автоматически.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Сила:</strong> одна и та же карточка <strong>сама</strong> подстраивается
+        под ширину контейнера. Не нужно знать, где она используется.
+    </div>
+
+    <h2>5. <code>container-name</code> — имя контейнера</h2>
+
+    <p>
+        Если контейнеров несколько, можно дать <strong>имя</strong> и обращаться к нему:
+    </p>
+
+    <pre><code>.card-container {
+    container-type: inline-size;
+    container-name: card;
+}
+
+@container card (min-width: 400px) {
+    /* только для контейнера с именем card */
+}</code></pre>
+
+    <p>Без имени — <code>@container (min-width: 400px)</code> — применяется к <strong>ближайшему</strong> контейнеру.</p>
+
+    <h3>Сокращение <code>container</code></h3>
+
+    <pre><code>.card-container {
+    container: card / inline-size;   /* name / type */
+}</code></pre>
+
+    <h2>6. Единицы контейнера</h2>
+
+    <p>
+        С <code>container-type</code> появляются <strong>новые единицы</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Единица</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>cqw</code></td><td>1% ширины контейнера</td></tr>
+            <tr><td><code>cqh</code></td><td>1% высоты контейнера</td></tr>
+            <tr><td><code>cqi</code></td><td>1% inline-size (ширины)</td></tr>
+            <tr><td><code>cqb</code></td><td>1% block-size (высоты)</td></tr>
+            <tr><td><code>cqmin</code></td><td>Минимум из <code>cqi</code> и <code>cqb</code></td></tr>
+            <tr><td><code>cqmax</code></td><td>Максимум из <code>cqi</code> и <code>cqb</code></td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.card h3 {
+    font-size: clamp(16px, 5cqi, 24px);   /* 5% ширины контейнера */
+}</code></pre>
+
+    <div class="note">
+        <strong>Полезно:</strong> <code>cqi</code> — для шрифтов внутри карточки. Адаптируется
+        к <strong>ширине контейнера</strong>, а не окна.
+    </div>
+
+    <h2>7. Практика: карточка товара</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.product-container {
+    container-type: inline-size;
+    container-name: product;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.product-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+@container product (min-width: 400px) {
+    .product {
+        flex-direction: row;
+    }
+    .product-image {
+        width: 40%;
+        aspect-ratio: 1 / 1;
+    }
+    .product-body {
+        width: 60%;
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Узкий контейнер (вертикально):</div>
+        <div style="container-type: inline-size; container-name: product-demo; max-width: 280px;">
+            <div class="card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #fff;">
+                <img src="https://picsum.photos/300/200?random=120" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover;">
+                <div style="padding: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар</h3>
+                    <p style="margin: 0; font-size: 13px; color: #1565c0; font-weight: bold;">500 ₽</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">Широкий контейнер (горизонтально):</div>
+        <div style="container-type: inline-size; container-name: product-demo2; max-width: 500px;">
+            <div class="card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #fff;">
+                <img src="https://picsum.photos/300/200?random=121" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover;">
+                <div style="padding: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар</h3>
+                    <p style="margin: 0; font-size: 13px; color: #1565c0; font-weight: bold;">500 ₽</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>8. <code>@container</code> vs <code>@media</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>@media</code></th>
+                <th><code>@container</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Реагирует на</td>
+                <td>Размер <strong>окна</strong></td>
+                <td>Размер <strong>контейнера</strong></td>
+            </tr>
+            <tr>
+                <td>Использование</td>
+                <td>Макет страницы</td>
+                <td>Компоненты</td>
+            </tr>
+            <tr>
+                <td>Гибкость</td>
+                <td>Фиксированные брейкпоинты</td>
+                <td><strong>Любой контейнер</strong></td>
+            </tr>
+            <tr>
+                <td>Поддержка</td>
+                <td>Везде</td>
+                <td>Chrome 105+, Safari 16+, Firefox 110+</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Оба нужны:</strong>
+        <ul>
+            <li><code>@media</code> — для <strong>макета страницы</strong> (глобальные брейкпоинты).</li>
+            <li><code>@container</code> — для <strong>компонентов</strong> (карточки, виджеты).</li>
+        </ul>
+    </div>
+
+    <h2>9. Практика: sidebar + main</h2>
+
+    <pre><code>.layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
+}
+
+.card-container {
+    container-type: inline-size;
+}
+
+/* В сайдбаре (300px) — вертикальная карточка */
+/* В main (800px) — горизонтальная */
+@container (min-width: 500px) {
+    .card {
+        flex-direction: row;
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Одна карточка в разных контейнерах:</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="container-type: inline-size; background: #f5f5f5; padding: 8px; border-radius: 6px;">
+                <div class="card-container" style="margin: 0; padding: 8px; border: none; background: transparent;">
+                    <div class="card">
+                        <div class="card-image" style="height: 60px; font-size: 12px;">Узко</div>
+                        <div class="card-content">
+                            <h3 style="font-size: 13px;">Карточка</h3>
+                            <p style="font-size: 12px;">Вертикальная</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="container-type: inline-size; background: #f5f5f5; padding: 8px; border-radius: 6px;">
+                <div class="card-container" style="margin: 0; padding: 8px; border: none; background: transparent;">
+                    <div class="card">
+                        <div class="card-image" style="height: 60px; font-size: 12px;">Широко</div>
+                        <div class="card-content">
+                            <h3 style="font-size: 13px;">Карточка</h3>
+                            <p style="font-size: 12px;">Тоже вертикальная (контейнер узкий)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>container-type</code></td>
+                <td><code>@container</code> не работает</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>container-type: size</code> без причины</td>
+                <td>Может сломать layout — элемент не может расти</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>container-name</code> при нескольких контейнерах</td>
+                <td><code>@container</code> применится к ближайшему — может быть не тот</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>@container</code> для макета страницы</td>
+                <td>Для макета — <code>@media</code></td>
+            </tr>
+            <tr>
+                <td>Путать <code>cqw</code> и <code>vw</code></td>
+                <td><code>cqw</code> — контейнера, <code>vw</code> — окна</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Поддержка</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Браузер</th>
+                <th>Версия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Chrome / Edge</td><td>105+ (2022)</td></tr>
+            <tr><td>Safari</td><td>16+ (2022)</td></tr>
+            <tr><td>Firefox</td><td>110+ (2023)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Сейчас (2026)</strong> — поддерживается <strong>везде</strong>. Можно
+        использовать в продакшене. Для старых браузеров — fallback через <code>@media</code>.
+    </div>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>@container</code></strong> — реагирует на размер <strong>контейнера</strong>, не окна.</li>
+        <li><strong><code>container-type: inline-size</code></strong> — объявить контейнер.</li>
+        <li><strong><code>container-name</code></strong> — имя для точного выбора.</li>
+        <li><strong><code>container: name / type</code></strong> — сокращение.</li>
+        <li><strong><code>@container (min-width: 400px)</code></strong> — стили при ширине контейнера ≥ 400px.</li>
+        <li><strong>Единицы:</strong> <code>cqw</code>, <code>cqi</code>, <code>cqh</code> — от контейнера.</li>
+        <li><strong><code>@media</code></strong> — для макета страницы.</li>
+        <li><strong><code>@container</code></strong> — для компонентов.</li>
+        <li><strong>Поддержка</strong> — везде с 2023.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 45 · Конец блока 8 (Адаптивность) · Следующий урок: <em>Псевдоклассы — :hover, :focus, :nth-child</em>
+    </p>
+
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 43: адаптивные изображения — max-width, object-fit, picture, srcset, sizes.">
+    <title>CSS Урок 43. Адаптивные изображения</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .img-demo {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+        .img-box {
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 8px;
+            margin: 8px 0;
+        }
+        .aspect-demo {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 43. Адаптивные изображения</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить адаптивные изображения — max-width,    -->
+    <!-- object-fit, picture, srcset, sizes.                        -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: картинка вылезает</h2>
+
+    <p>
+        Если у картинки <code>width: 800px</code>, а экран <code>375px</code> — она
+        <strong>вылезет</strong> за границы. Появится <strong>горизонтальная прокрутка</strong>.
+    </p>
+
+    <pre><code>&lt;img src="photo.jpg" alt="Фото" width="800"&gt;</code></pre>
+
+    <div class="warn">
+        <strong>Плохо:</strong> фиксированная ширина картинки. На мобильных — скролл.
+    </div>
+
+    <h2>2. <code>max-width: 100%</code> — базовое решение</h2>
+
+    <p>
+        <strong>Главное свойство</strong> для адаптивных картинок:
+    </p>
+
+    <pre><code>img {
+    max-width: 100%;
+    height: auto;
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>max-width: 100%</code></td>
+                <td>Картинка не шире родителя</td>
+            </tr>
+            <tr>
+                <td><code>height: auto</code></td>
+                <td>Высота — пропорционально (не искажается)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">max-width: 100% — картинка адаптируется:</div>
+        <div class="img-box">
+            <img src="https://picsum.photos/1200/600?random=90" alt="Фото" class="img-demo">
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Правило:</strong> <code>img { max-width: 100%; height: auto; }</code> —
+        <strong>должно быть</strong> в каждом CSS-файле. Это база адаптивности.
+    </div>
+
+    <h2>3. <code>object-fit</code> — как вписать</h2>
+
+    <p>
+        Если картинка в контейнере <strong>фиксированного размера</strong> —
+        <code>object-fit</code> решает, как её вписать.
+    </p>
+
+    <pre><code>.card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;   /* заполнить, обрезать края */
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>fill</code> (по умолчанию)</td><td>Растянуть (искажает)</td></tr>
+            <tr><td><code>cover</code></td><td>Заполнить, обрезать края</td></tr>
+            <tr><td><code>contain</code></td><td>Вписать целиком (пустые места)</td></tr>
+            <tr><td><code>none</code></td><td>Оригинальный размер</td></tr>
+            <tr><td><code>scale-down</code></td><td>Как <code>none</code> или <code>contain</code> (меньшее)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">object-fit: cover (16:9):</div>
+        <div class="img-box">
+            <img src="https://picsum.photos/1200/600?random=91" alt="Фото" class="aspect-demo">
+        </div>
+    </div>
+
+    <h2>4. <code>aspect-ratio</code> — пропорции</h2>
+
+    <p>
+        Задаёт <strong>соотношение сторон</strong> контейнера. Работает и для картинок.
+    </p>
+
+    <pre><code>.image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">aspect-ratio: 16/9 + object-fit: cover:</div>
+        <div class="img-box">
+            <img src="https://picsum.photos/1200/600?random=92" alt="Фото" class="aspect-demo">
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Классическая связка:</strong> <code>width: 100%; aspect-ratio: 16/9; object-fit: cover</code> —
+        карточки, галереи, баннеры.
+    </div>
+
+    <h2>5. <code>srcset</code> — разные размеры</h2>
+
+    <p>
+        <strong>Проблема:</strong> на мобильном не нужно грузить картинку 2000px.
+        <strong>Решение:</strong> <code>srcset</code> — несколько версий, браузер
+        сам выберет нужную.
+    </p>
+
+    <pre><code>&lt;img src="photo-800.jpg"
+     srcset="photo-400.jpg 400w,
+             photo-800.jpg 800w,
+             photo-1600.jpg 1600w"
+     sizes="(max-width: 600px) 100vw, 800px"
+     alt="Фото"&gt;</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Атрибут</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>srcset</code></td>
+                <td>Список версий с шириной (<code>400w</code>)</td>
+            </tr>
+            <tr>
+                <td><code>sizes</code></td>
+                <td>Какую ширину занимает картинка на разных экранах</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Как работает:</strong> браузер смотрит на <code>sizes</code>,
+        вычисляет, сколько пикселей нужно, и выбирает <strong>оптимальную</strong>
+        версию из <code>srcset</code>.
+    </div>
+
+    <h2>6. <code>srcset</code> с <code>x</code> (для Retina)</h2>
+
+    <p>
+        Можно указать версии для разных <strong>плотностей пикселей</strong>:
+    </p>
+
+    <pre><code>&lt;img src="photo.jpg"
+     srcset="photo.jpg 1x,
+             photo@2x.jpg 2x,
+             photo@3x.jpg 3x"
+     alt="Фото"&gt;</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>1x</code></td><td>Обычный экран</td></tr>
+            <tr><td><code>2x</code></td><td>Retina (iPhone, MacBook)</td></tr>
+            <tr><td><code>3x</code></td><td>Super Retina</td></tr>
+        </tbody>
+    </table>
+
+    <h2>7. <code>&lt;picture&gt;</code> — разные картинки</h2>
+
+    <p>
+        <strong>Когда нужны разные картинки</strong> (не просто размеры, а разные
+        изображения) — <code>&lt;picture&gt;</code>.
+    </p>
+
+    <pre><code>&lt;picture&gt;
+    &lt;source media="(min-width: 768px)" srcset="desktop.jpg"&gt;
+    &lt;source media="(min-width: 480px)" srcset="tablet.jpg"&gt;
+    &lt;img src="mobile.jpg" alt="Фото"&gt;
+&lt;/picture&gt;</code></pre>
+
+    <div class="note">
+        <strong>Когда <code>&lt;picture&gt;</code>:</strong>
+        <ul>
+            <li><strong>Разные картинки</strong> для мобильных и десктопа (не просто размер).</li>
+            <li><strong>Art direction</strong> — разная композиция (кроп, фокус).</li>
+            <li><strong>Современные форматы</strong> — WebP с fallback на JPG.</li>
+        </ul>
+    </div>
+
+    <h3>Пример: WebP с fallback</h3>
+
+    <pre><code>&lt;picture&gt;
+    &lt;source srcset="photo.webp" type="image/webp"&gt;
+    &lt;source srcset="photo.avif" type="image/avif"&gt;
+    &lt;img src="photo.jpg" alt="Фото"&gt;
+&lt;/picture&gt;</code></pre>
+
+    <p>
+        Браузер берёт <strong>первый поддерживаемый</strong> формат. Если WebP не
+        поддерживается — берёт JPG.
+    </p>
+
+    <h2>8. <code>srcset</code> vs <code>&lt;picture&gt;</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>srcset</code></th>
+                <th><code>&lt;picture&gt;</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Что выбирает</td>
+                <td>Размер</td>
+                <td>Картинку (разную)</td>
+            </tr>
+            <tr>
+                <td>Кто решает</td>
+                <td>Браузер (по <code>sizes</code>)</td>
+                <td>Ты (по <code>media</code>)</td>
+            </tr>
+            <tr>
+                <td>Когда</td>
+                <td>Одна картинка, разные размеры</td>
+                <td>Разные картинки</td>
+            </tr>
+            <tr>
+                <td>Сложность</td>
+                <td>Проще</td>
+                <td>Сложнее</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Правило:</strong>
+        <ul>
+            <li><strong>Одна картинка, разные размеры</strong> — <code>srcset</code>.</li>
+            <li><strong>Разные картинки</strong> — <code>&lt;picture&gt;</code>.</li>
+        </ul>
+    </div>
+
+    <h2>9. Форматы изображений</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Формат</th>
+                <th>Когда</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>JPEG</strong></td><td>Фото, сжатие с потерями</td></tr>
+            <tr><td><strong>PNG</strong></td><td>Логотипы, прозрачность</td></tr>
+            <tr><td><strong>SVG</strong></td><td>Иконки, вектор</td></tr>
+            <tr><td><strong>WebP</strong></td><td>Современный — меньше JPEG/PNG</td></tr>
+            <tr><td><strong>AVIF</strong></td><td>Новейший — ещё меньше</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> <strong>WebP</strong> с fallback на JPEG через
+        <code>&lt;picture&gt;</code>. Меньше размер — быстрее загрузка.
+    </div>
+
+    <h2>10. Практика: карточка с картинкой</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.card {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+}
+
+.card-body {
+    padding: 16px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с картинкой 16:9:</div>
+        <div style="max-width: 300px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <img src="https://picsum.photos/800/450?random=93" alt="Фото" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;">
+            <div style="padding: 16px;">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Заголовок</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">Описание карточки</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Практика: галерея</h2>
+
+    <pre><code>.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Галерея (сузь окно):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+            <img src="https://picsum.photos/400/400?random=94" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=95" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=96" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/400/400?random=97" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+        </div>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>max-width: 100%</code></td>
+                <td>Картинка вылезает за экран</td>
+            </tr>
+            <tr>
+                <td><code>width: 100%</code> без <code>height: auto</code></td>
+                <td>Картинка искажается</td>
+            </tr>
+            <tr>
+                <td>Огромные картинки без сжатия</td>
+                <td>Долгая загрузка</td>
+            </tr>
+            <tr>
+                <td><code>srcset</code> без <code>sizes</code></td>
+                <td>Браузер не знает, какую версию выбрать</td>
+            </tr>
+            <tr>
+                <td><code>100vw</code> для картинки</td>
+                <td>Скроллбар → горизонтальная прокрутка</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>alt</code></td>
+                <td>Плохо для доступности и SEO</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>img { max-width: 100%; height: auto; }</code></strong> — база адаптивности.</li>
+        <li><strong><code>object-fit: cover</code></strong> — заполнить контейнер, обрезать края.</li>
+        <li><strong><code>object-fit: contain</code></strong> — вписать целиком (для логотипов).</li>
+        <li><strong><code>aspect-ratio</code></strong> — задать пропорции контейнера.</li>
+        <li><strong><code>srcset</code></strong> — разные размеры одной картинки.</li>
+        <li><strong><code>sizes</code></strong> — какую ширину занимает картинка на разных экранах.</li>
+        <li><strong><code>&lt;picture&gt;</code></strong> — разные картинки для разных условий.</li>
+        <li><strong>WebP с fallback</strong> — современный формат, меньше размер.</li>
+        <li><strong><code>display: block</code></strong> для <code>&lt;img&gt;</code> — убирает зазор.</li>
+        <li><strong>Никогда не забывай <code>alt</code></strong>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 43 · Следующий урок: <em>Адаптивные сетки — repeat(auto-fit, minmax(...))</em>
+    </p>
+
+</body>
+</html>

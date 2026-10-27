@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 41: media queries — @media, min-width, max-width, операторы and/or/not, диапазоны.">
+    <title>CSS Урок 41. Media queries</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .mq-demo {
+            background: #1565c0;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        @media (max-width: 600px) {
+            .mq-demo {
+                background: #e53935;
+            }
+            .mq-demo::after {
+                content: " (мобильный)";
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 41. Media queries</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить @media, min-width, max-width,         -->
+    <!-- операторы, диапазоны. Главный инструмент адаптивности.     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое media query</h2>
+
+    <p>
+        <strong>Media query</strong> — это <strong>условие</strong>, при котором
+        CSS-правила применяются. Например, «если экран меньше 768px — применить
+        эти стили».
+    </p>
+
+    <pre><code>@media (условие) {
+    /* стили */
+}</code></pre>
+
+    <h2>2. Синтаксис</h2>
+
+    <pre><code>@media (min-width: 768px) {
+    .container {
+        padding: 32px;
+    }
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>@media</code></td><td>Начало правила</td></tr>
+            <tr><td><code>(min-width: 768px)</code></td><td>Условие</td></tr>
+            <tr><td><code>{ }</code></td><td>Стили при выполнении условия</td></tr>
+        </tbody>
+    </table>
+
+    <h2>3. <code>min-width</code> — «от и больше»</h2>
+
+    <p>
+        <code>@media (min-width: 768px)</code> — «применить, если ширина окна
+        <strong>≥ 768px</strong>».
+    </p>
+
+    <pre><code>.box {
+    background: #e53935;   /* мобильный — по умолчанию */
+}
+
+@media (min-width: 768px) {
+    .box {
+        background: #1565c0;   /* планшет и больше */
+    }
+}
+
+@media (min-width: 1024px) {
+    .box {
+        background: #43a047;   /* десктоп и больше */
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Измени ширину окна (красный → синий → зелёный):</div>
+        <div id="min-demo" style="padding: 24px; border-radius: 8px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 14px; background: #e53935; transition: background 0.3s;">
+            Мобильный
+        </div>
+    </div>
+
+    <style>
+        @media (min-width: 768px) {
+            #min-demo {
+                background: #1565c0;
+            }
+            #min-demo::after {
+                content: " (планшет)";
+            }
+        }
+        @media (min-width: 1024px) {
+            #min-demo {
+                background: #43a047;
+            }
+            #min-demo::after {
+                content: " (десктоп)";
+            }
+        }
+    </style>
+
+    <h2>4. <code>max-width</code> — «до и меньше»</h2>
+
+    <p>
+        <code>@media (max-width: 768px)</code> — «применить, если ширина окна
+        <strong>≤ 768px</strong>».
+    </p>
+
+    <pre><code>.box {
+    background: #43a047;   /* десктоп — по умолчанию */
+}
+
+@media (max-width: 1024px) {
+    .box {
+        background: #1565c0;   /* планшет и меньше */
+    }
+}
+
+@media (max-width: 768px) {
+    .box {
+        background: #e53935;   /* мобильный и меньше */
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Измени ширину окна (зелёный → синий → красный):</div>
+        <div id="max-demo" style="padding: 24px; border-radius: 8px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 14px; background: #43a047; transition: background 0.3s;">
+            Десктоп
+        </div>
+    </div>
+
+    <style>
+        @media (max-width: 1024px) {
+            #max-demo {
+                background: #1565c0;
+            }
+            #max-demo::after {
+                content: " (планшет)";
+            }
+        }
+        @media (max-width: 768px) {
+            #max-demo {
+                background: #e53935;
+            }
+            #max-demo::after {
+                content: " (мобильный)";
+            }
+        }
+    </style>
+
+    <div class="note">
+        <strong>Mobile-first vs desktop-first:</strong>
+        <ul>
+            <li><strong>Mobile-first</strong> — <code>min-width</code> (от мобильного к десктопу).</li>
+            <li><strong>Desktop-first</strong> — <code>max-width</code> (от десктопа к мобильному).</li>
+        </ul>
+        <strong>Рекомендую mobile-first</strong> — проще и лучше для SEO.
+    </div>
+
+    <h2>5. Операторы <code>and</code>, <code>or</code>, <code>not</code></h2>
+
+    <h3><code>and</code> — «и»</h3>
+
+    <pre><code>@media (min-width: 768px) and (max-width: 1024px) {
+    /* применить, если ширина от 768 до 1024 */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Только планшет (768–1024px):</div>
+        <div id="and-demo" style="padding: 24px; border-radius: 8px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 14px; background: #999; transition: background 0.3s;">
+            Не планшет
+        </div>
+    </div>
+
+    <style>
+        @media (min-width: 768px) and (max-width: 1024px) {
+            #and-demo {
+                background: #1565c0;
+            }
+            #and-demo::after {
+                content: " (планшет)";
+            }
+        }
+    </style>
+
+    <h3><code>or</code> — «или» (через запятую)</h3>
+
+    <pre><code>@media (max-width: 576px), (min-width: 1200px) {
+    /* применить, если ширина до 576 ИЛИ от 1200 */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Мобильный или большой экран:</div>
+        <div id="or-demo" style="padding: 24px; border-radius: 8px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 14px; background: #999; transition: background 0.3s;">
+            Средний экран
+        </div>
+    </div>
+
+    <style>
+        @media (max-width: 576px), (min-width: 1200px) {
+            #or-demo {
+                background: #e53935;
+            }
+            #or-demo::after {
+                content: " (мобильный или большой)";
+            }
+        }
+    </style>
+
+    <h3><code>not</code> — «не»</h3>
+
+    <pre><code>@media not screen {
+    /* применить, если НЕ экран (например, печать) */
+}
+
+@media not (min-width: 768px) {
+    /* применить, если НЕ от 768px (то есть меньше) */
+}</code></pre>
+
+    <div class="warn">
+        <strong><code>not</code> — редко используется.</strong> В большинстве случаев
+        можно обойтись <code>min-width</code> / <code>max-width</code>.
+    </div>
+
+    <h2>6. Диапазоны (современный синтаксис)</h2>
+
+    <p>
+        С 2023 можно писать диапазоны <strong>без <code>and</code></strong>:
+    </p>
+
+    <pre><code>/* Новый синтаксис */
+@media (768px = width = 1024px) {
+    /* от 768 до 1024 */
+}
+
+/* Эквивалент старого */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* от 768 до 1024 */
+}</code></pre>
+
+    <div class="note">
+        <strong>Поддержка:</strong> новый синтаксис поддерживается во всех современных
+        браузерах (Chrome 104+, Firefox 102+, Safari 16.4+). Но старый — безопаснее
+        для совместимости.
+    </div>
+
+    <h2>7. Типы медиа</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Тип</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>all</code> (по умолчанию)</td><td>Все устройства</td></tr>
+            <tr><td><code>screen</code></td><td>Экраны (монитор, телефон, планшет)</td></tr>
+            <tr><td><code>print</code></td><td>Печать</td></tr>
+            <tr><td><code>speech</code></td><td>Screen reader'ы</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>@media screen and (min-width: 768px) {
+    /* только на экранах от 768px */
+}
+
+@media print {
+    /* только при печати */
+    .no-print { display: none; }
+}</code></pre>
+
+    <div class="note">
+        <strong>Для веба</strong> обычно <code>screen</code> не указывают — это
+        значение по умолчанию. Просто <code>@media (min-width: 768px)</code>.
+    </div>
+
+    <h2>8. Другие медиа-функции</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что проверяет</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>width</code> / <code>height</code></td><td>Ширина / высота окна</td></tr>
+            <tr><td><code>orientation</code></td><td><code>portrait</code> / <code>landscape</code></td></tr>
+            <tr><td><code>prefers-color-scheme</code></td><td><code>light</code> / <code>dark</code> — тёмная тема</td></tr>
+            <tr><td><code>prefers-reduced-motion</code></td><td>Пользователь отключил анимации</td></tr>
+            <tr><td><code>hover</code></td><td><code>hover</code> / <code>none</code> — есть ли мышь</td></tr>
+            <tr><td><code>pointer</code></td><td><code>fine</code> / <code>coarse</code> — точность указателя</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Пример: тёмная тема</h3>
+
+    <pre><code>@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #f0f0f0;
+    }
+}</code></pre>
+
+    <div class="note">
+        <strong>Полезно:</strong> если у пользователя включена тёмная тема в системе —
+        сайт автоматически станет тёмным. Это <strong>отличный UX</strong>.
+    </div>
+
+    <h2>9. Где писать media queries</h2>
+
+    <h3>В одном файле (рядом с правилами)</h3>
+
+    <pre><code>.card {
+    padding: 16px;
+}
+
+@media (min-width: 768px) {
+    .card {
+        padding: 24px;
+    }
+}</code></pre>
+
+    <h3>В отдельном файле</h3>
+
+    <pre><code>&lt;link rel="stylesheet" href="style.css"&gt;
+&lt;link rel="stylesheet" href="responsive.css" media="(min-width: 768px)"&gt;</code></pre>
+
+    <div class="note">
+        <strong>Рекомендую</strong> — в одном файле, рядом с правилами. Так проще
+        видеть, как элемент меняется.
+    </div>
+
+    <h2>10. Практика: адаптивная сетка</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr;   /* мобильный — 1 колонка */
+    gap: 16px;
+    padding: 16px;
+}
+
+@media (min-width: 576px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .cards {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        padding: 32px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Адаптивная сетка (сузь окно):</div>
+        <div id="cards-demo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1</div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2</div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3</div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">4</div>
+        </div>
+    </div>
+
+    <h2>11. Практика: скрыть/показать</h2>
+
+    <pre><code>.desktop-only {
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .desktop-only {
+        display: block;
+    }
+}
+
+.mobile-only {
+    display: block;
+}
+
+@media (min-width: 992px) {
+    .mobile-only {
+        display: none;
+    }
+}</code></pre>
+
+    <div class="warn">
+        <strong>Осторожно:</strong> скрывать <strong>важный контент</strong> на мобильных —
+        плохо для SEO. Прячь только «дублирующий» контент (например, большое меню
+        заменяется на бургер).
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>meta viewport</code></td>
+                <td>Media queries не работают на мобильных</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>max-width</code> для mobile-first</td>
+                <td>Путаница. Для mobile-first — <code>min-width</code></td>
+            </tr>
+            <tr>
+                <td>Писать <code>@media screen</code> всегда</td>
+                <td>Не нужно — <code>screen</code> по умолчанию</td>
+            </tr>
+            <tr>
+                <td>Слишком много брейкпоинтов</td>
+                <td>Сложно поддерживать</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>px</code> для media queries</td>
+                <td>Лучше <code>em</code> — уважает настройки пользователя (16px = 1em)</td>
+            </tr>
+            <tr>
+                <td>Скрывать важный контент</td>
+                <td>Плохо для SEO</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>@media</code></strong> — условие для применения стилей.</li>
+        <li><strong><code>min-width</code></strong> — «от и больше». Mobile-first.</li>
+        <li><strong><code>max-width</code></strong> — «до и меньше». Desktop-first.</li>
+        <li><strong><code>and</code></strong> — «и» (диапазон). <strong><code>or</code></strong> (запятая) — «или».</li>
+        <li><strong>Новый синтаксис:</strong> <code>(768px = width = 1024px)</code>.</li>
+        <li><strong>Типы:</strong> <code>screen</code>, <code>print</code>. <code>screen</code> — по умолчанию.</li>
+        <li><strong><code>prefers-color-scheme</code></strong> — тёмная тема.</li>
+        <li><strong><code>prefers-reduced-motion</code></strong> — отключить анимации.</li>
+        <li><strong>Mobile-first</strong> — <code>min-width</code>. Рекомендую.</li>
+        <li><strong>Не скрывай</strong> важный контент на мобильных.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 41 · Следующий урок: <em>Относительные единицы — %, rem, vw, clamp()</em>
+    </p>
+
+</body>
+</html>

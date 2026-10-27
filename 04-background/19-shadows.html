@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 19: тени — box-shadow, text-shadow, drop-shadow. Все параметры и приёмы.">
+    <title>CSS Урок 19. Тени</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .shadow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+            margin: 16px 0;
+        }
+        .shadow-box {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .text-shadow-demo {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 19. Тени</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить box-shadow, text-shadow, drop-shadow.  -->
+    <!-- ========================================================= -->
+
+    <h2>1. Три вида теней</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Для чего</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>box-shadow</code></td>
+                <td>Тень вокруг <strong>блока</strong> (прямоугольник)</td>
+            </tr>
+            <tr>
+                <td><code>text-shadow</code></td>
+                <td>Тень у <strong>текста</strong> (у букв)</td>
+            </tr>
+            <tr>
+                <td><code>filter: drop-shadow()</code></td>
+                <td>Тень по <strong>форме элемента</strong> (учитывает прозрачность)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>box-shadow</code> — тень блока</h2>
+
+    <p>Синтаксис:</p>
+
+    <pre><code>box-shadow: x-offset y-offset blur spread color;</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>Что задаёт</th>
+                <th>Обязательный?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>x-offset</code></td><td>Сдвиг по горизонтали (px, em)</td><td>Да</td></tr>
+            <tr><td><code>y-offset</code></td><td>Сдвиг по вертикали (px, em)</td><td>Да</td></tr>
+            <tr><td><code>blur</code></td><td>Размытие (0 = резкая)</td><td>Нет</td></tr>
+            <tr><td><code>spread</code></td><td>Расширение тени (может быть отрицательным)</td><td>Нет</td></tr>
+            <tr><td><code>color</code></td><td>Цвет тени (любой формат)</td><td>Нет (по умолчанию — текущий color)</td></tr>
+            <tr><td><code>inset</code></td><td>Тень внутри блока</td><td>Нет</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Базовые примеры</h3>
+
+    <pre><code>/* Лёгкая тень */
+.card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Без размытия — «жёсткая» тень */
+.card {
+    box-shadow: 4px 4px 0 #1565c0;
+}
+
+/* Тень внутри */
+.card {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные тени:</div>
+        <div class="shadow-grid">
+            <div class="shadow-box" style="box-shadow: 0 2px 4px rgba(0,0,0,0.1);">0 2px 4px</div>
+            <div class="shadow-box" style="box-shadow: 0 4px 8px rgba(0,0,0,0.15);">0 4px 8px</div>
+            <div class="shadow-box" style="box-shadow: 0 8px 16px rgba(0,0,0,0.2);">0 8px 16px</div>
+            <div class="shadow-box" style="box-shadow: 4px 4px 0 #1565c0;">4px 4px 0</div>
+            <div class="shadow-box" style="box-shadow: -4px -4px 0 #e53935;">-4px -4px 0</div>
+            <div class="shadow-box" style="box-shadow: 0 0 12px #ffb300;">0 0 12px</div>
+        </div>
+    </div>
+
+    <h3>Понимание параметров</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>Большое значение</th>
+                <th>Маленькое / 0</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>x-offset</code></td>
+                <td>Тень уходит вправо (или влево, если минус)</td>
+                <td>Тень по центру</td>
+            </tr>
+            <tr>
+                <td><code>y-offset</code></td>
+                <td>Тень уходит вниз (или вверх, если минус)</td>
+                <td>Тень по центру</td>
+            </tr>
+            <tr>
+                <td><code>blur</code></td>
+                <td>Тень размытая, мягкая</td>
+                <td><code>0</code> = тень резкая, как второй блок</td>
+            </tr>
+            <tr>
+                <td><code>spread</code></td>
+                <td>Тень «толще» блока</td>
+                <td>Минус — тень «худее» блока</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Реалистичная тень (Material Design)</h3>
+
+    <p>Часто используют <strong>две тени</strong> — одну лёгкую, другую посильнее:</p>
+
+    <pre><code>.card {
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.24);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Реалистичные тени (Material Design):</div>
+        <div class="shadow-grid">
+            <div class="shadow-box" style="box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);">1px / 2px</div>
+            <div class="shadow-box" style="box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);">3px / 6px</div>
+            <div class="shadow-box" style="box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);">10px / 20px</div>
+            <div class="shadow-box" style="box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);">14px / 28px</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Почему две тени:</strong> одна — «близкая» (чёткая), вторая — «далёкая»
+        (размытая). Вместе они создают ощущение объёма, как у реального предмета.
+    </div>
+
+    <h3>Цветная тень</h3>
+
+    <pre><code>.card {
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Цветные тени:</div>
+        <div class="shadow-grid">
+            <div class="shadow-box" style="box-shadow: 0 4px 12px rgba(21,101,192,0.4);">синяя</div>
+            <div class="shadow-box" style="box-shadow: 0 4px 12px rgba(229,57,53,0.4);">красная</div>
+            <div class="shadow-box" style="box-shadow: 0 4px 12px rgba(67,160,71,0.4);">зелёная</div>
+            <div class="shadow-box" style="box-shadow: 0 4px 12px rgba(255,179,0,0.5);">жёлтая</div>
+        </div>
+    </div>
+
+    <h3><code>inset</code> — тень внутри</h3>
+
+    <pre><code>.input {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Inset-тень (как «вдавленная» кнопка):</div>
+        <div class="shadow-grid">
+            <div class="shadow-box" style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">inset</div>
+            <div class="shadow-box" style="box-shadow: inset 0 2px 8px rgba(21,101,192,0.5);">inset синяя</div>
+            <div class="shadow-box" style="box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(255,255,255,0.8);">объём</div>
+        </div>
+    </div>
+
+    <h2>3. <code>text-shadow</code> — тень текста</h2>
+
+    <p>Синтаксис:</p>
+
+    <pre><code>text-shadow: x-offset y-offset blur color;</code></pre>
+
+    <p>Те же параметры, что у <code>box-shadow</code>, но <strong>без spread и inset</strong>.</p>
+
+    <h3>Примеры</h3>
+
+    <pre><code>.text {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные тени текста:</div>
+        <div class="text-shadow-demo" style="color: #1565c0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Тень текста</div>
+        <div class="text-shadow-demo" style="color: #fff; background: #1565c0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Белая тень</div>
+        <div class="text-shadow-demo" style="color: #fff; background: #e53935; text-shadow: 0 0 8px #fff;">Свечение</div>
+        <div class="text-shadow-demo" style="color: #fff; background: #43a047; text-shadow: 2px 2px 0 #1b5e20, 4px 4px 0 #2e7d32;">Многослойная</div>
+    </div>
+
+    <h3>Эффект «неонового свечения»</h3>
+
+    <pre><code>.neon {
+    color: #fff;
+    text-shadow:
+        0 0 4px #fff,
+        0 0 8px #fff,
+        0 0 16px #1565c0,
+        0 0 24px #1565c0,
+        0 0 32px #1565c0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Неон:</div>
+        <div class="text-shadow-demo" style="color: #fff; background: #1a1a2e; text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 16px #42a5f5, 0 0 24px #42a5f5, 0 0 32px #42a5f5;">NEON</div>
+    </div>
+
+    <h2>4. <code>filter: drop-shadow()</code> — тень по форме</h2>
+
+    <p>
+        Похож на <code>box-shadow</code>, но <strong>учитывает прозрачность</strong>.
+        Для картинок с прозрачным фоном (PNG, SVG) — <strong>лучший выбор</strong>.
+    </p>
+
+    <pre><code>.image {
+    filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.3));
+}</code></pre>
+
+    <h3>Разница: box-shadow vs drop-shadow</h3>
+
+    <div class="demo">
+        <div class="demo-label">box-shadow — тень прямоугольника:</div>
+        <div style="padding: 20px;">
+            <div style="display: inline-block; box-shadow: 4px 4px 8px rgba(0,0,0,0.4); padding: 20px;">
+                <span style="font-size: 40px;">★</span>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 4px 0;">Тень вокруг всего блока (прямоугольника), а не вокруг звезды.</p>
+
+        <div class="demo-label" style="margin-top: 24px;">filter: drop-shadow — тень по форме:</div>
+        <div style="padding: 20px;">
+            <div style="display: inline-block; filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.4)); padding: 20px;">
+                <span style="font-size: 40px;">★</span>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 4px 0;">Тень повторяет форму звезды.</p>
+    </div>
+
+    <div class="note">
+        <strong>Когда <code>drop-shadow</code>:</strong> иконки, PNG с прозрачностью, SVG, фигурные элементы. <strong>Когда <code>box-shadow</code>:</strong> карточки, блоки, кнопки (прямоугольные элементы).
+    </div>
+
+    <h3>Синтаксис</h3>
+
+    <pre><code>filter: drop-shadow(x-offset y-offset blur color);</code></pre>
+
+    <p>Без spread и inset. В остальном — как <code>box-shadow</code>.</p>
+
+    <h2>5. Анимация теней</h2>
+
+    <p>Тени можно анимировать через <code>transition</code>:</p>
+
+    <pre><code>.card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на карточку:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div class="shadow-box" style="background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: box-shadow 0.3s; cursor: pointer; padding: 20px;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)'" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+                наведи
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Анимация теней</strong> работает через <code>transition: box-shadow</code>. Это <strong>дешевле</strong>, чем анимация <code>transform</code>, и выглядит «дорого».
+    </div>
+
+    <h2>6. Практика: карточка с тенью</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с тенью и hover-эффектом:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div style="background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.3s; cursor: pointer;" onmouseover="this.style.boxShadow='0 12px 32px rgba(0,0,0,0.15)'; this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)'">
+                <h3 style="margin: 0 0 8px 0; color: #1565c0; font-size: 18px;">Карточка</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">С тенью и hover</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>7. Практика: кнопка с тенью</h2>
+
+    <pre><code>.btn {
+    padding: 12px 24px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(21, 101, 192, 0.3);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.btn:hover {
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    box-shadow: 0 1px 2px rgba(21, 101, 192, 0.3);
+    transform: translateY(1px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кнопка с тенью:</div>
+        <button style="padding: 12px 24px; background: #1565c0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: inherit; box-shadow: 0 2px 4px rgba(21,101,192,0.3);">
+            Кнопка
+        </button>
+    </div>
+
+    <h2>8. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Огромный <code>blur</code> без причины</td>
+                <td>Тень «размазана», выглядит грязно</td>
+            </tr>
+            <tr>
+                <td>Слишком тёмная тень</td>
+                <td>Выглядит как «грязь» под элементом</td>
+            </tr>
+            <tr>
+                <td>Одна тень вместо двух</td>
+                <td>Менее реалистично (Material Design)</td>
+            </tr>
+            <tr>
+                <td><code>box-shadow</code> для PNG с прозрачностью</td>
+                <td>Тень прямоугольника, а не фигуры. Нужен <code>drop-shadow</code></td>
+            </tr>
+            <tr>
+                <td>Анимация <code>box-shadow</code> с большими значениями</td>
+                <td>Может тормозить. Лучше анимировать <code>transform</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>transition</code></td>
+                <td>Тень «прыгает» резко</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>9. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>box-shadow</code></strong> — тень вокруг блока (прямоугольник).</li>
+        <li><strong><code>text-shadow</code></strong> — тень у текста (у букв).</li>
+        <li><strong><code>filter: drop-shadow()</code></strong> — тень по форме элемента (для PNG, SVG).</li>
+        <li><strong>Параметры <code>box-shadow</code>:</strong> <code>x-offset</code>, <code>y-offset</code>, <code>blur</code>, <code>spread</code>, <code>color</code>, <code>inset</code>.</li>
+        <li><strong>Две тени</strong> — реалистичнее, чем одна (Material Design).</li>
+        <li><strong><code>inset</code></strong> — тень внутри блока (вдавленная).</li>
+        <li><strong>Цветная тень</strong> — через <code>rgba</code> с цветом.</li>
+        <li><strong>Анимация теней</strong> — через <code>transition: box-shadow</code>.</li>
+        <li><strong>Неон</strong> — несколько <code>text-shadow</code> с разным <code>blur</code>.</li>
+        <li><strong>Осторожно:</strong> слишком тёмная / размытая тень выглядит «грязно».</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 19 · Следующий урок: <em>Прозрачность — opacity vs rgba</em>
+    </p>
+
+</body>
+</html>

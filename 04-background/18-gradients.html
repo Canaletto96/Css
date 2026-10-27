@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 18: градиенты — linear-gradient, radial-gradient, conic-gradient, repeating-градиенты.">
+    <title>CSS Урок 18. Градиенты</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .grad-box {
+            height: 100px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .grad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .grad-grid .grad-box {
+            height: 80px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 18. Градиенты</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить linear-gradient, radial-gradient,     -->
+    <!-- conic-gradient и repeating-градиенты.                      -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое градиент</h2>
+
+    <p>
+        <strong>Градиент</strong> — это плавный переход между цветами. В CSS это
+        <strong>функция</strong>, которая создаёт <strong>изображение</strong> (как
+        фон), а не отдельный файл.
+    </p>
+
+    <p>
+        Градиент — это <strong>background-image</strong>, а не <code>background-color</code>.
+        Поэтому его можно задавать через <code>background</code> или <code>background-image</code>:
+    </p>
+
+    <pre><code>.box {
+    background: linear-gradient(90deg, #1565c0, #42a5f5);
+    /* или */
+    background-image: linear-gradient(90deg, #1565c0, #42a5f5);
+}</code></pre>
+
+    <div class="note">
+        <strong>Зачем:</strong> градиент не требует загрузки картинки — браузер сам
+        его «рисует». Это <strong>быстрее</strong>, <strong>адаптивнее</strong> и
+        <strong>чётче</strong> на любом экране (даже Retina).
+    </div>
+
+    <h2>2. Три вида градиентов</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>linear-gradient()</code></td>
+                <td>Переход вдоль линии (линейный)</td>
+            </tr>
+            <tr>
+                <td><code>radial-gradient()</code></td>
+                <td>Переход от центра к краям (радиальный)</td>
+            </tr>
+            <tr>
+                <td><code>conic-gradient()</code></td>
+                <td>Переход по кругу (конический)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. <code>linear-gradient</code> — линейный</h2>
+
+    <p>Синтаксис:</p>
+
+    <pre><code>linear-gradient(угол, цвет1, цвет2, ...)</code></pre>
+
+    <h3>Базовый пример</h3>
+
+    <pre><code>.box {
+    background: linear-gradient(90deg, #1565c0, #42a5f5);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">linear-gradient(90deg, #1565c0, #42a5f5):</div>
+        <div class="grad-box" style="background: linear-gradient(90deg, #1565c0, #42a5f5);">90deg →</div>
+    </div>
+
+    <h3>Углы</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Угол</th>
+                <th>Направление</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>to top</code> / <code>0deg</code></td><td>Снизу вверх</td></tr>
+            <tr><td><code>to right</code> / <code>90deg</code></td><td>Слева направо</td></tr>
+            <tr><td><code>to bottom</code> / <code>180deg</code></td><td>Сверху вниз</td></tr>
+            <tr><td><code>to left</code> / <code>270deg</code></td><td>Справа налево</td></tr>
+            <tr><td><code>to top right</code> / <code>45deg</code></td><td>Снизу-слева вверх-направо</td></tr>
+            <tr><td><code>135deg</code></td><td>Сверху-слева вниз-направо (диагональ)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Разные углы:</div>
+        <div class="grad-grid">
+            <div class="grad-box" style="background: linear-gradient(to top, #1565c0, #42a5f5);">to top</div>
+            <div class="grad-box" style="background: linear-gradient(to right, #1565c0, #42a5f5);">to right</div>
+            <div class="grad-box" style="background: linear-gradient(to bottom, #1565c0, #42a5f5);">to bottom</div>
+            <div class="grad-box" style="background: linear-gradient(to left, #1565c0, #42a5f5);">to left</div>
+            <div class="grad-box" style="background: linear-gradient(45deg, #1565c0, #42a5f5);">45deg</div>
+            <div class="grad-box" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">135deg</div>
+        </div>
+    </div>
+
+    <h3>Три и более цветов</h3>
+
+    <pre><code>.box {
+    background: linear-gradient(90deg, #e53935, #ffb300, #43a047);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Три цвета:</div>
+        <div class="grad-box" style="background: linear-gradient(90deg, #e53935, #ffb300, #43a047);">3 цвета</div>
+    </div>
+
+    <h3>Стопы (позиции цветов)</h3>
+
+    <p>Можно указать, <strong>где</strong> должен быть цвет — в процентах или пикселях:</p>
+
+    <pre><code>.box {
+    background: linear-gradient(90deg, #1565c0 0%, #1565c0 50%, #42a5f5 50%, #42a5f5 100%);
+    /* Первые 50% — синий, вторые 50% — голубой. Резкая граница */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Резкая граница (стопы):</div>
+        <div class="grad-box" style="background: linear-gradient(90deg, #1565c0 0%, #1565c0 50%, #42a5f5 50%, #42a5f5 100%);">50/50</div>
+    </div>
+
+    <div class="note">
+        <strong>Стопы</strong> — позиции, где цвет «фиксируется». Если два цвета
+        имеют <strong>одинаковую</strong> позицию — граница становится <strong>резкой</strong>.
+        Это используется для «полосок», «шахматки» и других эффектов.
+    </div>
+
+    <h2>4. <code>radial-gradient</code> — радиальный</h2>
+
+    <p>Переход от центра к краям (как круги на воде).</p>
+
+    <pre><code>radial-gradient(форма размер, цвет1, цвет2, ...)</code></pre>
+
+    <h3>Базовый пример</h3>
+
+    <pre><code>.box {
+    background: radial-gradient(#1565c0, #42a5f5);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">radial-gradient(#1565c0, #42a5f5):</div>
+        <div class="grad-box" style="background: radial-gradient(#1565c0, #42a5f5);">radial</div>
+    </div>
+
+    <h3>Формы</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Форма</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>circle</code></td><td>Круг</td></tr>
+            <tr><td><code>ellipse</code> (по умолчанию)</td><td>Эллипс</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">circle и ellipse:</div>
+        <div class="grad-grid">
+            <div class="grad-box" style="background: radial-gradient(circle, #1565c0, #42a5f5);">circle</div>
+            <div class="grad-box" style="background: radial-gradient(ellipse, #1565c0, #42a5f5);">ellipse</div>
+        </div>
+    </div>
+
+    <h3>Позиция центра</h3>
+
+    <pre><code>.box {
+    background: radial-gradient(circle at top left, #1565c0, #42a5f5);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные позиции центра:</div>
+        <div class="grad-grid">
+            <div class="grad-box" style="background: radial-gradient(circle at top left, #1565c0, #42a5f5);">top left</div>
+            <div class="grad-box" style="background: radial-gradient(circle at center, #1565c0, #42a5f5);">center</div>
+            <div class="grad-box" style="background: radial-gradient(circle at bottom right, #1565c0, #42a5f5);">bottom right</div>
+        </div>
+    </div>
+
+    <h2>5. <code>conic-gradient</code> — конический</h2>
+
+    <p>Переход <strong>по кругу</strong> — как стрелки часов или «круговой прогресс».</p>
+
+    <pre><code>conic-gradient(от угла, цвет1, цвет2, ...)</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">conic-gradient:</div>
+        <div class="grad-grid">
+            <div class="grad-box" style="background: conic-gradient(#e53935, #ffb300, #43a047, #1565c0, #e53935);">по кругу</div>
+            <div class="grad-box" style="background: conic-gradient(from 90deg, #e53935, #ffb300, #43a047, #1565c0, #e53935);">from 90deg</div>
+            <div class="grad-box" style="background: conic-gradient(from 0deg, #1565c0 0%, #1565c0 25%, transparent 25%, transparent 50%, #1565c0 50%, #1565c0 75%, transparent 75%);">шахматка</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Применение <code>conic-gradient</code>:</strong> круговые прогресс-бары,
+        «пироги» в диаграммах, конические «фонарики», шахматные узоры.
+    </div>
+
+    <h2>6. Repeating-градиенты</h2>
+
+    <p>Повторяют один и тот же переход несколько раз:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>repeating-linear-gradient()</code></td><td>Повторяющийся линейный</td></tr>
+            <tr><td><code>repeating-radial-gradient()</code></td><td>Повторяющийся радиальный</td></tr>
+            <tr><td><code>repeating-conic-gradient()</code></td><td>Повторяющийся конический</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.box {
+    background: repeating-linear-gradient(45deg, #1565c0, #1565c0 10px, #42a5f5 10px, #42a5f5 20px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Repeating-градиенты:</div>
+        <div class="grad-grid">
+            <div class="grad-box" style="background: repeating-linear-gradient(45deg, #1565c0, #1565c0 10px, #42a5f5 10px, #42a5f5 20px);">45deg полоски</div>
+            <div class="grad-box" style="background: repeating-linear-gradient(90deg, #1565c0, #1565c0 8px, #fff 8px, #fff 16px);">вертикальные</div>
+            <div class="grad-box" style="background: repeating-radial-gradient(circle, #1565c0, #1565c0 10px, #42a5f5 10px, #42a5f5 20px);">круги</div>
+        </div>
+    </div>
+
+    <h2>7. Прозрачность в градиентах</h2>
+
+    <p>
+        В градиентах можно использовать <code>rgba()</code> или <code>transparent</code>
+        для плавного перехода в прозрачность.
+    </p>
+
+    <pre><code>.overlay {
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Overlay поверх картинки:</div>
+        <div style="position: relative; border-radius: 8px; overflow: hidden;">
+            <div style="height: 120px; background: url('https://picsum.photos/800/400?random=3') center/cover;"></div>
+            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 100%); display: flex; align-items: flex-end; padding: 16px; color: white; font-weight: bold;">
+                Текст поверх overlay
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Трюк:</strong> <code>transparent</code> — это <code>rgba(0,0,0,0)</code>.
+        В некоторых браузерах переход от <code>transparent</code> к цвету даёт «серый»
+        вместо прозрачности. Решение: использовать <code>rgba(255, 255, 255, 0)</code>
+        или <code>rgba(0, 0, 0, 0)</code>.
+    </div>
+
+    <h2>8. Несколько градиентов на одном фоне</h2>
+
+    <p>
+        Через запятую можно задать <strong>несколько градиентов</strong> — они
+        накладываются друг на друга (как слои).
+    </p>
+
+    <pre><code>.box {
+    background:
+        linear-gradient(to right, rgba(21, 101, 192, 0.7), transparent),
+        linear-gradient(to bottom, rgba(229, 57, 53, 0.5), transparent),
+        #fafafa;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наложение двух градиентов:</div>
+        <div class="grad-box" style="background: linear-gradient(to right, rgba(21, 101, 192, 0.7), transparent), linear-gradient(to bottom, rgba(229, 57, 53, 0.5), transparent), #fafafa;">2 градиента</div>
+    </div>
+
+    <h2>9. Практика: кнопка с градиентом</h2>
+
+    <pre><code>.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn:hover {
+    filter: brightness(1.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кнопка с градиентом:</div>
+        <button style="padding: 12px 24px; border: none; border-radius: 8px; background: linear-gradient(135deg, #1565c0, #42a5f5); color: white; font-weight: 600; cursor: pointer; font-size: 14px; font-family: inherit;">
+            Кнопка с градиентом
+        </button>
+    </div>
+
+    <h2>10. Практика: hero-блок с overlay</h2>
+
+    <pre><code>.hero {
+    height: 300px;
+    background:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)),
+        url("photo.jpg") center / cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.hero h1 {
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero с градиентным overlay:</div>
+        <div style="height: 200px; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/800/400?random=4') center/cover; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+            <h2 style="color: white; font-size: 28px; margin: 0; text-align: center;">Заголовок на градиенте</h2>
+        </div>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>background-color: linear-gradient(...)</code></td>
+                <td>Градиент — это <strong>image</strong>, не color. Используй <code>background</code> или <code>background-image</code></td>
+            </tr>
+            <tr>
+                <td><code>transparent</code> в градиенте от цвета</td>
+                <td>Может дать «серый» вместо прозрачности. Используй <code>rgba(0,0,0,0)</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>deg</code> или <code>to</code></td>
+                <td>Угол не работает</td>
+            </tr>
+            <tr>
+                <td>Использовать градиент для текста без <code>background-clip</code></td>
+                <td>Текст не видно. Нужен <code>-webkit-background-clip: text</code></td>
+            </tr>
+            <tr>
+                <td>Градиент без стопов</td>
+                <td>Переход плавный по всему блоку — может быть некрасиво</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Градиент — это <code>background-image</code></strong>, не <code>background-color</code>.</li>
+        <li><strong><code>linear-gradient</code></strong> — вдоль линии. Углы: <code>90deg</code>, <code>to right</code>, <code>135deg</code>.</li>
+        <li><strong><code>radial-gradient</code></strong> — от центра. Формы: <code>circle</code>, <code>ellipse</code>.</li>
+        <li><strong><code>conic-gradient</code></strong> — по кругу. Для прогресс-баров, «пирогов».</li>
+        <li><strong>Стопы</strong> — позиции цветов. Одинаковые стопы → резкая граница.</li>
+        <li><strong>Repeating-градиенты</strong> — для полосок, узоров.</li>
+        <li><strong>Прозрачность</strong> — через <code>rgba()</code> или <code>transparent</code>.</li>
+        <li><strong>Несколько градиентов</strong> — через запятую, накладываются.</li>
+        <li><strong>Overlay</strong> — градиент поверх картинки для затемнения.</li>
+        <li><strong>Градиентный текст</strong> — <code>background-clip: text</code> + <code>color: transparent</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 18 · Следующий урок: <em>Тени — box-shadow, text-shadow, drop-shadow</em>
+    </p>
+
+</body>
+</html>

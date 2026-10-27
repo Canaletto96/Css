@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 20: прозрачность — opacity vs rgba. Разница, влияние на детей, filter: opacity.">
+    <title>CSS Урок 20. Прозрачность</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .opacity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .opacity-item {
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            padding: 16px 8px;
+            background: #1565c0;
+            color: white;
+            border-radius: 8px;
+        }
+        .checker {
+            background-image:
+                linear-gradient(45deg, #ddd 25%, transparent 25%),
+                linear-gradient(-45deg, #ddd 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ddd 75%),
+                linear-gradient(-45deg, transparent 75%, #ddd 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+            padding: 16px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 20. Прозрачность</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять разницу между opacity и rgba.           -->
+    <!-- ========================================================= -->
+
+    <h2>1. Два способа сделать прозрачность</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что делает прозрачным</th>
+                <th>Наследуется детьми?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>opacity</code></td>
+                <td><strong>Всё</strong>: фон, текст, рамки, детей</td>
+                <td><strong>Да</strong></td>
+            </tr>
+            <tr>
+                <td><code>rgba()</code></td>
+                <td>Только <strong>цвет</strong> (фон или текст)</td>
+                <td>Нет</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Главное отличие:</strong>
+        <ul>
+            <li><strong><code>opacity</code></strong> — «сделать весь элемент полупрозрачным». Дети тоже станут прозрачными.</li>
+            <li><strong><code>rgba()</code></strong> — «сделать <em>цвет</em> полупрозрачным». Фон или текст — но не детей.</li>
+        </ul>
+    </div>
+
+    <h2>2. <code>opacity</code> — прозрачность всего блока</h2>
+
+    <p>Значение от <code>0</code> до <code>1</code>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>1</code></td><td>Полностью непрозрачный (по умолчанию)</td></tr>
+            <tr><td><code>0.8</code></td><td>80% непрозрачности (20% прозрачности)</td></tr>
+            <tr><td><code>0.5</code></td><td>50% (половина прозрачности)</td></tr>
+            <tr><td><code>0</code></td><td>Полностью прозрачный (не виден)</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.box {
+    opacity: 0.5;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные значения opacity:</div>
+        <div class="opacity-grid">
+            <div class="opacity-item" style="opacity: 1;">1</div>
+            <div class="opacity-item" style="opacity: 0.8;">0.8</div>
+            <div class="opacity-item" style="opacity: 0.6;">0.6</div>
+            <div class="opacity-item" style="opacity: 0.4;">0.4</div>
+            <div class="opacity-item" style="opacity: 0.2;">0.2</div>
+            <div class="opacity-item" style="opacity: 0.1;">0.1</div>
+        </div>
+    </div>
+
+    <h3><code>opacity</code> влияет на детей</h3>
+
+    <p>
+        Если у родителя <code>opacity: 0.5</code> — <strong>все</strong> дети
+        тоже станут полупрозрачными. Даже если у ребёнка стоит <code>opacity: 1</code> —
+        он не «восстановится».
+    </p>
+
+    <pre><code>.parent {
+    opacity: 0.5;   /* ← все дети тоже станут прозрачными */
+}
+
+.child {
+    opacity: 1;    /* ← НЕ работает: opacity перемножается */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">opacity 0.5 на родителе — дети тоже прозрачные:</div>
+        <div class="checker">
+            <div style="opacity: 0.5; background: #1565c0; padding: 20px; border-radius: 8px; color: white;">
+                <p style="margin: 0;">Это родитель с <code>opacity: 0.5</code></p>
+                <p style="margin: 8px 0 0 0; opacity: 1; background: #e53935; padding: 8px; border-radius: 4px;">А это ребёнок с <code>opacity: 1</code> — но он тоже полупрозрачный!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Почему так:</strong> <code>opacity</code> — это <strong>не «сделать цвет прозрачным»</strong>,
+        а «сделать <strong>весь элемент</strong> (включая детей) прозрачным». Ребёнок с
+        <code>opacity: 1</code> внутри <code>opacity: 0.5</code> — это <code>0.5 × 1 = 0.5</code>.
+    </div>
+
+    <h2>3. <code>rgba()</code> — прозрачность цвета</h2>
+
+    <p>
+        <code>rgba()</code> — это <code>rgb()</code> с <strong>альфа-каналом</strong>
+        (прозрачностью) от <code>0</code> до <code>1</code>.
+    </p>
+
+    <pre><code>.box {
+    background: rgba(21, 101, 192, 0.5);   /* синий фон, 50% прозрачности */
+    color: rgba(0, 0, 0, 0.8);              /* чёрный текст, 80% непрозрачности */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">rgba на фоне (дети не прозрачные):</div>
+        <div class="checker">
+            <div style="background: rgba(21, 101, 192, 0.5); padding: 20px; border-radius: 8px; color: white;">
+                <p style="margin: 0; color: #fff;">Это блок с <code>rgba</code>-фоном.</p>
+                <p style="margin: 8px 0 0 0; background: #e53935; padding: 8px; border-radius: 4px;">А этот ребёнок — <strong>непрозрачный</strong>!</p>
+            </div>
+        </div>
+    </div>
+
+    <h3>Сравнение на одном фоне</h3>
+
+    <div class="demo">
+        <div class="demo-label">opacity vs rgba — разница видна на детях:</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 4px;">opacity: 0.5</div>
+                <div class="checker">
+                    <div style="opacity: 0.5; background: #1565c0; padding: 16px; border-radius: 8px; color: white; font-size: 13px;">
+                        Родитель
+                        <div style="margin-top: 8px; background: #e53935; padding: 8px; border-radius: 4px;">Ребёнок тоже прозрачный</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 4px;">background: rgba(..., 0.5)</div>
+                <div class="checker">
+                    <div style="background: rgba(21, 101, 192, 0.5); padding: 16px; border-radius: 8px; color: white; font-size: 13px;">
+                        Родитель
+                        <div style="margin-top: 8px; background: #e53935; padding: 8px; border-radius: 4px;">Ребёнок непрозрачный</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>4. Когда что использовать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Что использовать</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Полупрозрачный фон (дети непрозрачные)</td>
+                <td><code>background: rgba(...)</code></td>
+            </tr>
+            <tr>
+                <td>Полупрозрачный текст (фон непрозрачный)</td>
+                <td><code>color: rgba(...)</code></td>
+            </tr>
+            <tr>
+                <td>Полупрозрачный блок целиком (с детьми)</td>
+                <td><code>opacity</code></td>
+            </tr>
+            <tr>
+                <td>Полупрозрачная картинка</td>
+                <td><code>opacity</code> (или <code>filter: opacity()</code>)</td>
+            </tr>
+            <tr>
+                <td>Полупрозрачная кнопка с текстом</td>
+                <td><code>background: rgba(...)</code> + <code>color: #fff</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. <code>filter: opacity()</code> — альтернатива</h2>
+
+    <p>
+        Функция <code>opacity()</code> внутри <code>filter</code> работает так же,
+        как <code>opacity</code>, но <strong>не наследуется детьми</strong>.
+    </p>
+
+    <pre><code>.box {
+    filter: opacity(0.5);
+}</code></pre>
+
+    <div class="note">
+        <strong>Разница:</strong>
+        <ul>
+            <li><strong><code>opacity: 0.5</code></strong> — весь элемент и дети полупрозрачные.</li>
+            <li><strong><code>filter: opacity(0.5)</code></strong> — весь элемент <strong>и дети</strong> тоже полупрозрачные (визуально — как opacity).</li>
+        </ul>
+        На самом деле, <code>filter: opacity()</code> <strong>не наследуется</strong> в CSS-смысле, но
+        визуально блок с детьми всё равно выглядит полупрозрачным. Разница тонкая — на практике
+        используют <code>opacity</code>.
+    </div>
+
+    <h2>6. Комбинирование</h2>
+
+    <p>Можно комбинировать <code>opacity</code> и <code>rgba</code>:</p>
+
+    <pre><code>.box {
+    opacity: 0.8;                              /* весь блок 80% */
+    background: rgba(21, 101, 192, 0.5);        /* фон 50% от 80% = 40% */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">opacity 0.8 + rgba 0.5 (фон становится «двойной прозрачности»):</div>
+        <div class="checker">
+            <div style="opacity: 0.8; background: rgba(21, 101, 192, 0.5); padding: 16px; border-radius: 8px; color: white;">
+                <p style="margin: 0;">opacity: 0.8 + rgba 0.5</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Формула:</strong> итоговая прозрачность = <code>opacity × альфа</code>.
+        Например, <code>opacity: 0.8</code> и <code>rgba(..., 0.5)</code> = <code>0.8 × 0.5 = 0.4</code>
+        (60% прозрачности).
+    </div>
+
+    <h2>7. Практика: карточка с overlay</h2>
+
+    <pre><code>.card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.card-image {
+    display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;                    /* ← скрыт */
+    transition: opacity 0.3s;
+}
+
+.card:hover .card-overlay {
+    opacity: 1;                    /* ← появляется при hover */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с overlay при hover:</div>
+        <div style="position: relative; overflow: hidden; border-radius: 12px; width: 200px; cursor: pointer; transition: all 0.3s;" onmouseover="this.querySelector('.overlay').style.opacity='1'" onmouseout="this.querySelector('.overlay').style.opacity='0'">
+            <img src="https://picsum.photos/400/300?random=5" alt="Фото" style="display: block; width: 100%; height: 150px; object-fit: cover;">
+            <div class="overlay" style="position: absolute; inset: 0; background: rgba(21, 101, 192, 0.7); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; opacity: 0; transition: opacity 0.3s;">
+                Подробнее
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Практика: disabled-состояние</h2>
+
+    <pre><code>.btn:disabled {
+    opacity: 0.5;   /* ← визуально «отключённая» кнопка */
+    cursor: not-allowed;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кнопки с opacity для disabled:</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button style="padding: 10px 20px; background: #1565c0; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-family: inherit;">Активная</button>
+            <button disabled style="padding: 10px 20px; background: #1565c0; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: not-allowed; opacity: 0.5; font-family: inherit;">Disabled</button>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> <code>opacity: 0.5</code> для disabled — <strong>не</strong> заменяет
+        <code>disabled</code>. Атрибут <code>disabled</code> отключает кнопку (не кликается),
+        <code>opacity</code> — только визуально. Используй <strong>оба</strong>.
+    </div>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Использовать <code>opacity</code> для полупрозрачного фона</td>
+                <td>Дети тоже станут прозрачными. Лучше <code>rgba()</code></td>
+            </tr>
+            <tr>
+                <td>Использовать <code>rgba()</code> для картинки</td>
+                <td>Не работает. Для картинки — <code>opacity</code> или <code>filter: opacity()</code></td>
+            </tr>
+            <tr>
+                <td><code>opacity: 0</code> + клик</td>
+                <td>Элемент невидим, но кликабельный. Для «скрыть» — <code>display: none</code> или <code>visibility: hidden</code></td>
+            </tr>
+            <tr>
+                <td>Анимация <code>opacity</code> без <code>transition</code></td>
+                <td>Резко «прыгает»</td>
+            </tr>
+            <tr>
+                <td>Забыть про «двойную прозрачность»</td>
+                <td>opacity × rgba = ещё прозрачнее</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>opacity</code></strong> — прозрачность <strong>всего</strong> блока, включая детей.</li>
+        <li><strong><code>rgba()</code></strong> — прозрачность <strong>цвета</strong> (фон, текст), детей не трогает.</li>
+        <li><strong>Значения:</strong> <code>0</code> (прозрачный) — <code>1</code> (непрозрачный).</li>
+        <li><strong>Для полупрозрачного фона</strong> — <code>background: rgba(...)</code>.</li>
+        <li><strong>Для полупрозрачного блока целиком</strong> — <code>opacity</code>.</li>
+        <li><strong>Для картинок</strong> — <code>opacity</code> или <code>filter: opacity()</code>.</li>
+        <li><strong>opacity × rgba</strong> = «двойная прозрачность».</li>
+        <li><strong>Disabled</strong> — <code>opacity: 0.5</code> + атрибут <code>disabled</code>.</li>
+        <li><strong>Overlay</strong> — <code>rgba</code> + <code>opacity</code> + <code>transition</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 20 · Следующий урок: <em>Изображения — object-fit, object-position, aspect-ratio</em>
+    </p>
+
+</body>
+</html>

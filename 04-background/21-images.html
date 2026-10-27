@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 21: изображения — object-fit, object-position, aspect-ratio. Как управлять картинками в контейнерах.">
+    <title>CSS Урок 21. Изображения</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .img-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .img-box .label {
+            padding: 8px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            text-align: center;
+            background: #fff;
+            color: #666;
+        }
+        .img-box .preview {
+            width: 100%;
+            height: 120px;
+            background: #fafafa;
+        }
+        .img-box .preview img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .ratio-demo {
+            background: #e3f2fd;
+            border: 2px solid #1565c0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Consolas, Monaco, monospace;
+            color: #1565c0;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 21. Изображения</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить object-fit, object-position,          -->
+    <!-- aspect-ratio — как управлять картинками в контейнерах.     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: картинка не вписывается</h2>
+
+    <p>
+        Представь, что у тебя есть контейнер <code>300×200</code>, а картинка —
+        <code>800×600</code>. Если ты просто вставишь картинку:
+    </p>
+
+    <pre><code>.container {
+    width: 300px;
+    height: 200px;
+}
+
+.container img {
+    width: 100%;
+    height: 100%;
+}</code></pre>
+
+    <p>
+        Картинка <strong>растянется</strong> на 300×200 и <strong>исказится</strong>
+        (пропорции нарушатся). Или, если не задать размеры — <strong>вылезет</strong>
+        за границы контейнера.
+    </p>
+
+    <p>Для решения есть <strong>три свойства</strong>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>object-fit</code></td>
+                <td>Как вписать картинку в контейнер (без искажения)</td>
+            </tr>
+            <tr>
+                <td><code>object-position</code></td>
+                <td>Где расположить картинку</td>
+            </tr>
+            <tr>
+                <td><code>aspect-ratio</code></td>
+                <td>Задать пропорции контейнера</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>object-fit</code> — как вписать</h2>
+
+    <p>Работает для <code>&lt;img&gt;</code> и <code>&lt;video&gt;</code>.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>fill</code> (по умолчанию)</td><td>Растянуть на весь контейнер (искажает)</td></tr>
+            <tr><td><code>contain</code></td><td>Вписать целиком (могут быть пустые места)</td></tr>
+            <tr><td><code>cover</code></td><td>Заполнить контейнер (края обрезаются)</td></tr>
+            <tr><td><code>none</code></td><td>Оригинальный размер (может вылезти)</td></tr>
+            <tr><td><code>scale-down</code></td><td>Как <code>none</code> или <code>contain</code> (меньшее)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Одна картинка в контейнере 180×120 — разные object-fit:</div>
+        <div class="img-grid">
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=10" alt="Фото" style="object-fit: fill;"></div>
+                <div class="label">fill (искажает)</div>
+            </div>
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=11" alt="Фото" style="object-fit: contain; background: #f0f0f0;"></div>
+                <div class="label">contain (пустые места)</div>
+            </div>
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=12" alt="Фото" style="object-fit: cover;"></div>
+                <div class="label">cover (обрезает)</div>
+            </div>
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=13" alt="Фото" style="object-fit: none;"></div>
+                <div class="label">none (оригинал)</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Когда что использовать</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Когда</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>cover</code></td>
+                <td><strong>Фото в карточках, галереях</strong> — заполнить контейнер, не искажая. Края обрезаются</td>
+            </tr>
+            <tr>
+                <td><code>contain</code></td>
+                <td><strong>Логотипы, иконки</strong> — вписать целиком, не обрезая</td>
+            </tr>
+            <tr>
+                <td><code>fill</code></td>
+                <td><strong>Редко</strong> — когда нужна точная подгонка (но искажает)</td>
+            </tr>
+            <tr>
+                <td><code>none</code></td>
+                <td><strong>Редко</strong> — когда нужен оригинальный размер</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Правило:</strong> для <strong>фото</strong> — <code>cover</code>. Для <strong>логотипов/иконок</strong> — <code>contain</code>. <code>fill</code> — почти никогда (искажает).
+    </div>
+
+    <h2>3. <code>object-position</code> — где расположить</h2>
+
+    <p>Работает вместе с <code>object-fit</code>. Задаёт, <strong>какую часть</strong> картинки показать.</p>
+
+    <pre><code>.image {
+    object-fit: cover;
+    object-position: center;   /* по умолчанию */
+}
+
+/* Другие варианты */
+object-position: left top;
+object-position: right bottom;
+object-position: 50% 20%;
+object-position: 0 0;
+</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">object-fit: cover + разные object-position:</div>
+        <div class="img-grid">
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=20" alt="Фото" style="object-fit: cover; object-position: left top;"></div>
+                <div class="label">left top</div>
+            </div>
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=21" alt="Фото" style="object-fit: cover; object-position: center;"></div>
+                <div class="label">center</div>
+            </div>
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=22" alt="Фото" style="object-fit: cover; object-position: right bottom;"></div>
+                <div class="label">right bottom</div>
+            </div>
+            <div class="img-box">
+                <div class="preview"><img src="https://picsum.photos/400/300?random=23" alt="Фото" style="object-fit: cover; object-position: 20% 80%;"></div>
+                <div class="label">20% 80%</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Зачем <code>object-position</code></h3>
+
+    <p>
+        Если у картинки <strong>важная часть</strong> (лицо, товар) в определённом месте —
+        при <code>cover</code> края обрезаются. <code>object-position</code> позволяет
+        <strong>сдвинуть</strong> видимую часть.
+    </p>
+
+    <pre><code>/* Лицо человека — сверху, показываем его */
+.avatar {
+    object-fit: cover;
+    object-position: center top;
+}</code></pre>
+
+    <h2>4. <code>aspect-ratio</code> — пропорции</h2>
+
+    <p>
+        Задаёт <strong>соотношение сторон</strong> контейнера. Работает для любого блока.
+    </p>
+
+    <pre><code>.box {
+    aspect-ratio: 16 / 9;    /* ширина : высота */
+    width: 100%;
+    /* height не нужен — вычислится автоматически */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">aspect-ratio: 16 / 9 — ширина 100%, высота вычисляется:</div>
+        <div class="ratio-demo" style="aspect-ratio: 16 / 9; width: 100%;">16 / 9</div>
+
+        <div class="demo-label" style="margin-top: 16px;">Другие пропорции:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+            <div class="ratio-demo" style="aspect-ratio: 1 / 1;">1 / 1 (квадрат)</div>
+            <div class="ratio-demo" style="aspect-ratio: 4 / 3;">4 / 3</div>
+            <div class="ratio-demo" style="aspect-ratio: 16 / 9;">16 / 9</div>
+            <div class="ratio-demo" style="aspect-ratio: 21 / 9;">21 / 9 (кино)</div>
+        </div>
+    </div>
+
+    <h3>Применение <code>aspect-ratio</code></h3>
+
+    <ul>
+        <li><strong>Карточки товаров</strong> — чтобы все картинки были одинаковой высоты.</li>
+        <li><strong>Видео</strong> — 16:9.</li>
+        <li><strong>Аватары</strong> — 1:1 (круглые).</li>
+        <li><strong>Hero-блоки</strong> — 16:9 или 21:9.</li>
+        <li><strong>Галереи</strong> — одинаковая пропорция для всех.</li>
+    </ul>
+
+    <div class="note">
+        <strong>До <code>aspect-ratio</code>:</strong> использовали «трюк» с <code>padding-bottom: 56.25%</code>. Сейчас — <code>aspect-ratio: 16/9</code>. <strong>Проще и читабельнее.</strong>
+    </div>
+
+    <h2>5. Практика: карточка с картинкой</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.card {
+    width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card-content h3 {
+    margin: 0 0 8px 0;
+}
+
+.card-content p {
+    margin: 0;
+    color: #666;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с картинкой 16:9:</div>
+        <div style="max-width: 320px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <img src="https://picsum.photos/800/450?random=30" alt="Фото" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; object-position: center; display: block;">
+            <div style="padding: 16px;">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1565c0;">Заголовок карточки</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">Описание карточки с картинкой 16:9.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>6. Практика: аватар</h2>
+
+    <pre><code>.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;   /* ← чтобы лицо было видно */
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Аватар (круглый):</div>
+        <img src="https://picsum.photos/400/400?random=31" alt="Аватар" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; object-position: center top; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+    </div>
+
+    <h2>7. Практика: галерея</h2>
+
+    <pre><code>.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Галерея с aspect-ratio: 1/1:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px;">
+            <img src="https://picsum.photos/300/300?random=40" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=41" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=42" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=43" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+        </div>
+    </div>
+
+    <h2>8. <code>aspect-ratio</code> с <code>max-width</code></h2>
+
+    <p>
+        Если контейнер <strong>уже</strong> картинки — <code>aspect-ratio</code> работает
+        с шириной. Если <strong>шире</strong> — можно ограничить <code>max-width</code>.
+    </p>
+
+    <pre><code>.image {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}</code></pre>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>width: 100%; height: 100%</code> без <code>object-fit</code></td>
+                <td>Картинка искажается</td>
+            </tr>
+            <tr>
+                <td><code>object-fit: cover</code> без <code>width/height</code></td>
+                <td>Не работает — нужно, чтобы контейнер имел размеры</td>
+            </tr>
+            <tr>
+                <td><code>object-fit: fill</code> для фото</td>
+                <td>Искажает пропорции</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>display: block</code> для <code>&lt;img&gt;</code></td>
+                <td>Появляется «зазор» под картинкой (из-за inline)</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>padding-bottom: 56.25%</code> вместо <code>aspect-ratio</code></td>
+                <td>Устаревший способ, сложнее</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>object-fit</code></strong> — как вписать картинку: <code>cover</code>, <code>contain</code>, <code>fill</code>.</li>
+        <li><strong><code>cover</code></strong> — заполнить контейнер (края обрезаются). Для фото.</li>
+        <li><strong><code>contain</code></strong> — вписать целиком (пустые места). Для логотипов.</li>
+        <li><strong><code>object-position</code></strong> — где расположить картинку. <code>center top</code> — для лиц.</li>
+        <li><strong><code>aspect-ratio</code></strong> — пропорции контейнера. <code>16 / 9</code>, <code>1 / 1</code>.</li>
+        <li><strong><code>aspect-ratio</code> + <code>object-fit: cover</code></strong> — идеальная карточка.</li>
+        <li><strong><code>display: block</code></strong> для <code>&lt;img&gt;</code> — убирает «зазор».</li>
+        <li><strong>Забыть <code>width</code>/<code>height</code></strong> при <code>object-fit</code> — не работает.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 21 · Следующий урок: <em>Позиционирование — static, relative, absolute, fixed, sticky</em>
+    </p>
+
+</body>
+</html>

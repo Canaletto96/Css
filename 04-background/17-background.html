@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 17: фон — background-color, image, size, position, repeat, attachment. Все свойства фона.">
+    <title>CSS Урок 17. Фон</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .bg-demo {
+            height: 120px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin: 8px 0;
+        }
+        .bg-color-1 { background-color: #1565c0; }
+        .bg-color-2 { background-color: #e3f2fd; }
+        .bg-gradient {
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+        }
+        .bg-image-repeat {
+            background-image: url("https://via.placeholder.com/50x50/1565c0/ffffff?text=X");
+            background-repeat: repeat;
+        }
+        .bg-image-no-repeat {
+            background-image: url("https://via.placeholder.com/50x50/e53935/ffffff?text=X");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .bg-image-cover {
+            background-image: url("https://picsum.photos/800/400?random=1");
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-image-contain {
+            background-image: url("https://picsum.photos/800/400?random=1");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .bg-image-position {
+            background-image: url("https://via.placeholder.com/80x80/ffb300/ffffff?text=1");
+            background-repeat: no-repeat;
+            background-color: #f5f5f5;
+        }
+        .bg-pattern {
+            background-image: url("https://via.placeholder.com/40x40/1565c0/e3f2fd?text=+");
+            background-repeat: repeat;
+        }
+        .bg-multiple {
+            background-image:
+                url("https://via.placeholder.com/60x60/e53935/ffffff?text=1"),
+                url("https://via.placeholder.com/40x40/1565c0/ffffff?text=2");
+            background-position: top left, bottom right;
+            background-repeat: no-repeat;
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 17. Фон</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить все свойства фона — цвет, картинку,    -->
+    <!-- размер, позицию, повтор, attachment.                       -->
+    <!-- ========================================================= -->
+
+    <h2>1. Свойства фона</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Перевод</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>background-color</code></td><td>цвет фона</td><td>Заливка цветом</td></tr>
+            <tr><td><code>background-image</code></td><td>изображение фона</td><td>Картинка или градиент</td></tr>
+            <tr><td><code>background-size</code></td><td>размер фона</td><td>Как масштабировать картинку</td></tr>
+            <tr><td><code>background-position</code></td><td>позиция фона</td><td>Где расположить картинку</td></tr>
+            <tr><td><code>background-repeat</code></td><td>повтор фона</td><td>Повторять ли картинку</td></tr>
+            <tr><td><code>background-attachment</code></td><td>прикрепление фона</td><td>Прокручивается ли с контентом</td></tr>
+            <tr><td><code>background-clip</code></td><td>обрезка фона</td><td>Где заканчивается фон</td></tr>
+            <tr><td><code>background-origin</code></td><td>начало фона</td><td>Откуда начинается фон</td></tr>
+            <tr><td><code>background</code></td><td>фон</td><td>Сокращённая запись всех background-*</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>background-color</code> — цвет фона</h2>
+
+    <pre><code>.box {
+    background-color: #1565c0;
+    /* или */
+    background-color: rgb(21, 101, 192);
+    /* или */
+    background-color: hsl(210, 80%, 42%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные цвета фона:</div>
+        <div class="bg-demo bg-color-1"></div>
+        <div class="bg-demo bg-color-2"></div>
+    </div>
+
+    <div class="note">
+        <strong><code>background-color</code></strong> — самый простой фон.
+        Значения: любой цвет (HEX, RGB, HSL, named). По умолчанию — <code>transparent</code>.
+    </div>
+
+    <h2>3. <code>background-image</code> — картинка или градиент</h2>
+
+    <p>Задаёт <strong>фоновое изображение</strong> или <strong>градиент</strong>.</p>
+
+    <pre><code>/* Картинка по URL */
+.box {
+    background-image: url("image.jpg");
+}
+
+/* Градиент */
+.box {
+    background-image: linear-gradient(135deg, #1565c0, #42a5f5);
+}
+
+/* Несколько фонов */
+.box {
+    background-image: url("overlay.png"), url("bg.jpg");
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Градиент как фон:</div>
+        <div class="bg-demo bg-gradient"></div>
+    </div>
+
+    <div class="warn">
+        <strong>URL в кавычках:</strong> <code>url("image.jpg")</code>. Кавычки
+        не обязательны, но с ними надёжнее (особенно если в пути есть пробелы).
+    </div>
+
+    <h2>4. <code>background-repeat</code> — повтор</h2>
+
+    <p>По умолчанию картинка <strong>повторяется</strong>, чтобы заполнить весь блок.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>repeat</code> (по умолчанию)</td><td>Повторять по обеим осям</td></tr>
+            <tr><td><code>no-repeat</code></td><td>Не повторять</td></tr>
+            <tr><td><code>repeat-x</code></td><td>Только по горизонтали</td></tr>
+            <tr><td><code>repeat-y</code></td><td>Только по вертикали</td></tr>
+            <tr><td><code>space</code></td><td>Повторять с равными промежутками</td></tr>
+            <tr><td><code>round</code></td><td>Повторять с масштабированием</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">repeat (по умолчанию) — картинка повторяется:</div>
+        <div class="bg-demo bg-image-repeat"></div>
+
+        <div class="demo-label" style="margin-top: 16px;">no-repeat — одна картинка по центру:</div>
+        <div class="bg-demo bg-image-no-repeat"></div>
+    </div>
+
+    <h2>5. <code>background-size</code> — размер</h2>
+
+    <p>Как масштабировать фоновую картинку.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>auto</code> (по умолчанию)</td><td>Оригинальный размер</td></tr>
+            <tr><td><code>cover</code></td><td>Заполнить весь блок, обрезая края</td></tr>
+            <tr><td><code>contain</code></td><td>Вписать целиком, могут быть пустые места</td></tr>
+            <tr><td><code>100px 50px</code></td><td>Ширина 100px, высота 50px</td></tr>
+            <tr><td><code>50% auto</code></td><td>Ширина 50%, высота пропорционально</td></tr>
+            <tr><td><code>100% 100%</code></td><td>Растянуть на весь блок (искажает)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">background-size: cover — заполняет весь блок:</div>
+        <div class="bg-demo bg-image-cover"></div>
+
+        <div class="demo-label" style="margin-top: 16px;">background-size: contain — вписывается целиком:</div>
+        <div class="bg-demo bg-image-contain"></div>
+    </div>
+
+    <div class="note">
+        <strong><code>cover</code> vs <code>contain</code>:</strong>
+        <ul>
+            <li><strong><code>cover</code></strong> — заполнить весь блок (края могут обрезаться).</li>
+            <li><strong><code>contain</code></strong> — вписать целиком (могут быть пустые места).</li>
+        </ul>
+        Для <strong>фоновых фотографий</strong> — <code>cover</code>. Для <strong>логотипов</strong> — <code>contain</code>.
+    </div>
+
+    <h2>6. <code>background-position</code> — позиция</h2>
+
+    <p>Где расположить фоновую картинку внутри блока.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>left top</code></td><td>Левый верх</td></tr>
+            <tr><td><code>center center</code> / <code>center</code></td><td>Центр</td></tr>
+            <tr><td><code>right bottom</code></td><td>Правый низ</td></tr>
+            <tr><td><code>50% 50%</code></td><td>Центр (по процентам)</td></tr>
+            <tr><td><code>20px 40px</code></td><td>20px от левого, 40px от верхнего</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">background-position:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+            <div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 4px;">left top</div>
+                <div class="bg-demo bg-image-position" style="background-position: left top;"></div>
+            </div>
+            <div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 4px;">center center</div>
+                <div class="bg-demo bg-image-position" style="background-position: center center;"></div>
+            </div>
+            <div>
+                <div style="font-size: 12px; color: #666; margin-bottom: 4px;">right bottom</div>
+                <div class="bg-demo bg-image-position" style="background-position: right bottom;"></div>
+            </div>
+        </div>
+    </div>
+
+    <h2>7. <code>background-attachment</code> — прикрепление</h2>
+
+    <p>Прокручивается ли фон вместе с контентом.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>scroll</code> (по умолчанию)</td><td>Прокручивается с контентом</td></tr>
+            <tr><td><code>fixed</code></td><td>Фон «прибит» к окну — не прокручивается</td></tr>
+            <tr><td><code>local</code></td><td>Прокручивается с содержимым элемента (для overflow)</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.parallax {
+    background-image: url("bg.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+}</code></pre>
+
+    <div class="warn">
+        <strong>Осторожно с <code>fixed</code>:</strong> на мобильных работает плохо
+        (может тормозить). Используй <strong>только для десктопа</strong> или
+        через <code>@media</code> отключай.
+    </div>
+
+    <h2>8. Несколько фонов</h2>
+
+    <p>Можно задать <strong>несколько</strong> фонов через запятую. Каждый — со своими настройками.</p>
+
+    <pre><code>.box {
+    background-image:
+        url("overlay.png"),
+        url("bg.jpg");
+    background-position:
+        top left,
+        center;
+    background-repeat:
+        no-repeat,
+        no-repeat;
+    background-size:
+        100px 100px,
+        cover;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Два фона: красная точка сверху-слева, синяя снизу-справа:</div>
+        <div class="bg-demo bg-multiple"></div>
+    </div>
+
+    <div class="note">
+        <strong>Порядок:</strong> первый фон — <strong>сверху</strong>, последний — <strong>снизу</strong>.
+        Как слои в Photoshop.
+    </div>
+
+    <h2>9. Shorthand <code>background</code></h2>
+
+    <p>Сокращённая запись всех свойств:</p>
+
+    <pre><code>.box {
+    background: #1565c0 url("bg.jpg") no-repeat center / cover;
+    /*          ↑      ↑              ↑        ↑        ↑
+            цвет   картинка       повтор   позиция   размер */
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>#1565c0</code></td><td><code>background-color</code></td></tr>
+            <tr><td><code>url("bg.jpg")</code></td><td><code>background-image</code></td></tr>
+            <tr><td><code>no-repeat</code></td><td><code>background-repeat</code></td></tr>
+            <tr><td><code>center</code></td><td><code>background-position</code></td></tr>
+            <tr><td><code>/ cover</code></td><td><code>background-size</code> (через <code>/</code>)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Осторожно с <code>background</code>:</strong> он <strong>сбрасывает</strong>
+        все свойства фона, которые не указаны. Если хочешь только изменить цвет —
+        используй <code>background-color</code>, а не <code>background</code>.
+    </div>
+
+    <h2>10. <code>background-clip</code> — обрезка</h2>
+
+    <p>Где заканчивается фон — на границе <code>content</code>, <code>padding</code> или <code>border</code>.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>border-box</code> (по умолчанию)</td><td>Фон до границы <code>border</code></td></tr>
+            <tr><td><code>padding-box</code></td><td>Фон до границы <code>padding</code></td></tr>
+            <tr><td><code>content-box</code></td><td>Фон только под содержимым</td></tr>
+            <tr><td><code>text</code></td><td>Фон внутри текста (текст как «маска»)</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.text-gradient {
+    background: linear-gradient(135deg, #1565c0, #e53935);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">background-clip: text — градиент внутри текста:</div>
+        <h2 style="font-size: 40px; background: linear-gradient(135deg, #1565c0, #e53935); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 0;">Градиентный текст</h2>
+    </div>
+
+    <div class="note">
+        <strong>Крутой эффект:</strong> <code>background-clip: text</code> + <code>color: transparent</code> —
+        текст становится «градиентным». Требует префикс <code>-webkit-</code> в некоторых браузерах.
+    </div>
+
+    <h2>11. Практика: hero-блок с фоном</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.hero {
+    height: 400px;
+    background-image: url("hero.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+}
+
+.hero h1 {
+    position: relative;
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero-блок с тёмным overlay:</div>
+        <div style="height: 200px; background-image: url('https://picsum.photos/800/400?random=2'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5);"></div>
+            <h2 style="position: relative; color: white; font-size: 28px; margin: 0; text-align: center;">Заголовок на фоне</h2>
+        </div>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>no-repeat</code></td>
+                <td>Картинка повторяется, выглядит как «плитка»</td>
+            </tr>
+            <tr>
+                <td><code>background-size: 100% 100%</code></td>
+                <td>Искажает пропорции картинки</td>
+            </tr>
+            <tr>
+                <td><code>background-attachment: fixed</code> на мобильных</td>
+                <td>Тормозит</td>
+            </tr>
+            <tr>
+                <td><code>background</code> вместо <code>background-color</code></td>
+                <td>Сбрасывает все остальные свойства фона</td>
+            </tr>
+            <tr>
+                <td>URL без кавычек с пробелами</td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td><code>background-clip: text</code> без <code>color: transparent</code></td>
+                <td>Эффект не виден</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>background-color</code></strong> — цвет заливки.</li>
+        <li><strong><code>background-image</code></strong> — картинка или градиент через <code>url()</code>.</li>
+        <li><strong><code>background-repeat</code></strong> — <code>repeat</code> (по умолчанию), <code>no-repeat</code>.</li>
+        <li><strong><code>background-size</code></strong> — <code>cover</code> (заполнить), <code>contain</code> (вписать).</li>
+        <li><strong><code>background-position</code></strong> — <code>center</code>, <code>left top</code>, проценты, пиксели.</li>
+        <li><strong><code>background-attachment</code></strong> — <code>scroll</code>, <code>fixed</code> (осторожно на мобильных).</li>
+        <li><strong>Несколько фонов</strong> — через запятую, первый сверху.</li>
+        <li><strong><code>background</code></strong> — shorthand. <strong>Сбрасывает всё!</strong></li>
+        <li><strong><code>background-clip: text</code></strong> + <code>color: transparent</code> — градиентный текст.</li>
+        <li><strong>Для фоновых фото</strong> — <code>cover</code>. <strong>Для логотипов</strong> — <code>contain</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 17 · Следующий урок: <em>Градиенты — linear, radial, conic</em>
+    </p>
+
+</body>
+</html>

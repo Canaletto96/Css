@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 24: координаты top, right, bottom, left. Как работают, с чем, все приёмы.">
+    <title>CSS Урок 24. Координаты</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .coord-container {
+            position: relative;
+            height: 180px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .coord-box {
+            position: absolute;
+            background: #1565c0;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+        }
+        .corner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1565c0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: Consolas, Monaco, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 24. Координаты</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: досконально разобрать top, right, bottom, left -->
+    <!-- и все приёмы работы с ними.                                 -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое координаты</h2>
+
+    <p>
+        <strong>Координаты</strong> — это четыре свойства: <code>top</code>,
+        <code>right</code>, <code>bottom</code>, <code>left</code>.
+        Они задают <strong>отступ</strong> от края контейнера.
+    </p>
+
+    <p>
+        Работают <strong>только</strong> если у элемента <code>position</code> —
+        <code>relative</code>, <code>absolute</code>, <code>fixed</code> или
+        <code>sticky</code>. У <code>static</code> — игнорируются.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>top</code></td><td>Отступ от верхнего края</td></tr>
+            <tr><td><code>right</code></td><td>Отступ от правого края</td></tr>
+            <tr><td><code>bottom</code></td><td>Отступ от нижнего края</td></tr>
+            <tr><td><code>left</code></td><td>Отступ от левого края</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. Базовый пример: <code>absolute</code> + координаты</h2>
+
+    <pre><code>.parent {
+    position: relative;
+    height: 300px;
+}
+
+.child {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    /* прижат к левому верхнему углу, но с отступами */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">absolute + top: 20px, left: 40px:</div>
+        <div class="coord-container">
+            <div class="coord-box" style="top: 20px; left: 40px;">top: 20px; left: 40px;</div>
+        </div>
+    </div>
+
+    <h2>3. Прижатие к углам</h2>
+
+    <p>
+        Если задать <strong>только одно</strong> из <code>top</code>/<code>bottom</code> —
+        элемент прижат к этому краю. То же с <code>left</code>/<code>right</code>.
+    </p>
+
+    <pre><code>/* Правый верхний угол */
+.box1 {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Левый нижний угол */
+.box2 {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">4 угла:</div>
+        <div class="coord-container" style="height: 200px;">
+            <div class="coord-box" style="top: 10px; left: 10px;">top/left</div>
+            <div class="coord-box" style="top: 10px; right: 10px;">top/right</div>
+            <div class="coord-box" style="bottom: 10px; left: 10px;">bottom/left</div>
+            <div class="coord-box" style="bottom: 10px; right: 10px;">bottom/right</div>
+        </div>
+    </div>
+
+    <h2>4. Растягивание через координаты</h2>
+
+    <p>
+        Если задать <strong>два</strong> противоположных координаты (<code>top</code> +
+        <code>bottom</code> или <code>left</code> + <code>right</code>) — элемент
+        <strong>растянется</strong> между ними.
+    </p>
+
+    <pre><code>.box {
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    /* займёт всё пространство родителя с отступами 20px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Растягивание через все 4 координаты:</div>
+        <div class="coord-container" style="height: 150px;">
+            <div class="coord-box" style="top: 20px; bottom: 20px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: center;">top:20 / right:20 / bottom:20 / left:20</div>
+        </div>
+    </div>
+
+    <h3>Прижатие к ширине родителя</h3>
+
+    <pre><code>.bar {
+    position: absolute;
+    left: 0;
+    right: 0;   /* ← растянуто по всей ширине */
+    bottom: 0;
+    height: 40px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Полоса внизу (left: 0; right: 0):</div>
+        <div class="coord-container" style="height: 100px;">
+            <div class="coord-box" style="bottom: 0; left: 0; right: 0; border-radius: 0; text-align: center;">left: 0; right: 0 — во всю ширину</div>
+        </div>
+    </div>
+
+    <h2>5. Центрирование</h2>
+
+    <h3>Способ 1: через transform</h3>
+
+    <pre><code>.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Центрирование через transform:</div>
+        <div class="coord-container" style="height: 180px;">
+            <div class="coord-box" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">по центру</div>
+        </div>
+    </div>
+
+    <h3>Способ 2: через inset и margin: auto</h3>
+
+    <pre><code>.center {
+    position: absolute;
+    inset: 0;              /* top: 0; right: 0; bottom: 0; left: 0 */
+    width: 200px;
+    height: 100px;
+    margin: auto;          /* ← центрирует */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Центрирование через inset + margin: auto:</div>
+        <div class="coord-container" style="height: 180px;">
+            <div style="position: absolute; inset: 0; width: 200px; height: 80px; margin: auto; background: #1565c0; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">
+                inset: 0; margin: auto
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Преимущество способа 2:</strong> не нужен <code>transform</code>, можно анимировать <code>width</code>/<code>height</code> без искажений.
+    </div>
+
+    <h2>6. <code>inset</code> — сокращение</h2>
+
+    <p>
+        <code>inset</code> — это shorthand для <code>top: right: bottom: left</code>.
+        Работает так же, как <code>margin</code>:
+    </p>
+
+    <pre><code>.box {
+    inset: 10px;                    /* все 10px */
+    inset: 10px 20px;               /* верх/низ 10, право/лево 20 */
+    inset: 10px 20px 30px;          /* верх 10, право/лево 20, низ 30 */
+    inset: 10px 20px 30px 40px;     /* верх право низ лево */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">inset: 10px 20px (верх/низ 10, право/лево 20):</div>
+        <div class="coord-container" style="height: 150px;">
+            <div style="position: absolute; inset: 10px 20px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 12px; color: #0d47a1;">
+                inset: 10px 20px
+            </div>
+        </div>
+    </div>
+
+    <h2>7. <code>relative</code> + координаты</h2>
+
+    <p>
+        С <code>relative</code> координаты сдвигают элемент относительно <strong>его
+        обычного места</strong>. Место в потоке <strong>сохраняется</strong>.
+    </p>
+
+    <pre><code>.box {
+    position: relative;
+    top: 20px;
+    left: 30px;
+    /* сдвинут, но место под него осталось */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">relative: top: 20px; left: 30px:</div>
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 8px;">
+            <div style="background: #c8e6c9; padding: 12px; margin-bottom: 8px; border-radius: 6px; font-family: Consolas, Monaco, monospace; font-size: 12px;">обычный блок</div>
+            <div style="position: relative; top: 20px; left: 30px; background: #ffcdd2; padding: 12px; margin-bottom: 8px; border-radius: 6px; font-family: Consolas, Monaco, monospace; font-size: 12px;">relative: top 20, left 30</div>
+            <div style="background: #c8e6c9; padding: 12px; border-radius: 6px; font-family: Consolas, Monaco, monospace; font-size: 12px;">обычный блок (место relative сохранено)</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Когда <code>relative</code> + координаты:</strong>
+        <ul>
+            <li>Сдвинуть элемент на пару пикселей (hover-эффект).</li>
+            <li>Создать контекст для <code>absolute</code> детей (главное — без координат).</li>
+            <li><strong>Не используй</strong> для сложной раскладки — лучше Flexbox/Grid.</li>
+        </ul>
+    </div>
+
+    <h2>8. <code>fixed</code> + координаты</h2>
+
+    <p>
+        С <code>fixed</code> координаты работают относительно <strong>окна браузера</strong>.
+    </p>
+
+    <pre><code>/* Шапка сверху */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+/* Кнопка в правом нижнем углу */
+.chat {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}</code></pre>
+
+    <div class="note">
+        <strong>Совет:</strong> для «прижать к верху на всю ширину» используй
+        <code>left: 0; right: 0</code> (или <code>inset: 0 0 auto 0</code>),
+        а не <code>width: 100%</code> (последнее может дать скроллбар).
+    </div>
+
+    <h2>9. <code>sticky</code> + координаты</h2>
+
+    <p>
+        Со <code>sticky</code> координаты задают, <strong>к какому краю</strong>
+        «прилипнуть». Обязательно нужен хотя бы один.
+    </p>
+
+    <pre><code>.sticky {
+    position: sticky;
+    top: 20px;   /* прилипнет, когда верх элемента будет в 20px от верха окна */
+}</code></pre>
+
+    <div class="warn">
+        <strong>Не работает без координат:</strong> <code>position: sticky</code>
+        без <code>top</code> (или <code>bottom</code>/<code>left</code>/<code>right</code>) —
+        не «прилипнет».
+    </div>
+
+    <h2>10. Что происходит с размерами</h2>
+
+    <p>
+        Если задать <strong>два</strong> противоположных координаты (<code>top</code> +
+        <code>bottom</code> или <code>left</code> + <code>right</code>) — размер
+        по этой оси <strong>вычисляется</strong>.
+    </p>
+
+    <pre><code>.box {
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    /* высота = родитель - 40px */
+}
+
+.box {
+    position: absolute;
+    left: 0;
+    right: 0;
+    /* ширина = родитель */
+}</code></pre>
+
+    <div class="warn">
+        <strong>Внимание:</strong> если задан <code>height</code> или <code>width</code>
+        — координаты <strong>не растянут</strong> элемент. Растягивание работает,
+        только когда размер по этой оси <strong>не задан</strong> (<code>auto</code>).
+    </div>
+
+    <h2>11. Практика: карточка с иконкой в углу</h2>
+
+    <pre><code>.card {
+    position: relative;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.card-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 24px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Иконка в углу карточки:</div>
+        <div style="position: relative; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff;">
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Заголовок</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">Текст карточки.</p>
+            <div style="position: absolute; top: 12px; right: 12px; font-size: 24px;">⭐</div>
+        </div>
+    </div>
+
+    <h2>12. Практика: hero-блок</h2>
+
+    <pre><code>.hero {
+    position: relative;
+    height: 400px;
+    background: url("bg.jpg") center/cover;
+}
+
+.hero-content {
+    position: absolute;
+    inset: 0;              /* растянут на весь hero */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    text-align: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero с overlay по центру:</div>
+        <div style="position: relative; height: 200px; background: url('https://picsum.photos/800/400?random=50') center/cover; border-radius: 8px; overflow: hidden;">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); color: white; text-align: center; padding: 20px;">
+                <h2 style="margin: 0; font-size: 24px;">Заголовок на фоне</h2>
+            </div>
+        </div>
+    </div>
+
+    <h2>13. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Координаты без <code>position</code></td>
+                <td>Не работают</td>
+            </tr>
+            <tr>
+                <td><code>top</code> + <code>bottom</code> + <code>height</code></td>
+                <td>Растягивание не работает — размер задан</td>
+            </tr>
+            <tr>
+                <td>Задать <code>top</code>, но не задать <code>left</code> у <code>absolute</code></td>
+                <td>Элемент «зависает» в неожиданном месте</td>
+            </tr>
+            <tr>
+                <td><code>left: 0; right: 0</code> + <code>width: 100%</code></td>
+                <td>Может дать горизонтальный скроллбар</td>
+            </tr>
+            <tr>
+                <td><code>sticky</code> без <code>top</code></td>
+                <td>Не «прилипает»</td>
+            </tr>
+            <tr>
+                <td><code>absolute</code> без <code>relative</code> родителя</td>
+                <td>Координаты относительно <code>&lt;body&gt;</code>, а не родителя</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>14. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code></strong> — координаты. Работают только с <code>position</code> ≠ <code>static</code>.</li>
+        <li><strong>Одна координата</strong> → прижатие к краю.</li>
+        <li><strong>Две противоположные</strong> → растягивание между ними.</li>
+        <li><strong><code>inset</code></strong> — shorthand для всех четырёх.</li>
+        <li><strong>Центрирование:</strong> <code>top: 50%; left: 50%; transform: translate(-50%, -50%)</code>.</li>
+        <li><strong>Центрирование 2:</strong> <code>inset: 0; margin: auto; width; height</code>.</li>
+        <li><strong><code>relative</code></strong> + координаты — сдвиг, место сохранено.</li>
+        <li><strong><code>fixed</code></strong> + координаты — относительно окна.</li>
+        <li><strong><code>sticky</code></strong> + координаты — «прилипание». Нужен хотя бы один.</li>
+        <li><strong>Растягивание</strong> работает, только если размер (<code>width</code>/<code>height</code>) — <code>auto</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 24 · Следующий урок: <em>float и clear — legacy, но надо знать</em>
+    </p>
+
+</body>
+</html>

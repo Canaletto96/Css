@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 26: центрирование — все способы. Горизонтальное, вертикальное, полное. Margin auto, flex, grid, absolute.">
+    <title>CSS Урок 26. Центрирование</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .center-container {
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            height: 160px;
+            margin: 12px 0;
+            padding: 8px;
+        }
+        .center-box {
+            background: #1565c0;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 26. Центрирование</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить ВСЕ способы центрирования —           -->
+    <!-- горизонтальное, вертикальное, полное.                      -->
+    <!-- ========================================================= -->
+
+    <h2>1. Три задачи центрирования</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Что центрируем</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Горизонтальное</strong></td><td>По оси X</td></tr>
+            <tr><td><strong>Вертикальное</strong></td><td>По оси Y</td></tr>
+            <tr><td><strong>Полное</strong></td><td>И по X, и по Y</td></tr>
+        </tbody>
+    </table>
+
+    <p>Для каждой задачи — <strong>свои способы</strong>. От простого к сложному.</p>
+
+    <h2>2. Горизонтальное центрирование</h2>
+
+    <h3>Способ 1: <code>text-align: center</code></h3>
+
+    <p>Для <strong>строчного</strong> содержимого (текст, <code>inline</code>-элементы).</p>
+
+    <pre><code>.box {
+    text-align: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">text-align: center:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; text-align: center;">
+            <p style="margin: 0;">Текст по центру</p>
+            <a href="#" style="color: #1565c0;">Ссылка по центру</a>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Не работает</strong> для блочных элементов (<code>div</code>, <code>p</code>). Только для <strong>содержимого</strong> внутри.
+    </div>
+
+    <h3>Способ 2: <code>margin: 0 auto</code></h3>
+
+    <p>Для <strong>блочного</strong> элемента с заданной <code>width</code>.</p>
+
+    <pre><code>.box {
+    width: 300px;
+    margin: 0 auto;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">margin: 0 auto:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px;">
+            <div class="center-box" style="width: 200px; margin: 0 auto;">margin: 0 auto</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Как работает:</strong> <code>auto</code> в горизонтальных <code>margin</code> означает «взять оставшееся место и разделить пополам». Работает, только если у блока есть <code>width</code> (иначе он и так занимает всю ширину).
+    </div>
+
+    <h3>Способ 3: Flexbox</h3>
+
+    <pre><code>.parent {
+    display: flex;
+    justify-content: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">flex + justify-content: center:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; display: flex; justify-content: center;">
+            <div class="center-box">flex: center</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Универсальный способ:</strong> работает для любых элементов, не требует <code>width</code>. <strong>Рекомендую.</strong>
+    </div>
+
+    <h3>Способ 4: Grid</h3>
+
+    <pre><code>.parent {
+    display: grid;
+    justify-content: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid + justify-content: center:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; display: grid; justify-content: center;">
+            <div class="center-box">grid: center</div>
+        </div>
+    </div>
+
+    <h3>Способ 5: <code>position: absolute</code></h3>
+
+    <pre><code>.parent {
+    position: relative;
+}
+
+.box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">absolute + left 50% + translateX -50%:</div>
+        <div style="position: relative; background: #f5f5f5; padding: 16px; border-radius: 6px; height: 60px;">
+            <div class="center-box" style="position: absolute; left: 50%; transform: translateX(-50%);">absolute: center</div>
+        </div>
+    </div>
+
+    <h2>3. Вертикальное центрирование</h2>
+
+    <h3>Способ 1: Flexbox</h3>
+
+    <pre><code>.parent {
+    display: flex;
+    align-items: center;
+    height: 200px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">flex + align-items: center:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; display: flex; align-items: center; height: 120px;">
+            <div class="center-box">flex: align-items</div>
+        </div>
+    </div>
+
+    <p><strong>Лучший способ</strong> для вертикального центрирования.</p>
+
+    <h3>Способ 2: Grid</h3>
+
+    <pre><code>.parent {
+    display: grid;
+    align-items: center;
+    height: 200px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid + align-items: center:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; display: grid; align-items: center; height: 120px;">
+            <div class="center-box">grid: align-items</div>
+        </div>
+    </div>
+
+    <h3>Способ 3: <code>position: absolute</code></h3>
+
+    <pre><code>.parent {
+    position: relative;
+}
+
+.box {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">absolute + top 50% + translateY -50%:</div>
+        <div style="position: relative; background: #f5f5f5; padding: 16px; border-radius: 6px; height: 120px;">
+            <div class="center-box" style="position: absolute; top: 50%; transform: translateY(-50%);">absolute: center</div>
+        </div>
+    </div>
+
+    <h3>Способ 4: table-cell (legacy)</h3>
+
+    <pre><code>.parent {
+    display: table-cell;
+    vertical-align: middle;
+    height: 200px;
+}</code></pre>
+
+    <div class="warn">
+        <strong>Не используй:</strong> устаревший способ. Работает, но Flexbox проще.
+    </div>
+
+    <h2>4. Полное центрирование (X + Y)</h2>
+
+    <h3>Способ 1: Flexbox (лучший)</h3>
+
+    <pre><code>.parent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">flex + align-items + justify-content:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; display: flex; align-items: center; justify-content: center; height: 150px;">
+            <div class="center-box">flex: полное</div>
+        </div>
+    </div>
+
+    <p><strong>Самый простой и универсальный способ.</strong></p>
+
+    <h3>Способ 2: Grid (самый короткий)</h3>
+
+    <pre><code>.parent {
+    display: grid;
+    place-items: center;
+    height: 300px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid + place-items: center:</div>
+        <div style="background: #f5f5f5; padding: 16px; border-radius: 6px; display: grid; place-items: center; height: 150px;">
+            <div class="center-box">grid: place-items</div>
+        </div>
+    </div>
+
+    <p><strong>Самый короткий:</strong> одна строка — и по X, и по Y.</p>
+
+    <h3>Способ 3: <code>position: absolute</code> + transform</h3>
+
+    <pre><code>.parent {
+    position: relative;
+}
+
+.box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">absolute + top/left 50% + translate(-50%, -50%):</div>
+        <div style="position: relative; background: #f5f5f5; padding: 16px; border-radius: 6px; height: 150px;">
+            <div class="center-box" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">absolute: полное</div>
+        </div>
+    </div>
+
+    <h3>Способ 4: <code>position: absolute</code> + <code>inset</code> + <code>margin: auto</code></h3>
+
+    <pre><code>.parent {
+    position: relative;
+}
+
+.box {
+    position: absolute;
+    inset: 0;
+    width: 200px;
+    height: 100px;
+    margin: auto;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">absolute + inset 0 + margin auto:</div>
+        <div style="position: relative; background: #f5f5f5; padding: 16px; border-radius: 6px; height: 150px;">
+            <div class="center-box" style="position: absolute; inset: 0; width: 200px; height: 50px; margin: auto; display: flex; align-items: center; justify-content: center;">absolute: inset+margin</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Преимущество:</strong> не нужен <code>transform</code>, можно анимировать <code>width</code>/<code>height</code> без искажений. Но нужны <code>width</code> и <code>height</code>.
+    </div>
+
+    <h2>5. Сравнение способов</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Способ</th>
+                <th>Горизонталь</th>
+                <th>Вертикаль</th>
+                <th>Полное</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>text-align: center</code></td>
+                <td>✅ (только inline)</td>
+                <td>❌</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><code>margin: 0 auto</code></td>
+                <td>✅</td>
+                <td>❌</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><strong>Flexbox</strong></td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><strong>Grid</strong></td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>✅ (1 строка)</td>
+            </tr>
+            <tr>
+                <td><code>absolute</code> + <code>transform</code></td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>absolute</code> + <code>inset</code> + <code>margin</code></td>
+                <td>✅</td>
+                <td>✅</td>
+                <td>✅ (нужны размеры)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>6. Что выбрать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Лучший способ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Текст по центру</td>
+                <td><code>text-align: center</code></td>
+            </tr>
+            <tr>
+                <td>Блок по центру (с width)</td>
+                <td><code>margin: 0 auto</code></td>
+            </tr>
+            <tr>
+                <td>Элемент в flex-контейнере</td>
+                <td><code>align-items + justify-content</code></td>
+            </tr>
+            <tr>
+                <td>Полное центрирование</td>
+                <td><strong><code>display: grid; place-items: center</code></strong></td>
+            </tr>
+            <tr>
+                <td>Центрирование поверх (модалка)</td>
+                <td><code>position: absolute + transform</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Современный стандарт:</strong> для полного центрирования — <code>display: grid; place-items: center</code>. Одна строка, работает везде.
+    </div>
+
+    <h2>7. Практика: центрирование карточки</h2>
+
+    <pre><code>body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.card {
+    width: 300px;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка по центру:</div>
+        <div style="display: grid; place-items: center; min-height: 200px; background: #f5f5f5; border-radius: 6px;">
+            <div style="width: 200px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px; color: #1565c0;">
+                Карточка по центру
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Практика: hero-блок</h2>
+
+    <pre><code>.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin: 0 0 16px 0;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin: 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero-блок с полным центрированием:</div>
+        <div style="display: flex; align-items: center; justify-content: center; height: 180px; background: linear-gradient(135deg, #1565c0, #42a5f5); color: white; text-align: center; border-radius: 6px; padding: 20px;">
+            <div>
+                <h2 style="margin: 0 0 8px 0; font-size: 24px;">Заголовок</h2>
+                <p style="margin: 0; font-size: 14px; opacity: 0.9;">Подзаголовок по центру</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>9. Практика: модальное окно</h2>
+
+    <pre><code>.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: grid;
+    place-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Модальное окно (симуляция overlay):</div>
+        <div style="display: grid; place-items: center; height: 200px; background: rgba(0, 0, 0, 0.5); border-radius: 6px; padding: 20px;">
+            <div style="background: #fff; padding: 20px; border-radius: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px; max-width: 200px;">
+                Модальное окно по центру
+            </div>
+        </div>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>text-align: center</code> для блока</td>
+                <td>Центрирует содержимое, не блок. Для блока — <code>margin: 0 auto</code></td>
+            </tr>
+            <tr>
+                <td><code>margin: 0 auto</code> без <code>width</code></td>
+                <td>Не работает — блок и так на всю ширину</td>
+            </tr>
+            <tr>
+                <td><code>vertical-align: middle</code> для <code>div</code></td>
+                <td>Не работает — только для inline/table-cell</td>
+            </tr>
+            <tr>
+                <td><code>position: absolute</code> без <code>relative</code> родителя</td>
+                <td>Центрируется относительно <code>&lt;body&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>absolute</code> + <code>transform</code> для анимации размеров</td>
+                <td>Искажает. Для анимации — <code>inset</code> + <code>margin: auto</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>min-height</code> для полного центрирования</td>
+                <td>Нечего центрировать — высота 0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Шпаргалка</h2>
+
+    <pre><code>/* Горизонтальное */
+text-align: center;              /* inline */
+margin: 0 auto;                  /* block с width */
+justify-content: center;         /* flex */
+
+/* Вертикальное */
+align-items: center;             /* flex */
+
+/* Полное — самый короткий */
+display: grid;
+place-items: center;
+
+/* Полное — flex */
+display: flex;
+align-items: center;
+justify-content: center;
+
+/* Полное — absolute */
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+
+/* Полное — absolute + inset */
+position: absolute;
+inset: 0;
+width: 200px;
+height: 100px;
+margin: auto;</code></pre>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Горизонтальное</strong> — <code>text-align</code> (inline), <code>margin: 0 auto</code> (block), <code>justify-content</code> (flex).</li>
+        <li><strong>Вертикальное</strong> — <code>align-items: center</code> (flex).</li>
+        <li><strong>Полное</strong> — <code>display: grid; place-items: center</code> (самый короткий).</li>
+        <li><strong>Полное (flex)</strong> — <code>align-items + justify-content</code>.</li>
+        <li><strong>Полное (absolute)</strong> — <code>top: 50%; left: 50%; transform: translate(-50%, -50%)</code>.</li>
+        <li><strong><code>margin: 0 auto</code></strong> — только с <code>width</code>.</li>
+        <li><strong><code>text-align: center</code></strong> — только для inline-содержимого.</li>
+        <li><strong>Не используй <code>vertical-align</code></strong> для блочных — не работает.</li>
+        <li><strong>Для модалок</strong> — <code>display: grid; place-items: center</code>.</li>
+        <li><strong>Для hero</strong> — flex или grid.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 26 · Следующий урок: <em>Что такое Flexbox — идея, display: flex, ось</em>
+    </p>
+
+</body>
+</html>

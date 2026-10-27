@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 23: z-index и контекст наложения — почему 9999 не помогает. Stacking context.">
+    <title>CSS Урок 23. z-index</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .z-demo {
+            position: relative;
+            height: 220px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .z-box {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+        }
+        .z-red { background: #e53935; top: 20px; left: 20px; }
+        .z-blue { background: #1565c0; top: 60px; left: 80px; }
+        .z-green { background: #43a047; top: 100px; left: 140px; }
+        .z-orange { background: #ff9800; top: 40px; left: 200px; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 23. z-index</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, как работает z-index и почему 9999    -->
+    <!-- не всегда помогает. Stacking context.                      -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое <code>z-index</code></h2>
+
+    <p>
+        <code>z-index</code> — это <strong>«ось Z»</strong>: порядок наложения элементов
+        друг на друга. Кто выше — тот «ближе к пользователю».
+    </p>
+
+    <pre><code>.box {
+    position: relative;
+    z-index: 1;    /* ← чем больше, тем выше */
+}</code></pre>
+
+    <div class="note">
+        <strong>z-index работает только с <code>position</code>, отличным от <code>static</code>.</strong>
+        У <code>static</code> (по умолчанию) — <code>z-index</code> не действует.
+    </div>
+
+    <h2>2. Базовый пример</h2>
+
+    <div class="demo">
+        <div class="demo-label">Три блока с разным z-index:</div>
+        <div class="z-demo">
+            <div class="z-box z-red" style="z-index: 1;">z: 1</div>
+            <div class="z-box z-blue" style="z-index: 2;">z: 2</div>
+            <div class="z-box z-green" style="z-index: 3;">z: 3</div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Зелёный (z: 3) — сверху. Красный (z: 1) — снизу.</p>
+    </div>
+
+    <h2>3. <code>z-index: auto</code> и <code>z-index: 0</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>auto</code> (по умолчанию)</td><td>Не создаёт контекст наложения. Элемент в порядке HTML.</td></tr>
+            <tr><td><code>0</code></td><td>Создаёт контекст. Участвует в наложении.</td></tr>
+            <tr><td><code>1</code>, <code>2</code>, <code>100</code></td><td>Больше — выше.</td></tr>
+            <tr><td><code>-1</code></td><td>Ниже всех остальных.</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Не пиши <code>z-index: 9999</code></strong>, если не понимаешь. Скорее всего,
+        проблема в <strong>stacking context</strong> (ниже). <code>9999</code> — «костыль»,
+        который не работает.
+    </div>
+
+    <h2>4. Главная проблема: stacking context</h2>
+
+    <p>
+        <strong>Stacking context</strong> (контекст наложения) — это «группа» элементов,
+        внутри которой <code>z-index</code> работает <strong>изолированно</strong>.
+    </p>
+
+    <p>
+        Если родитель создал stacking context — его дети <strong>не могут</strong>
+        «вылезти» выше <strong>всех</strong> элементов снаружи. Даже с <code>z-index: 9999</code>.
+    </p>
+
+    <h3>Что создаёт stacking context</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>position</code></td><td><code>relative</code> / <code>absolute</code> / <code>fixed</code> / <code>sticky</code> + <code>z-index</code> ≠ <code>auto</code></td></tr>
+            <tr><td><code>opacity</code></td><td>&lt; <code>1</code></td></tr>
+            <tr><td><code>transform</code></td><td>≠ <code>none</code></td></tr>
+            <tr><td><code>filter</code></td><td>≠ <code>none</code></td></tr>
+            <tr><td><code>perspective</code></td><td>≠ <code>none</code></td></tr>
+            <tr><td><code>isolation</code></td><td><code>isolate</code></td></tr>
+            <tr><td><code>will-change</code></td><td><code>transform</code>, <code>opacity</code> и др.</td></tr>
+            <tr><td><code>flex</code> / <code>grid</code> + <code>z-index</code></td><td>у ребёнка — тоже создаёт</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Пример проблемы</h3>
+
+    <pre><code>.parent {
+    position: relative;
+    z-index: 1;        /* ← создаёт stacking context */
+}
+
+.child {
+    position: absolute;
+    z-index: 9999;     /* ← не поможет вылезти выше .other */
+}
+
+.other {
+    position: relative;
+    z-index: 2;        /* ← выше .parent, а значит и всех его детей */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Проблема: child с z-index: 9999 внутри parent с z-index: 1</div>
+        <div class="z-demo" style="height: 260px;">
+            <div style="position: absolute; top: 20px; left: 20px; width: 200px; height: 180px; background: #e3f2fd; border: 2px solid #1565c0; border-radius: 8px; z-index: 1;">
+                <div style="padding: 8px; font-family: Consolas, Monaco, monospace; font-size: 11px; color: #1565c0;">parent: z-index: 1</div>
+                <div style="position: absolute; top: 30px; left: 20px; background: #e53935; color: white; padding: 8px 12px; border-radius: 6px; font-family: Consolas, Monaco, monospace; font-size: 11px; z-index: 9999;">
+                    child: z-index: 9999
+                </div>
+            </div>
+            <div style="position: absolute; top: 80px; left: 160px; width: 200px; height: 180px; background: #c8e6c9; border: 2px solid #43a047; border-radius: 8px; z-index: 2; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 11px; color: #1b5e20; text-align: center; padding: 8px;">
+                other: z-index: 2 — сверху, несмотря на z-index: 9999 у child
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Почему:</strong> <code>.parent</code> создаёт stacking context. Всё, что
+        внутри него (включая <code>.child</code> с <code>9999</code>), находится
+        «внутри» <code>.parent</code> на уровне <code>1</code>. <code>.other</code>
+        с <code>z-index: 2</code> — выше <strong>всего</strong> <code>.parent</code>,
+        включая всех его детей.
+    </div>
+
+    <h2>5. Как «вылезти» из stacking context</h2>
+
+    <p><strong>Нельзя</strong> «вылезти» из stacking context. Решения:</p>
+
+    <ol>
+        <li><strong>Убрать stacking context у родителя</strong> — не задавать <code>z-index</code>,
+            <code>opacity &lt; 1</code>, <code>transform</code> и т.д.</li>
+        <li><strong>Переместить элемент</strong> в DOM выше — вне проблемного родителя.</li>
+        <li><strong>Использовать <code>position: fixed</code></strong> — выносит элемент из контекста.</li>
+        <li><strong>Пересмотреть архитектуру</strong> — может, не нужен <code>z-index</code>?</li>
+    </ol>
+
+    <h2>6. Ось Z в порядке наложения</h2>
+
+    <p>Порядок наложения (от нижнего к верхнему):</p>
+
+    <ol>
+        <li><strong>Фон</strong> элемента.</li>
+        <li><strong>Отрицательный <code>z-index</code></strong> (например, <code>-1</code>).</li>
+        <li><strong>Обычные блочные</strong> элементы.</li>
+        <li><strong>Поплавковые</strong> (<code>float</code>).</li>
+        <li><strong>Строчные</strong> (<code>inline</code>) элементы.</li>
+        <li><strong><code>z-index: 0</code></strong> и <strong><code>auto</code></strong> позиционированные.</li>
+        <li><strong>Положительный <code>z-index</code></strong>.</li>
+    </ol>
+
+    <p>Подробнее — в спецификации CSS. Главное: <strong>положительный <code>z-index</code> — сверху</strong>.</p>
+
+    <h2>7. Классический случай: модальное окно</h2>
+
+    <pre><code>.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;   /* ← выше overlay */
+}</code></pre>
+
+    <div class="note">
+        <strong>Правило:</strong> overlay — 1000, модальное окно — 1001. <strong>Не 9999.</strong>
+        Главное — <strong>относительный</strong> порядок, а не абсолютные числа.
+    </div>
+
+    <h2>8. Шкала <code>z-index</code> (рекомендация)</h2>
+
+    <p>Чтобы не путаться, задай «слои» в проекте:</p>
+
+    <pre><code>/* CSS-переменные для слоёв */
+:root {
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-modal-backdrop: 400;
+    --z-modal: 500;
+    --z-popover: 600;
+    --z-tooltip: 700;
+}
+
+.dropdown { z-index: var(--z-dropdown); }
+.modal { z-index: var(--z-modal); }
+.tooltip { z-index: var(--z-tooltip); }</code></pre>
+
+    <div class="note">
+        <strong>Почему переменные:</strong> вместо <code>9999</code> — <strong>осмысленные</strong>
+        значения. Легче поддерживать, понимать, менять.
+    </div>
+
+    <h2>9. Отрицательный <code>z-index</code></h2>
+
+    <p><code>z-index: -1</code> — элемент <strong>за</strong> фоном родителя (если родитель
+        не создаёт stacking context). Полезно для декоративных фонов.</p>
+
+    <pre><code>.parent {
+    position: relative;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;   /* ← за содержимым */
+    background: linear-gradient(...);
+}</code></pre>
+
+    <h2>10. Практика: карточка с бейджем и overlay</h2>
+
+    <pre><code>.card {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 2;   /* ← чтобы тень не перекрывалась соседями */
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 3;   /* ← бейдж выше карточки */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки с hover (тень не перекрывается):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+            <div style="position: relative; z-index: 1; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)'; this.style.zIndex='2'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.zIndex='1'">
+                <h3 style="margin: 0; font-size: 16px; color: #1565c0;">Карточка 1</h3>
+                <div style="position: absolute; top: -8px; right: -8px; z-index: 3; background: #e53935; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">1</div>
+            </div>
+            <div style="position: relative; z-index: 1; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)'; this.style.zIndex='2'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.zIndex='1'">
+                <h3 style="margin: 0; font-size: 16px; color: #1565c0;">Карточка 2</h3>
+                <div style="position: absolute; top: -8px; right: -8px; z-index: 3; background: #e53935; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">2</div>
+            </div>
+            <div style="position: relative; z-index: 1; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)'; this.style.zIndex='2'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.zIndex='1'">
+                <h3 style="margin: 0; font-size: 16px; color: #1565c0;">Карточка 3</h3>
+                <div style="position: absolute; top: -8px; right: -8px; z-index: 3; background: #e53935; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">3</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>z-index: 9999</code> для всего</td>
+                <td>Не работает из-за stacking context. «Костыль»</td>
+            </tr>
+            <tr>
+                <td><code>z-index</code> без <code>position</code></td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td><code>opacity &lt; 1</code> на родителе</td>
+                <td>Создаёт stacking context — дети не «вылезут»</td>
+            </tr>
+            <tr>
+                <td><code>transform</code> на родителе</td>
+                <td>Тоже создаёт stacking context</td>
+            </tr>
+            <tr>
+                <td>Отрицательный <code>z-index</code> без <code>position: relative</code> родителя</td>
+                <td>Элемент уйдёт за <code>&lt;body&gt;</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>z-index</code> для overlay</td>
+                <td>Модальное окно будет «под» контентом</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>z-index</code></strong> — порядок наложения. Больше — выше.</li>
+        <li><strong>Работает только с <code>position</code></strong>, отличным от <code>static</code>.</li>
+        <li><strong>Stacking context</strong> — «группа», внутри которой <code>z-index</code> изолирован.</li>
+        <li><strong>Родитель с <code>opacity</code>, <code>transform</code>, <code>z-index</code></strong> создаёт контекст.</li>
+        <li><strong>Ребёнок не может «вылезти»</strong> из stacking context родителя.</li>
+        <li><strong><code>9999</code> не помогает</strong> — проблема в контексте, не в числе.</li>
+        <li><strong>Шкала <code>z-index</code>:</strong> 100, 200, 300, 400, 500 — осмысленные слои.</li>
+        <li><strong>Отрицательный <code>z-index</code></strong> — за родителем (для фона).</li>
+        <li><strong>CSS-переменные</strong> для <code>z-index</code> — удобно и читабельно.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 23 · Следующий урок: <em>top, right, bottom, left — координаты</em>
+    </p>
+
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 22: позиционирование — static, relative, absolute, fixed, sticky. Координаты top/right/bottom/left.">
+    <title>CSS Урок 22. Позиционирование</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .pos-container {
+            position: relative;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            margin: 12px 0;
+        }
+        .pos-box {
+            background: #1565c0;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+            margin: 4px 0;
+        }
+        .pos-box.red { background: #e53935; }
+        .pos-box.green { background: #43a047; }
+        .pos-box.orange { background: #ff9800; }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e53935;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Демо sticky */
+        .sticky-demo {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .sticky-demo .sticky-header {
+            position: sticky;
+            top: 0;
+            background: #1565c0;
+            color: white;
+            padding: 12px 16px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        .sticky-demo .sticky-content {
+            padding: 16px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 22. Позиционирование</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить все 5 видов position и понять,        -->
+    <!-- когда какой использовать.                                  -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое позиционирование</h2>
+
+    <p>
+        <strong>Позиционирование</strong> — это способ <strong>сдвинуть элемент</strong>
+        относительно его обычного положения или другого контейнера.
+    </p>
+
+    <p>
+        Свойство <code>position</code> определяет <strong>тип</strong> позиционирования.
+        Есть <strong>5 значений</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>static</code></td><td>Обычный поток (по умолчанию)</td></tr>
+            <tr><td><code>relative</code></td><td>Сдвиг относительно <strong>своего</strong> обычного места</td></tr>
+            <tr><td><code>absolute</code></td><td>Сдвиг относительно <strong>ближайшего позиционированного</strong> родителя</td></tr>
+            <tr><td><code>fixed</code></td><td>Сдвиг относительно <strong>окна браузера</strong></td></tr>
+            <tr><td><code>sticky</code></td><td>Как <code>relative</code>, но «прилипает» при прокрутке</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>static</code> — по умолчанию</h2>
+
+    <p>
+        Обычный поток. <strong>Нельзя</strong> применять <code>top</code>, <code>right</code>,
+        <code>bottom</code>, <code>left</code>. <code>z-index</code> не работает.
+    </p>
+
+    <pre><code>.box {
+    position: static;   /* по умолчанию, можно не писать */
+}</code></pre>
+
+    <div class="note">
+        <strong>Это стандарт.</strong> Большинство элементов на странице — <code>static</code>.
+        Их положение определяется нормальным потоком HTML.
+    </div>
+
+    <h2>3. <code>relative</code> — относительно себя</h2>
+
+    <p>
+        Элемент <strong>сдвигается</strong> относительно <strong>своего обычного места</strong>.
+        Остальные элементы <strong>не меняют положение</strong> — как будто элемент
+        остался на месте.
+    </p>
+
+    <pre><code>.box {
+    position: relative;
+    top: 20px;      /* сдвинуть вниз на 20px */
+    left: 10px;     /* сдвинуть вправо на 10px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">relative — элемент сдвинут, но место «сохранено»:</div>
+        <div class="pos-container">
+            <div class="pos-box">Обычный блок</div>
+            <div class="pos-box red" style="position: relative; top: 20px; left: 30px;">relative: top 20px, left 30px</div>
+            <div class="pos-box">Обычный блок (на своём месте)</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Зачем <code>relative</code>:</strong>
+        <ul>
+            <li>Сдвинуть элемент на пару пикселей (без ломки layout).</li>
+            <li>Создать <strong>контекст</strong> для <code>absolute</code> детей (главное!).</li>
+            <li>Использовать <code>z-index</code>.</li>
+        </ul>
+    </div>
+
+    <h2>4. <code>absolute</code> — относительно родителя</h2>
+
+    <p>
+        Элемент <strong>выходит из потока</strong> и позиционируется относительно
+        <strong>ближайшего позиционированного</strong> родителя (у которого
+        <code>position</code> не <code>static</code>).
+    </p>
+
+    <p>
+        Если такого родителя нет — позиционируется относительно <code>&lt;body&gt;</code>.
+    </p>
+
+    <pre><code>.parent {
+    position: relative;   /* ← создаёт контекст */
+}
+
+.child {
+    position: absolute;
+    top: 0;
+    right: 0;             /* прижат к правому верхнему углу родителя */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">absolute внутри relative — прижат к углу:</div>
+        <div class="pos-container">
+            <div class="pos-box">Обычный блок</div>
+            <div class="pos-box red" style="position: absolute; top: 10px; right: 10px;">absolute: top/right</div>
+            <div class="pos-box">Обычный блок (absolute на него не влияет)</div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Ключевой момент:</strong> <code>absolute</code> позиционируется
+        относительно <strong>ближайшего предка</strong> с <code>position: relative</code>
+        (или <code>absolute</code>, <code>fixed</code>, <code>sticky</code>).
+        Если такого нет — относительно <code>&lt;body&gt;</code>.
+    </div>
+
+    <h3>Классический приём: бейдж на карточке</h3>
+
+    <pre><code>.card {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Бейдж на карточке:</div>
+        <div style="max-width: 200px;">
+            <div style="position: relative; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px;">
+                Карточка
+                <div class="badge">3</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>5. <code>fixed</code> — относительно окна</h2>
+
+    <p>
+        Элемент <strong>выходит из потока</strong> и позиционируется относительно
+        <strong>окна браузера</strong>. Не двигается при прокрутке.
+    </p>
+
+    <pre><code>.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}</code></pre>
+
+    <div class="note">
+        <strong>Зачем <code>fixed</code>:</strong>
+        <ul>
+            <li><strong>Фиксированная шапка</strong> (всегда сверху).</li>
+            <li><strong>Кнопка «наверх»</strong> или чат (всегда в углу).</li>
+            <li><strong>Модальные окна</strong> (покрывают весь экран).</li>
+        </ul>
+    </div>
+
+    <div class="warn">
+        <strong>Осторожно:</strong> <code>fixed</code> на мобильных может «дёргаться»
+        при появлении клавиатуры. Используй <code>position: sticky</code> для шапки,
+        если возможно.
+    </div>
+
+    <h2>6. <code>sticky</code> — «прилипает»</h2>
+
+    <p>
+        Гибрид <code>relative</code> и <code>fixed</code>. Элемент ведёт себя
+        как <code>relative</code>, пока не достигнет <strong>заданного края</strong>
+        при прокрутке — тогда «прилипает».
+    </p>
+
+    <pre><code>.header {
+    position: sticky;
+    top: 0;   /* прилипнет, когда верх элемента коснётся верха окна */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">sticky-заголовок (прокрути блок):</div>
+        <div class="sticky-demo">
+            <div class="sticky-header">📌 Sticky-заголовок</div>
+            <div class="sticky-content">
+                <p>Прокрути этот блок.</p>
+                <p>Заголовок останется наверху, пока блок прокручивается.</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Ещё текст...</p>
+                <p>Конец блока.</p>
+            </div>
+        </div>
+    </div>
+
+    <h3>Как работает <code>sticky</code></h3>
+
+    <ul>
+        <li><strong>Сначала</strong> — как <code>relative</code> (в потоке).</li>
+        <li><strong>При прокрутке</strong> — «прилипает» к заданному краю (<code>top: 0</code>).</li>
+        <li><strong>Когда родитель заканчивается</strong> — «отлипает» и уезжает.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Важно:</strong> <code>position: sticky</code> <strong>не работает</strong>,
+        если у любого родителя есть <code>overflow: hidden</code>, <code>auto</code>
+        или <code>scroll</code>. Это частая проблема.
+    </div>
+
+    <h3>Зачем <code>sticky</code></h3>
+
+    <ul>
+        <li><strong>Шапка сайта</strong> — остаётся сверху, но не «поверх» (как <code>fixed</code>).</li>
+        <li><strong>Боковая навигация</strong> — «прилипает» при прокрутке.</li>
+        <li><strong>Заголовки в таблицах</strong> — остаются при прокрутке.</li>
+    </ul>
+
+    <h2>7. Координаты <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code></h2>
+
+    <p>Работают только с <code>position</code>, отличным от <code>static</code>.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>top</code></td><td>Отступ от верхнего края</td></tr>
+            <tr><td><code>right</code></td><td>Отступ от правого края</td></tr>
+            <tr><td><code>bottom</code></td><td>Отступ от нижнего края</td></tr>
+            <tr><td><code>left</code></td><td>Отступ от левого края</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Центрирование через absolute</h3>
+
+    <pre><code>.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Центрирование:</div>
+        <div class="pos-container" style="height: 150px;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #43a047; color: white; padding: 12px 20px; border-radius: 6px; font-family: Consolas, Monaco, monospace; font-size: 12px;">
+                по центру
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Сравнение всех значений</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>В потоке?</th>
+                <th>Относительно</th>
+                <th>При скролле</th>
+                <th>z-index</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>static</code></td>
+                <td>✅ Да</td>
+                <td>—</td>
+                <td>—</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><code>relative</code></td>
+                <td>✅ Да (место сохранено)</td>
+                <td>себя</td>
+                <td>Обычно</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>absolute</code></td>
+                <td>❌ Нет</td>
+                <td>родителя</td>
+                <td>Обычно</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>fixed</code></td>
+                <td>❌ Нет</td>
+                <td>окна</td>
+                <td>Не двигается</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>sticky</code></td>
+                <td>✅ Да (до прилипания)</td>
+                <td>родителя + окна</td>
+                <td>«Прилипает»</td>
+                <td>✅</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>9. <code>z-index</code> — порядок наложения</h2>
+
+    <p>
+        Работает <strong>только</strong> с <code>position</code>, отличным от
+        <code>static</code>. Определяет, <strong>кто сверху</strong>.
+    </p>
+
+    <pre><code>.a {
+    position: relative;
+    z-index: 1;   /* снизу */
+}
+
+.b {
+    position: relative;
+    z-index: 2;   /* сверху */
+}</code></pre>
+
+    <div class="note">
+        <strong>Правило:</strong> больше <code>z-index</code> — выше. Отрицательные —
+        ниже. Без <code>position</code> — <code>z-index</code> не работает.
+    </div>
+
+    <p>Подробно — в уроке 23.</p>
+
+    <h2>10. Практика: карточка с бейджем</h2>
+
+    <pre><code>.card {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e53935;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(229, 57, 53, 0.4);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с бейджем:</div>
+        <div style="max-width: 280px;">
+            <div style="position: relative; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1565c0;">Карточка</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">С бейджем в углу.</p>
+                <div style="position: absolute; top: -8px; right: -8px; background: #e53935; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 2px 8px rgba(229,57,53,0.4);">3</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Практика: шапка с sticky</h2>
+
+    <pre><code>.header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px 24px;
+    z-index: 100;
+}
+
+.content {
+    /* длинный контент */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Sticky-шапка (прокрути страницу):</div>
+        <p style="color: #666; font-size: 14px;">Этот пример — на всю страницу. Прокрути вниз — шапка вверху экрана останется.</p>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>absolute</code> без <code>relative</code> родителя</td>
+                <td>Элемент «улетает» к <code>&lt;body&gt;</code></td>
+            </tr>
+            <tr>
+                <td><code>sticky</code> без <code>top</code> (или другого края)</td>
+                <td>Не работает — нужно указать, к чему «прилипать»</td>
+            </tr>
+            <tr>
+                <td><code>sticky</code> внутри <code>overflow: hidden</code></td>
+                <td>Не работает — «ломается» overflow</td>
+            </tr>
+            <tr>
+                <td><code>fixed</code> на мобильных</td>
+                <td>Может «дёргаться» при появлении клавиатуры</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>top/right/bottom/left</code> у <code>absolute</code></td>
+                <td>Элемент останется на своём месте (но вне потока)</td>
+            </tr>
+            <tr>
+                <td><code>z-index</code> без <code>position</code></td>
+                <td>Не работает</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>static</code></strong> — по умолчанию. Координаты не работают.</li>
+        <li><strong><code>relative</code></strong> — сдвиг относительно себя. Место в потоке сохраняется.</li>
+        <li><strong><code>absolute</code></strong> — относительно ближайшего позиционированного родителя. Выходит из потока.</li>
+        <li><strong><code>fixed</code></strong> — относительно окна. При скролле не двигается.</li>
+        <li><strong><code>sticky</code></strong> — «прилипает» при скролле. Нужен <code>top</code> и родитель без <code>overflow</code>.</li>
+        <li><strong><code>top/right/bottom/left</code></strong> — работают только с <code>position</code>.</li>
+        <li><strong><code>absolute</code> + <code>relative</code> родитель</strong> — классическая связка (бейджи, иконки).</li>
+        <li><strong><code>z-index</code></strong> — только с <code>position</code>.</li>
+        <li><strong>Центрирование:</strong> <code>absolute</code> + <code>top: 50%; left: 50%</code> + <code>transform: translate(-50%, -50%)</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 22 · Следующий урок: <em>z-index и контекст наложения</em>
+    </p>
+
+</body>
+</html>

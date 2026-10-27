@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 25: float и clear — как работает обтекание, clearfix, почему это legacy.">
+    <title>CSS Урок 25. float и clear</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .float-box {
+            float: left;
+            width: 120px;
+            height: 80px;
+            background: #1565c0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            border-radius: 6px;
+            margin: 8px 12px 8px 0;
+        }
+        .float-right {
+            float: right;
+            margin: 8px 0 8px 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 25. float и clear</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, как работает float, зачем clear,       -->
+    <!-- и почему это legacy.                                       -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое <code>float</code></h2>
+
+    <p>
+        <strong><code>float</code></strong> — «обтекание». Элемент <strong>выходит из
+        потока</strong> и прижимается к левому или правому краю родителя. Остальной
+        контент <strong>обтекает</strong> его.
+    </p>
+
+    <pre><code>.image {
+    float: left;    /* прижать влево, текст обтекает справа */
+}
+
+.sidebar {
+    float: right;   /* прижать вправо */
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>left</code></td><td>Прижать влево, обтекание справа</td></tr>
+            <tr><td><code>right</code></td><td>Прижать вправо, обтекание слева</td></tr>
+            <tr><td><code>none</code> (по умолчанию)</td><td>Не обтекать</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. Базовый пример: картинка + текст</h2>
+
+    <pre><code>&lt;img src="photo.jpg" class="float-left" alt="Фото"&gt;
+&lt;p&gt;Длинный текст, который будет обтекать картинку...&lt;/p&gt;</code></pre>
+
+    <pre><code>.float-left {
+    float: left;
+    margin: 8px 12px 8px 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">float: left — текст обтекает:</div>
+        <div style="background: #f9f9f9; padding: 16px; border-radius: 6px;">
+            <div class="float-box">float: left</div>
+            <p style="margin: 0;">Это длинный текст, который обтекает картинку. Так раньше делали обтекание картинок в статьях. Текст идёт справа от картинки, а потом под ней, когда картинка заканчивается. Этот приём использовался ещё в 90-е и до сих пор работает.</p>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+
+    <h2>3. Проблема: родитель «схлопывается»</h2>
+
+    <p>
+        Если все дети элемента <code>float</code> — родитель <strong>теряет высоту</strong>.
+        Он «не видит» float-детей.
+    </p>
+
+    <pre><code>.parent {
+    background: #f0f0f0;
+    /* height не задан */
+}
+
+.child {
+    float: left;
+}
+/* Родитель «схлопнется» до нулевой высоты */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Родитель «схлопнулся» — нет высоты:</div>
+        <div style="background: #f0f0f0; padding: 0; border: 2px solid #e53935; border-radius: 6px;">
+            <div style="float: left; width: 100px; height: 60px; background: #1565c0; margin: 8px; border-radius: 4px;"></div>
+            <div style="float: left; width: 100px; height: 60px; background: #43a047; margin: 8px; border-radius: 4px;"></div>
+        </div>
+        <p style="font-size: 13px; color: #c62828; margin: 8px 0 0 0;">Красная рамка — родитель. У него нет высоты, потому что дети float.</p>
+    </div>
+
+    <h2>4. <code>clear</code> — «очистка»</h2>
+
+    <p>
+        <strong><code>clear</code></strong> говорит: «этот элемент <strong>не может
+        обтекать</strong> float-элементы». Он сдвигается <strong>под</strong> float.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>left</code></td><td>Не обтекает float: left</td></tr>
+            <tr><td><code>right</code></td><td>Не обтекает float: right</td></tr>
+            <tr><td><code>both</code></td><td>Не обтекает ни left, ни right</td></tr>
+            <tr><td><code>none</code> (по умолчанию)</td><td>Обтекает</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.clear {
+    clear: both;   /* сдвинуть под все float */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">clear: both — блок сдвинут под float:</div>
+        <div style="background: #f9f9f9; padding: 16px; border-radius: 6px;">
+            <div class="float-box">float: left</div>
+            <p style="margin: 0;">Текст обтекает картинку.</p>
+            <div style="clear: both; background: #ffcdd2; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: Consolas, Monaco, monospace; font-size: 12px;">clear: both — этот блок под float</div>
+        </div>
+    </div>
+
+    <h2>5. Clearfix — «лечение» схлопывания родителя</h2>
+
+    <p>
+        Классическая проблема: родитель «схлопывается», потому что дети float.
+        Решение — <strong>clearfix</strong> — псевдоэлемент <code>::after</code>,
+        который «очищает» float.
+    </p>
+
+    <pre><code>.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">clearfix — родитель «видит» детей:</div>
+        <div class="clearfix" style="background: #f0f0f0; padding: 0; border: 2px solid #43a047; border-radius: 6px;">
+            <div style="float: left; width: 100px; height: 60px; background: #1565c0; margin: 8px; border-radius: 4px;"></div>
+            <div style="float: left; width: 100px; height: 60px; background: #43a047; margin: 8px; border-radius: 4px;"></div>
+        </div>
+        <p style="font-size: 13px; color: #2e7d32; margin: 8px 0 0 0;">Зелёная рамка — родитель. Теперь у него есть высота.</p>
+    </div>
+
+    <h3>Как работает clearfix</h3>
+
+    <ol>
+        <li><code>::after</code> — создаёт псевдоэлемент <strong>после</strong> содержимого.</li>
+        <li><code>content: ""</code> — пустой.</li>
+        <li><code>display: table</code> — чтобы работало в старых браузерах.</li>
+        <li><code>clear: both</code> — сдвигает псевдоэлемент под float, <strong>растягивая</strong> родителя.</li>
+    </ol>
+
+    <div class="note">
+        <strong>Современная альтернатива:</strong> <code>display: flow-root</code>
+        на родителе — создаёт BFC, родитель «видит» float-детей. Проще и без псевдоэлементов.
+    </div>
+
+    <pre><code>.parent {
+    display: flow-root;   /* ← современный clearfix */
+}</code></pre>
+
+    <h2>6. Float для раскладки (legacy)</h2>
+
+    <p>
+        До Flexbox и Grid <code>float</code> использовали для <strong>сеток</strong>:
+        колонки прижимались друг к другу.
+    </p>
+
+    <pre><code>.column {
+    float: left;
+    width: 33.33%;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки через float:</div>
+        <div class="clearfix" style="background: #f9f9f9; padding: 8px; border-radius: 6px;">
+            <div style="float: left; width: 33.33%; background: #e3f2fd; border: 1px solid #1565c0; box-sizing: border-box; padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">33.33%</div>
+            <div style="float: left; width: 33.33%; background: #e3f2fd; border: 1px solid #1565c0; box-sizing: border-box; padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">33.33%</div>
+            <div style="float: left; width: 33.33%; background: #e3f2fd; border: 1px solid #1565c0; box-sizing: border-box; padding: 12px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">33.33%</div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Не используй float для раскладки!</strong> Это legacy. <strong>Flexbox</strong>
+        и <strong>Grid</strong> — современные способы, проще и мощнее. Float — только для
+        <strong>обтекания текста вокруг картинки</strong> (это его прямое назначение).
+    </div>
+
+    <h2>7. Float и строчные элементы</h2>
+
+    <p>
+        Float работает <strong>только</strong> для <strong>блочных</strong> элементов.
+        Если применить к строчному (<code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>) —
+        браузер сделает его <code>block</code> автоматически.
+    </p>
+
+    <pre><code>span {
+    float: left;   /* станет блочным */
+}</code></pre>
+
+    <h2>8. Float и <code>display</code></h2>
+
+    <div class="warn">
+        <strong>Важно:</strong> если у элемента задан <code>float</code>, то <code>display</code>
+        игнорируется (кроме <code>none</code>). Браузер сам делает элемент
+        <code>block</code> (или <code>inline-block</code>).
+    </div>
+
+    <h2>9. Практика: картинка с обтеканием</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.article {
+    display: flow-root;   /* ← современный clearfix */
+}
+
+.article img {
+    float: left;
+    width: 200px;
+    margin: 0 16px 8px 0;
+    border-radius: 8px;
+}
+
+.article p {
+    margin: 0 0 12px 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Картинка + текст (float: left):</div>
+        <div style="display: flow-root; background: #f9f9f9; padding: 16px; border-radius: 6px;">
+            <div style="float: left; width: 120px; height: 90px; background: linear-gradient(135deg, #1565c0, #42a5f5); margin: 0 16px 8px 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; font-family: Consolas, Monaco, monospace;">ФОТО</div>
+            <p style="margin: 0 0 8px 0;">Это длинный текст, который обтекает картинку слева. Так делают в статьях, блогах, новостях. Картинка прижата влево, текст идёт справа, а потом под ней.</p>
+            <p style="margin: 0;">Второй параграф тоже обтекает картинку. Когда картинка заканчивается — текст занимает всю ширину.</p>
+        </div>
+    </div>
+
+    <h2>10. Практика: две колонки (legacy)</h2>
+
+    <pre><code>.container {
+    display: flow-root;
+}
+
+.sidebar {
+    float: left;
+    width: 250px;
+}
+
+.content {
+    float: left;
+    width: calc(100% - 250px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Две колонки через float (legacy):</div>
+        <div style="display: flow-root; background: #f9f9f9; padding: 8px; border-radius: 6px;">
+            <div style="float: left; width: 30%; background: #e3f2fd; padding: 16px; box-sizing: border-box; border: 1px solid #1565c0; border-radius: 6px 0 0 6px; font-family: Consolas, Monaco, monospace; font-size: 12px; text-align: center;">
+                Sidebar<br>30%
+            </div>
+            <div style="float: left; width: 70%; background: #c8e6c9; padding: 16px; box-sizing: border-box; border: 1px solid #43a047; border-radius: 0 6px 6px 0; font-family: Consolas, Monaco, monospace; font-size: 12px; text-align: center;">
+                Content<br>70%
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Так делали до Flexbox и Grid. Сейчас — <code>display: grid</code> или <code>display: flex</code>.</p>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Использовать float для сеток</td>
+                <td>Legacy. Flexbox/Grid проще</td>
+            </tr>
+            <tr>
+                <td>Забыть clearfix</td>
+                <td>Родитель «схлопывается»</td>
+            </tr>
+            <tr>
+                <td>Float для всех элементов</td>
+                <td>Ломает поток, сложно управлять</td>
+            </tr>
+            <tr>
+                <td>Float внутри Flexbox</td>
+                <td>Игнорируется — flex-элементы ведут себя иначе</td>
+            </tr>
+            <tr>
+                <td>Float + <code>display: flex</code></td>
+                <td>Flexbox «отменяет» float</td>
+            </tr>
+            <tr>
+                <td>Float без ширины</td>
+                <td>Элемент «схлопнется» до содержимого</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Когда float актуален</h2>
+
+    <ul>
+        <li><strong>Обтекание картинки текстом</strong> — прямое назначение.</li>
+        <li><strong>Старый код</strong> — читать, понимать, но не писать.</li>
+        <li><strong>Очень простые случаи</strong> — обтекание в статье.</li>
+    </ul>
+
+    <p><strong>Для всего остального:</strong></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Современный способ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Ряд элементов</td><td><code>display: flex</code></td></tr>
+            <tr><td>Сетка</td><td><code>display: grid</code></td></tr>
+            <tr><td>Колонки</td><td><code>grid-template-columns</code></td></tr>
+            <tr><td>Обтекание картинки</td><td><code>float</code> (всё ещё актуален)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>float</code></strong> — «обтекание». <code>left</code>, <code>right</code>, <code>none</code>.</li>
+        <li><strong>Родитель «схлопывается»</strong>, если все дети float.</li>
+        <li><strong><code>clear</code></strong> — «не обтекать». <code>left</code>, <code>right</code>, <code>both</code>.</li>
+        <li><strong>Clearfix</strong> — <code>::after { content: ""; display: table; clear: both; }</code>.</li>
+        <li><strong>Современный clearfix</strong> — <code>display: flow-root</code> на родителе.</li>
+        <li><strong>Float — legacy</strong> для раскладки. Используй Flexbox/Grid.</li>
+        <li><strong>Float актуален</strong> для обтекания картинки текстом.</li>
+        <li><strong>Float + <code>display: flex</code></strong> — float игнорируется.</li>
+        <li><strong>Float без ширины</strong> — элемент схлопывается до содержимого.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 25 · Следующий урок: <em>Центрирование — все способы</em>
+    </p>
+
+</body>
+</html>

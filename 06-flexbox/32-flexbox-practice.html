@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 32: практика Flexbox — меню, карточки, sticky footer, медиа-объект, центрирование.">
+    <title>CSS Урок 32. Практика Flexbox</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 32. Практика Flexbox</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: собрать всё, что изучили в блоке 6,           -->
+    <!-- в реальные компоненты: меню, карточки, sticky footer.      -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что будем делать</h2>
+
+    <p>В этом уроке — <strong>практика</strong>. Никакой новой теории. Собираем реальные компоненты на Flexbox:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Что тренируем</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Меню навигации</strong></td><td><code>display: flex</code>, <code>gap</code>, <code>align-items</code></td></tr>
+            <tr><td><strong>Шапка сайта</strong></td><td><code>justify-content: space-between</code></td></tr>
+            <tr><td><strong>Карточки товаров</strong></td><td><code>flex: 1</code>, <code>flex-wrap</code>, <code>gap</code></td></tr>
+            <tr><td><strong>Медиа-объект</strong></td><td><code>flex: 0 0</code>, <code>min-width: 0</code></td></tr>
+            <tr><td><strong>Sticky footer</strong></td><td><code>flex-direction: column</code>, <code>flex: 1</code></td></tr>
+            <tr><td><strong>Центрирование</strong></td><td><code>align-items: center; justify-content: center</code></td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. Меню навигации</h2>
+
+    <p><strong>Задача:</strong> горизонтальное меню с отступами между ссылками.</p>
+
+    <pre><code>.nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    padding: 16px 24px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav a {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav a:hover {
+    color: #e53935;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <div style="display: flex; gap: 24px; align-items: center; padding: 16px 24px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 8px;">
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Главная</a>
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Блог</a>
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">О нас</a>
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Контакты</a>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Что важно:</strong> <code>gap: 24px</code> — расстояние между ссылками. Без <code>margin</code> у детей — чисто и просто.
+    </div>
+
+    <h2>3. Шапка сайта</h2>
+
+    <p><strong>Задача:</strong> логотип слева, меню справа. По центру вертикали.</p>
+
+    <pre><code>.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1565c0;
+}
+
+.header-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.header-nav a {
+    color: #333;
+    text-decoration: none;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 8px;">
+            <div style="font-size: 20px; font-weight: bold; color: #1565c0;">Мой сайт</div>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" style="color: #333; text-decoration: none;">Главная</a>
+                <a href="#" style="color: #333; text-decoration: none;">Блог</a>
+                <a href="#" style="color: #333; text-decoration: none;">Контакты</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Классика:</strong> <code>justify-content: space-between</code> + <code>align-items: center</code> — самая частая связка для шапки.
+    </div>
+
+    <h2>4. Карточки товаров</h2>
+
+    <p><strong>Задача:</strong> карточки в ряд, одинаковой ширины, с переносом.</p>
+
+    <pre><code>.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.card {
+    flex: 1 1 200px;   /* базовый размер 200px, растягивается */
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    margin: 0 0 8px 0;
+}
+
+.card p {
+    margin: 0 0 16px 0;
+    color: #666;
+}
+
+.card button {
+    width: 100%;
+    padding: 10px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+            <div style="flex: 1 1 200px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1565c0;">Товар 1</h3>
+                <p style="margin: 0 0 16px 0; color: #666; font-size: 14px;">Описание товара</p>
+                <div style="font-weight: bold; color: #1565c0; margin-bottom: 12px;">500 ₽</div>
+                <button style="width: 100%; padding: 10px; background: #1565c0; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Купить</button>
+            </div>
+            <div style="flex: 1 1 200px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1565c0;">Товар 2</h3>
+                <p style="margin: 0 0 16px 0; color: #666; font-size: 14px;">Описание товара</p>
+                <div style="font-weight: bold; color: #1565c0; margin-bottom: 12px;">700 ₽</div>
+                <button style="width: 100%; padding: 10px; background: #1565c0; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Купить</button>
+            </div>
+            <div style="flex: 1 1 200px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1565c0;">Товар 3</h3>
+                <p style="margin: 0 0 16px 0; color: #666; font-size: 14px;">Описание товара</p>
+                <div style="font-weight: bold; color: #1565c0; margin-bottom: 12px;">900 ₽</div>
+                <button style="width: 100%; padding: 10px; background: #1565c0; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Купить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Что важно:</strong> <code>flex: 1 1 200px</code> — базовый размер 200px, растягивается. С <code>flex-wrap: wrap</code> — переносятся.
+    </div>
+
+    <h2>5. Медиа-объект</h2>
+
+    <p><strong>Задача:</strong> аватар слева, текст справа. Аватар фиксированный, текст занимает всё остальное.</p>
+
+    <pre><code>.media {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.media-avatar {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.media-body {
+    flex: 1;
+    min-width: 0;   /* ← чтобы текст не «ломал» флекс */
+}
+
+.media-body h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+}
+
+.media-body p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Результат:</div>
+        <div style="display: flex; gap: 16px; align-items: flex-start; padding: 16px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div style="flex: 0 0 56px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1565c0, #42a5f5); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px;">И</div>
+            <div style="flex: 1; min-width: 0;">
+                <h3 style="margin: 0 0 4px 0; font-size: 16px; color: #1565c0;">Иван Иванов</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">Длинный текст комментария, который обтекает аватар и занимает всё оставшееся место в контейнере.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong><code>min-width: 0</code></strong> — критично. Без него длинный текст «ломает» flex-элемент (он не может стать меньше своего содержимого).
+    </div>
+
+    <h2>6. Sticky footer</h2>
+
+    <p><strong>Задача:</strong> подвал прижат к низу страницы, даже если контента мало.</p>
+
+    <pre><code>body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    flex: 1;   /* ← занимает всё свободное место */
+}
+
+footer {
+    background: #333;
+    color: white;
+    padding: 16px;
+    text-align: center;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Sticky footer (демо):</div>
+        <div style="display: flex; flex-direction: column; min-height: 200px; background: #f5f5f5; border-radius: 8px; overflow: hidden;">
+            <header style="background: #1565c0; color: white; padding: 12px 16px; font-weight: bold;">Header</header>
+            <main style="flex: 1; padding: 16px;">
+                <p style="margin: 0;">Контент страницы. Если его мало — footer всё равно внизу.</p>
+            </main>
+            <footer style="background: #333; color: white; padding: 12px 16px; text-align: center; font-size: 13px;">Footer (sticky)</footer>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Как работает:</strong> <code>body</code> — flex-контейнер на <code>100vh</code>. <code>main</code> — <code>flex: 1</code> — растягивается, <code>footer</code> — прижат к низу.
+    </div>
+
+    <h2>7. Центрирование</h2>
+
+    <p><strong>Задача:</strong> блок по центру экрана (X + Y).</p>
+
+    <pre><code>.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Центрирование:</div>
+        <div style="display: flex; align-items: center; justify-content: center; height: 150px; background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; color: white; text-align: center; padding: 20px;">
+            <div>
+                <h2 style="margin: 0 0 8px 0; font-size: 24px;">Заголовок</h2>
+                <p style="margin: 0; font-size: 14px; opacity: 0.9;">По центру</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Итоговый проект: страница</h2>
+
+    <p>Собери всё вместе — шапка, меню, карточки, sticky footer.</p>
+
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;style&gt;
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #fafafa;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* Основной контент */
+        main {
+            flex: 1;
+            padding: 40px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            color: #1565c0;
+            margin-top: 0;
+        }
+
+        /* Карточки */
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .card {
+            flex: 1 1 250px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Подвал */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 16px 24px;
+            text-align: center;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header class="header"&gt;
+        &lt;div class="logo"&gt;Мой сайт&lt;/div&gt;
+        &lt;nav class="nav"&gt;
+            &lt;a href="#"&gt;Главная&lt;/a&gt;
+            &lt;a href="#"&gt;Блог&lt;/a&gt;
+            &lt;a href="#"&gt;Контакты&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;main&gt;
+        &lt;h1&gt;Добро пожаловать&lt;/h1&gt;
+        &lt;p&gt;Это пример страницы на Flexbox.&lt;/p&gt;
+
+        &lt;div class="cards"&gt;
+            &lt;div class="card"&gt;
+                &lt;h3&gt;Карточка 1&lt;/h3&gt;
+                &lt;p&gt;Описание&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="card"&gt;
+                &lt;h3&gt;Карточка 2&lt;/h3&gt;
+                &lt;p&gt;Описание&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="card"&gt;
+                &lt;h3&gt;Карточка 3&lt;/h3&gt;
+                &lt;p&gt;Описание&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/main&gt;
+
+    &lt;footer class="footer"&gt;
+        &amp;copy; 2026 Мой сайт
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Полная страница:</div>
+        <div style="display: flex; flex-direction: column; min-height: 300px; background: #fafafa; border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
+            <header style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #1565c0;">Мой сайт</div>
+                <div style="display: flex; gap: 16px; font-size: 13px;">
+                    <a href="#" style="color: #333; text-decoration: none;">Главная</a>
+                    <a href="#" style="color: #333; text-decoration: none;">Блог</a>
+                    <a href="#" style="color: #333; text-decoration: none;">Контакты</a>
+                </div>
+            </header>
+            <main style="flex: 1; padding: 20px;">
+                <h2 style="margin: 0 0 8px 0; color: #1565c0; font-size: 18px;">Добро пожаловать</h2>
+                <p style="margin: 0 0 16px 0; color: #666; font-size: 13px;">Пример страницы на Flexbox.</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <div style="flex: 1 1 120px; background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 12px;">
+                        <strong>Карточка 1</strong>
+                    </div>
+                    <div style="flex: 1 1 120px; background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 12px;">
+                        <strong>Карточка 2</strong>
+                    </div>
+                    <div style="flex: 1 1 120px; background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 12px;">
+                        <strong>Карточка 3</strong>
+                    </div>
+                </div>
+            </main>
+            <footer style="background: #333; color: white; padding: 12px 20px; text-align: center; font-size: 12px;">© 2026 Мой сайт</footer>
+        </div>
+    </div>
+
+    <h2>9. Практическое задание</h2>
+
+    <div class="task">
+        <p><strong>Задание 1. «Меню»</strong></p>
+        <p>Создай файл <code>32-practice.html</code>. Сделай:</p>
+        <ul>
+            <li>Шапку с логотипом слева и меню справа (<code>justify-content: space-between</code>).</li>
+            <li>Меню — flex с <code>gap</code>.</li>
+            <li>При наведении на ссылку — меняется цвет.</li>
+        </ul>
+
+        <p><strong>Задание 2. «Карточки»</strong></p>
+        <ul>
+            <li>3 карточки в ряд через <code>flex: 1</code>.</li>
+            <li><code>gap: 16px</code>.</li>
+            <li>Каждая карточка: картинка, заголовок, описание, кнопка.</li>
+            <li><code>flex-wrap: wrap</code> — чтобы переносились на мобильных.</li>
+        </ul>
+
+        <p><strong>Задание 3. «Медиа-объект»</strong></p>
+        <ul>
+            <li>Аватар + текст (имя, комментарий).</li>
+            <li>Аватар — <code>flex: 0 0 56px</code>.</li>
+            <li>Текст — <code>flex: 1; min-width: 0</code>.</li>
+        </ul>
+
+        <p><strong>Задание 4. «Sticky footer»</strong></p>
+        <ul>
+            <li>Страница: шапка, контент, подвал.</li>
+            <li><code>body { display: flex; flex-direction: column; min-height: 100vh; }</code></li>
+            <li><code>main { flex: 1; }</code> — контент растягивается.</li>
+            <li>Подвал прижат к низу.</li>
+        </ul>
+
+        <p><strong>Задание 5. «Собери всё»</strong></p>
+        <ul>
+            <li>Шапка + карточки + медиа-объект + подвал.</li>
+            <li>Используй <code>gap</code>, <code>flex</code>, <code>justify-content</code>, <code>align-items</code>.</li>
+            <li>Проверь в DevTools — всё ли правильно.</li>
+        </ul>
+    </div>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Меню</strong> — <code>display: flex; gap: 24px; align-items: center</code>.</li>
+        <li><strong>Шапка</strong> — <code>justify-content: space-between; align-items: center</code>.</li>
+        <li><strong>Карточки</strong> — <code>flex: 1 1 200px; flex-wrap: wrap; gap: 16px</code>.</li>
+        <li><strong>Медиа-объект</strong> — <code>flex: 0 0 56px</code> для аватара, <code>flex: 1; min-width: 0</code> для текста.</li>
+        <li><strong>Sticky footer</strong> — <code>body { display: flex; flex-direction: column; min-height: 100vh; }</code>, <code>main { flex: 1; }</code>.</li>
+        <li><strong>Центрирование</strong> — <code>align-items: center; justify-content: center</code>.</li>
+        <li><strong>Всегда <code>gap</code></strong> — вместо <code>margin</code> у детей.</li>
+        <li><strong>Всегда <code>box-sizing: border-box</code></strong> — в начале CSS.</li>
+        <li><strong>Всегда <code>min-width: 0</code></strong> — для flex-элементов с текстом.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 32 · Конец блока 6 (Flexbox) · Следующий урок: <em>Что такое Grid — идея, display: grid</em>
+    </p>
+
+</body>
+</html>

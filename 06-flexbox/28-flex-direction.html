@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 28: flex-direction, flex-wrap, flex-flow — направление главной оси и перенос элементов.">
+    <title>CSS Урок 28. flex-direction и flex-wrap</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .flex-container {
+            display: flex;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            gap: 8px;
+        }
+        .flex-item {
+            background: #1565c0;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .flex-item:nth-child(2) { background: #e53935; }
+        .flex-item:nth-child(3) { background: #43a047; }
+        .flex-item:nth-child(4) { background: #ff9800; }
+        .flex-item:nth-child(5) { background: #6a1b9a; }
+        .flex-item:nth-child(6) { background: #00acc1; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 28. Основная ось</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить flex-direction, flex-wrap, flex-flow — -->
+    <!-- как менять направление и перенос элементов.                -->
+    <!-- ========================================================= -->
+
+    <h2>1. Три свойства для управления осью</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>flex-direction</code></td>
+                <td>Направление главной оси (ряд / колонка)</td>
+            </tr>
+            <tr>
+                <td><code>flex-wrap</code></td>
+                <td>Переносить ли элементы на новую строку</td>
+            </tr>
+            <tr>
+                <td><code>flex-flow</code></td>
+                <td>Сокращение: <code>flex-direction</code> + <code>flex-wrap</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>flex-direction</code> — направление</h2>
+
+    <p>Определяет, <strong>куда</strong> выстраиваются элементы.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+                <th>Главная ось</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>row</code> (по умолчанию)</td><td>Слева направо</td><td>→</td></tr>
+            <tr><td><code>row-reverse</code></td><td>Справа налево</td><td>←</td></tr>
+            <tr><td><code>column</code></td><td>Сверху вниз</td><td>↓</td></tr>
+            <tr><td><code>column-reverse</code></td><td>Снизу вверх</td><td>↑</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: flex;
+    flex-direction: row;       /* по умолчанию */
+    /* flex-direction: row-reverse; */
+    /* flex-direction: column; */
+    /* flex-direction: column-reverse; */
+}</code></pre>
+
+    <h3><code>row</code> (по умолчанию)</h3>
+
+    <div class="demo">
+        <div class="demo-label">flex-direction: row — слева направо:</div>
+        <div class="flex-container">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>row-reverse</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">flex-direction: row-reverse — справа налево:</div>
+        <div class="flex-container" style="flex-direction: row-reverse;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> <code>row-reverse</code> меняет <strong>визуальный</strong> порядок,
+        но <strong>не порядок в HTML</strong>. Screen reader читает в исходном порядке.
+        Для доступности <strong>не меняй порядок</strong> через <code>reverse</code> — используй <code>order</code>.
+    </div>
+
+    <h3><code>column</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">flex-direction: column — сверху вниз:</div>
+        <div class="flex-container" style="flex-direction: column; align-items: stretch;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>column-reverse</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">flex-direction: column-reverse — снизу вверх:</div>
+        <div class="flex-container" style="flex-direction: column-reverse; align-items: stretch;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3>Как меняются оси</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th><code>flex-direction</code></th>
+                <th><code>justify-content</code></th>
+                <th><code>align-items</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>row</code></td><td>горизонталь</td><td>вертикаль</td></tr>
+            <tr><td><code>column</code></td><td>вертикаль</td><td>горизонталь</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Частая ошибка:</strong> думать, что <code>justify-content</code> — всегда
+        горизонталь. <strong>Нет!</strong> Он по <strong>главной</strong> оси. При
+        <code>column</code> — по вертикали.
+    </div>
+
+    <h2>3. <code>flex-wrap</code> — перенос</h2>
+
+    <p>
+        По умолчанию элементы <strong>сжимаются</strong>, чтобы влезть в одну строку.
+        <code>flex-wrap</code> позволяет <strong>переносить</strong> их на новую.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>nowrap</code> (по умолчанию)</td><td>Все в одну строку, сжимаются</td></tr>
+            <tr><td><code>wrap</code></td><td>Переносить на новую строку</td></tr>
+            <tr><td><code>wrap-reverse</code></td><td>Переносить, но в обратном порядке</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>nowrap</code> (по умолчанию)</h3>
+
+    <div class="demo">
+        <div class="demo-label">nowrap — всё в одну строку, сжимаются:</div>
+        <div class="flex-container" style="flex-wrap: nowrap;">
+            <div class="flex-item">Один</div>
+            <div class="flex-item">Два</div>
+            <div class="flex-item">Три</div>
+            <div class="flex-item">Четыре</div>
+            <div class="flex-item">Пять</div>
+            <div class="flex-item">Шесть</div>
+        </div>
+        <p style="font-size: 13px; color: #c62828; margin: 8px 0 0 0;">Элементы сжались, чтобы влезть в одну строку (или вылезли за край).</p>
+    </div>
+
+    <h3><code>wrap</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">wrap — переносятся на новую строку:</div>
+        <div class="flex-container" style="flex-wrap: wrap;">
+            <div class="flex-item">Один</div>
+            <div class="flex-item">Два</div>
+            <div class="flex-item">Три</div>
+            <div class="flex-item">Четыре</div>
+            <div class="flex-item">Пять</div>
+            <div class="flex-item">Шесть</div>
+        </div>
+        <p style="font-size: 13px; color: #2e7d32; margin: 8px 0 0 0;">Элементы переносятся, сохраняя размеры.</p>
+    </div>
+
+    <h3><code>wrap-reverse</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">wrap-reverse — переносятся в обратном порядке:</div>
+        <div class="flex-container" style="flex-wrap: wrap-reverse;">
+            <div class="flex-item">Один</div>
+            <div class="flex-item">Два</div>
+            <div class="flex-item">Три</div>
+            <div class="flex-item">Четыре</div>
+            <div class="flex-item">Пять</div>
+            <div class="flex-item">Шесть</div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Последняя строка — сверху, первая — снизу.</p>
+    </div>
+
+    <div class="note">
+        <strong><code>flex-wrap: wrap</code></strong> — <strong>почти всегда</strong>, когда
+        элементов много. Без него они сожмутся или вылезут.
+    </div>
+
+    <h2>4. <code>flex-flow</code> — сокращение</h2>
+
+    <p>
+        Объединяет <code>flex-direction</code> и <code>flex-wrap</code> в одно свойство:
+    </p>
+
+    <pre><code>.container {
+    flex-flow: row wrap;          /* row + wrap */
+    /* или */
+    flex-flow: column nowrap;
+    /* или */
+    flex-flow: row-reverse wrap-reverse;
+}</code></pre>
+
+    <div class="note">
+        <strong>Порядок:</strong> сначала <code>flex-direction</code>, потом <code>flex-wrap</code>.
+        Но можно и в любом порядке — браузер разберётся.
+    </div>
+
+    <h2>5. Практика: карточки с переносом</h2>
+
+    <pre><code>.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.card {
+    flex: 1 1 200px;   /* базовый размер 200px, растягивается */
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки с wrap — переносятся:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 1</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 2</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 3</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 4</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 5</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>6. Практика: вертикальное меню</h2>
+
+    <pre><code>.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 200px;
+}
+
+.sidebar a {
+    padding: 12px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar a:hover {
+    background: #e3f2fd;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Вертикальное меню:</div>
+        <div style="display: flex; flex-direction: column; gap: 4px; max-width: 200px;">
+            <a href="#" style="padding: 12px 16px; border-radius: 6px; text-decoration: none; color: #333; background: #e3f2fd; font-weight: 500;">Главная</a>
+            <a href="#" style="padding: 12px 16px; border-radius: 6px; text-decoration: none; color: #333;">Блог</a>
+            <a href="#" style="padding: 12px 16px; border-radius: 6px; text-decoration: none; color: #333;">О нас</a>
+            <a href="#" style="padding: 12px 16px; border-radius: 6px; text-decoration: none; color: #333;">Контакты</a>
+        </div>
+    </div>
+
+    <h2>7. Практика: шапка с двумя зонами</h2>
+
+    <pre><code>.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 24px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Шапка с переносом (на узком экране — на новую строку):</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding: 16px 24px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #1565c0; font-size: 18px;">Мой сайт</div>
+            <div style="display: flex; gap: 16px;">
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Главная</a>
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Блог</a>
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Контакты</a>
+            </div>
+        </div>
+    </div>
+
+    <h2>8. <code>gap</code> и <code>flex-wrap</code></h2>
+
+    <p>
+        <code>gap</code> работает <strong>и по главной, и по поперечной</strong> оси.
+        При переносе — <strong>и между строками</strong>.
+    </p>
+
+    <pre><code>.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;              /* и между элементами, и между строками */
+    /* или */
+    column-gap: 8px;        /* только между колонками */
+    row-gap: 16px;          /* только между строками */
+}</code></pre>
+
+    <div class="note">
+        <strong>Совет:</strong> используй <code>gap</code>, а не <code>margin</code> у детей.
+        <code>gap</code> не даёт «лишних» отступов по краям.
+    </div>
+
+    <h2>9. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>flex-wrap: wrap</code> для многих элементов</td>
+                <td>Элементы сожмутся или вылезут</td>
+            </tr>
+            <tr>
+                <td><code>flex-direction: column</code> + <code>align-items: stretch</code> + <code>height</code></td>
+                <td>Дети растянутся на всю высоту — может быть некрасиво</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>reverse</code> для смены порядка</td>
+                <td>Ломает доступность. Лучше <code>order</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code></td>
+                <td>Элементы «слипаются»</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>margin</code> вместо <code>gap</code></td>
+                <td>Лишние отступы по краям</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>flex-direction</code></strong> — направление главной оси: <code>row</code>, <code>row-reverse</code>, <code>column</code>, <code>column-reverse</code>.</li>
+        <li><strong><code>row</code></strong> — по умолчанию. <strong><code>column</code></strong> — вертикально.</li>
+        <li><strong><code>flex-wrap</code></strong> — перенос: <code>nowrap</code> (по умолчанию), <code>wrap</code>, <code>wrap-reverse</code>.</li>
+        <li><strong><code>flex-wrap: wrap</code></strong> — почти всегда для многих элементов.</li>
+        <li><strong><code>flex-flow</code></strong> — сокращение: <code>row wrap</code>.</li>
+        <li><strong><code>justify-content</code></strong> — по главной оси. При <code>column</code> — <strong>по вертикали</strong>.</li>
+        <li><strong><code>align-items</code></strong> — по поперечной. При <code>column</code> — <strong>по горизонтали</strong>.</li>
+        <li><strong><code>gap</code></strong> — работает между строками и колонками.</li>
+        <li><strong><code>reverse</code></strong> — меняет визуальный порядок, но не для доступности.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 28 · Следующий урок: <em>Выравнивание — justify-content, align-items, align-self</em>
+    </p>
+
+</body>
+</html>

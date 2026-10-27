@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 27: Flexbox — идея, display: flex, главная и поперечная оси. Контейнер и элементы.">
+    <title>CSS Урок 27. Flexbox — введение</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .flex-container {
+            display: flex;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        .flex-item {
+            background: #1565c0;
+            color: white;
+            padding: 20px;
+            margin: 4px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            text-align: center;
+        }
+        .flex-item:nth-child(2) { background: #e53935; }
+        .flex-item:nth-child(3) { background: #43a047; }
+        .flex-item:nth-child(4) { background: #ff9800; }
+        .flex-item:nth-child(5) { background: #6a1b9a; }
+
+        .axis-demo {
+            display: flex;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            position: relative;
+        }
+        .axis-demo::before {
+            content: "главная ось →";
+            position: absolute;
+            top: -24px;
+            left: 12px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            color: #e53935;
+            font-weight: bold;
+        }
+        .axis-demo::after {
+            content: "поперечная ось ↕";
+            position: absolute;
+            right: -110px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            transform-origin: left center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            color: #1565c0;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 27. Flexbox — введение</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять идею Flexbox, что такое контейнер,     -->
+    <!-- элементы, главная и поперечная оси.                        -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое Flexbox</h2>
+
+    <p>
+        <strong>Flexbox</strong> (Flexible Box Layout) — это способ раскладки,
+        который <strong>выравнивает элементы</strong> в ряд или колонку
+        и <strong>распределяет</strong> свободное место между ними.
+    </p>
+
+    <p>
+        Это <strong>одномерная</strong> раскладка: элементы выстраиваются по
+        <strong>одной оси</strong> — горизонтально или вертикально.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Что решает Flexbox</th>
+                <th>Пример</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Горизонтальное меню</td><td>Ссылки в ряд</td></tr>
+            <tr><td>Карточки в ряд</td><td>Галерея, товары</td></tr>
+            <tr><td>Центрирование</td><td>По X и Y</td></tr>
+            <tr><td>Распределение места</td><td>Кнопки по краям</td></tr>
+            <tr><td>Прижатие к краю</td><td>Логотип слева, меню справа</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>До Flexbox</strong> это делали через <code>float</code>, <code>inline-block</code>,
+        таблицы и «костыли». <strong>Flexbox</strong> — проще и мощнее.
+    </div>
+
+    <h2>2. Два участника: контейнер и элементы</h2>
+
+    <p>Flexbox работает на <strong>двух уровнях</strong>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Роль</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Flex-контейнер</strong></td>
+                <td>Родитель с <code>display: flex</code>. Управляет раскладкой.</td>
+            </tr>
+            <tr>
+                <td><strong>Flex-элементы</strong></td>
+                <td>Дети контейнера. Подчиняются правилам.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: flex;   /* ← контейнер */
+}
+
+/* Дети .container автоматически становятся flex-элементами */
+</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">display: flex — дети выстроились в ряд:</div>
+        <div class="flex-container">
+            <div class="flex-item">Элемент 1</div>
+            <div class="flex-item">Элемент 2</div>
+            <div class="flex-item">Элемент 3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Ключевой момент:</strong> <code>display: flex</code> ставится <strong>на родителя</strong>.
+        Дети становятся flex-элементами <strong>автоматически</strong> — им ничего не нужно.
+    </div>
+
+    <h2>3. Что происходит при <code>display: flex</code></h2>
+
+    <p>Когда ты пишешь <code>display: flex</code> на контейнере:</p>
+
+    <ol>
+        <li><strong>Дети выстраиваются в ряд</strong> (по умолчанию — горизонтально).</li>
+        <li><strong>Дети сжимаются</strong> или <strong>растягиваются</strong>, чтобы влезть.</li>
+        <li><strong>Высота контейнера</strong> = высота самого высокого ребёнка.</li>
+        <li><strong>Отступы и ширина</strong> пересчитываются по-новому.</li>
+    </ol>
+
+    <div class="demo">
+        <div class="demo-label">Без flex — блоки друг под другом:</div>
+        <div style="background: #f5f5f5; border: 2px solid #999; border-radius: 8px; padding: 12px;">
+            <div class="flex-item">Элемент 1</div>
+            <div class="flex-item">Элемент 2</div>
+            <div class="flex-item">Элемент 3</div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">С flex — в ряд:</div>
+        <div class="flex-container">
+            <div class="flex-item">Элемент 1</div>
+            <div class="flex-item">Элемент 2</div>
+            <div class="flex-item">Элемент 3</div>
+        </div>
+    </div>
+
+    <h2>4. Главная ось и поперечная ось</h2>
+
+    <p>
+        Flexbox использует <strong>две оси</strong>. Понимание этого — <strong>ключ</strong>
+        к Flexbox.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ось</th>
+                <th>Что это</th>
+                <th>По умолчанию</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Главная (main axis)</strong></td>
+                <td>Вдоль неё выстраиваются элементы</td>
+                <td>Горизонтально (слева → направо)</td>
+            </tr>
+            <tr>
+                <td><strong>Поперечная (cross axis)</strong></td>
+                <td>Перпендикулярна главной</td>
+                <td>Вертикально (сверху → вниз)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Оси (по умолчанию):</div>
+        <div style="padding: 40px 0; position: relative;">
+            <div class="axis-demo">
+                <div class="flex-item">1</div>
+                <div class="flex-item">2</div>
+                <div class="flex-item">3</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Что зависит от осей</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>По главной оси</th>
+                <th>По поперечной оси</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>justify-content</code></td>
+                <td><code>align-items</code></td>
+            </tr>
+            <tr>
+                <td>Распределение элементов</td>
+                <td>Выравнивание элементов</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Главная мысль:</strong>
+        <ul>
+            <li><strong><code>justify-content</code></strong> — по <strong>главной</strong> оси.</li>
+            <li><strong><code>align-items</code></strong> — по <strong>поперечной</strong> оси.</li>
+        </ul>
+        Если поменять направление (<code>flex-direction: column</code>) — оси <strong>меняются местами</strong>.
+    </div>
+
+    <h2>5. <code>flex-direction</code> — направление</h2>
+
+    <p>Меняет направление главной оси.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>row</code> (по умолчанию)</td><td>Слева направо</td></tr>
+            <tr><td><code>row-reverse</code></td><td>Справа налево</td></tr>
+            <tr><td><code>column</code></td><td>Сверху вниз</td></tr>
+            <tr><td><code>column-reverse</code></td><td>Снизу вверх</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: flex;
+    flex-direction: column;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">flex-direction: column — вертикально:</div>
+        <div class="flex-container" style="flex-direction: column;">
+            <div class="flex-item">Элемент 1</div>
+            <div class="flex-item">Элемент 2</div>
+            <div class="flex-item">Элемент 3</div>
+        </div>
+    </div>
+
+    <h3>Как меняются оси</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th><code>flex-direction</code></th>
+                <th>Главная ось</th>
+                <th>Поперечная ось</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>row</code></td><td>→ горизонталь</td><td>↕ вертикаль</td></tr>
+            <tr><td><code>column</code></td><td>↕ вертикаль</td><td>→ горизонталь</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Частая ошибка:</strong> думать, что <code>justify-content</code> — всегда
+        «горизонтально». <strong>Нет!</strong> Он по <strong>главной</strong> оси.
+        Если <code>flex-direction: column</code> — <code>justify-content</code> будет
+        выравнивать <strong>по вертикали</strong>.
+    </div>
+
+    <h2>6. Что можно делать с flex-элементами</h2>
+
+    <p>
+        Flex-элементы можно:
+    </p>
+
+    <ul>
+        <li><strong>Выравнивать</strong> — по главной и поперечной оси.</li>
+        <li><strong>Распределять</strong> — свободное место между ними.</li>
+        <li><strong>Менять размер</strong> — растягивать, сжимать.</li>
+        <li><strong>Менять порядок</strong> — через <code>order</code>.</li>
+        <li><strong>Переносить</strong> — на новую строку.</li>
+    </ul>
+
+    <p>Всё это — в следующих уроках.</p>
+
+    <h2>7. Что <code>display: flex</code> НЕ делает</h2>
+
+    <div class="warn">
+        <ul>
+            <li><strong>Не делает сетку</strong> — это одномерная раскладка. Для сетки — Grid.</li>
+            <li><strong>Не работает на детях</strong> — только на родителе.</li>
+            <li><strong>Не отменяет <code>float</code></strong> у детей (игнорирует).</li>
+            <li><strong>Не влияет на внуков</strong> — только на <strong>прямых детей</strong>.</li>
+        </ul>
+    </div>
+
+    <h3>Только прямые дети</h3>
+
+    <pre><code>&lt;div class="flex-container"&gt;
+    &lt;div&gt;Элемент 1&lt;/div&gt;    &lt;!-- flex-элемент --&gt;
+    &lt;div&gt;
+        &lt;div&gt;Внук&lt;/div&gt;      &lt;!-- НЕ flex-элемент --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="note">
+        <strong>Внуки</strong> — не flex-элементы. Если нужен flex внутри — сделай
+        внутренний контейнер <code>display: flex</code>.
+    </div>
+
+    <h2>8. Префиксы (историческое)</h2>
+
+    <p>
+        Раньше Flexbox требовал префиксы:
+    </p>
+
+    <pre><code>/* Старый код (2012) */
+.container {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}</code></pre>
+
+    <div class="note">
+        <strong>Сейчас не нужно:</strong> все современные браузеры поддерживают
+        <code>display: flex</code> без префиксов. Префиксы — только для IE 10+.
+        <strong>Не используй</strong> — это legacy.
+    </div>
+
+    <h2>9. Практика: меню навигации</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    padding: 16px 24px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav a {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: 500;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Меню через flex + gap:</div>
+        <div style="display: flex; gap: 24px; align-items: center; padding: 16px 24px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 8px;">
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Главная</a>
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Блог</a>
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">О нас</a>
+            <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Контакты</a>
+        </div>
+    </div>
+
+    <h2>10. Практика: шапка с логотипом</h2>
+
+    <pre><code>.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+}
+
+.logo {
+    font-weight: bold;
+    color: #1565c0;
+}
+
+.nav {
+    display: flex;
+    gap: 16px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Шапка: логотип слева, меню справа:</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #1565c0; font-size: 18px;">Мой сайт</div>
+            <div style="display: flex; gap: 16px;">
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Главная</a>
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Блог</a>
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Контакты</a>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Практика: карточки в ряд</h2>
+
+    <pre><code>.cards {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;   /* ← чтобы переносились */
+}
+
+.card {
+    flex: 1 1 200px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки в ряд (flex + gap):</div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 1</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 2</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 3</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>12. Практика: центрирование через flex</h2>
+
+    <pre><code>.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero с центрированием:</div>
+        <div style="display: flex; align-items: center; justify-content: center; height: 150px; background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; color: white;">
+            <h2 style="margin: 0; font-size: 24px;">По центру</h2>
+        </div>
+    </div>
+
+    <h2>13. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>display: flex</code> на детях</td>
+                <td>Flex ставится на <strong>родителя</strong>, не на детей</td>
+            </tr>
+            <tr>
+                <td>Думать, что <code>justify-content</code> — всегда горизонтально</td>
+                <td>Зависит от <code>flex-direction</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code> и использовать <code>margin</code></td>
+                <td><code>gap</code> проще и не даёт «лишних» отступов</td>
+            </tr>
+            <tr>
+                <td>Не использовать <code>flex-wrap</code> для многих элементов</td>
+                <td>Элементы сожмутся в одну строку</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>min-width: 0</code> для длинных текстов</td>
+                <td>Текст «ломает» flex-элемент</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>float</code> внутри flex</td>
+                <td><code>float</code> игнорируется</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>14. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Flexbox</strong> — одномерная раскладка (ряд или колонка).</li>
+        <li><strong><code>display: flex</code></strong> — на <strong>родителя</strong>. Дети становятся flex-элементами автоматически.</li>
+        <li><strong>Главная ось</strong> — вдоль неё выстраиваются элементы. По умолчанию горизонталь.</li>
+        <li><strong>Поперечная ось</strong> — перпендикулярна главной. По умолчанию вертикаль.</li>
+        <li><strong><code>justify-content</code></strong> — по <strong>главной</strong> оси.</li>
+        <li><strong><code>align-items</code></strong> — по <strong>поперечной</strong> оси.</li>
+        <li><strong><code>flex-direction</code></strong> — меняет направление. <code>row</code> (по умолчанию), <code>column</code>.</li>
+        <li><strong>Только прямые дети</strong> — flex-элементы. Внуки — нет.</li>
+        <li><strong><code>gap</code></strong> — расстояние между элементами. Лучше, чем <code>margin</code>.</li>
+        <li><strong>Префиксы не нужны</strong> — современные браузеры поддерживают всё.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 27 · Следующий урок: <em>Основная ось — flex-direction, flex-wrap, flex-flow</em>
+    </p>
+
+</body>
+</html>

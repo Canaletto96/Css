@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 29: выравнивание во Flexbox — justify-content, align-items, align-self, align-content.">
+    <title>CSS Урок 29. Выравнивание во Flexbox</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .flex-container {
+            display: flex;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            gap: 8px;
+            min-height: 80px;
+        }
+        .flex-item {
+            background: #1565c0;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+        .flex-item:nth-child(2) { background: #e53935; }
+        .flex-item:nth-child(3) { background: #43a047; }
+        .flex-item:nth-child(4) { background: #ff9800; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 29. Выравнивание</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить justify-content, align-items,         -->
+    <!-- align-self, align-content. Самый важный урок Flexbox.      -->
+    <!-- ========================================================= -->
+
+    <h2>1. Четыре свойства выравнивания</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Ось</th>
+                <th>Для чего</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>justify-content</code></td>
+                <td>Главная</td>
+                <td>Распределяет элементы вдоль главной оси</td>
+            </tr>
+            <tr>
+                <td><code>align-items</code></td>
+                <td>Поперечная</td>
+                <td>Выравнивает элементы по поперечной оси</td>
+            </tr>
+            <tr>
+                <td><code>align-self</code></td>
+                <td>Поперечная</td>
+                <td>Переопределяет <code>align-items</code> для одного элемента</td>
+            </tr>
+            <tr>
+                <td><code>align-content</code></td>
+                <td>Поперечная</td>
+                <td>Выравнивает <strong>строки</strong> при переносе (только с <code>flex-wrap: wrap</code>)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Помни:</strong> главная ось — по умолчанию <strong>горизонталь</strong>.
+        При <code>flex-direction: column</code> — <strong>вертикаль</strong>. Оси меняются местами.
+    </div>
+
+    <h2>2. <code>justify-content</code> — по главной оси</h2>
+
+    <p>Распределяет элементы вдоль <strong>главной</strong> оси.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>flex-start</code> (по умолчанию)</td><td>В начале</td></tr>
+            <tr><td><code>flex-end</code></td><td>В конце</td></tr>
+            <tr><td><code>center</code></td><td>По центру</td></tr>
+            <tr><td><code>space-between</code></td><td>Первый в начале, последний в конце, между — равные промежутки</td></tr>
+            <tr><td><code>space-around</code></td><td>Равные промежутки вокруг каждого элемента</td></tr>
+            <tr><td><code>space-evenly</code></td><td>Равные промежутки между всеми (включая края)</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>flex-start</code> (по умолчанию)</h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: flex-start:</div>
+        <div class="flex-container" style="justify-content: flex-start;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>flex-end</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: flex-end:</div>
+        <div class="flex-container" style="justify-content: flex-end;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>center</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: center:</div>
+        <div class="flex-container" style="justify-content: center;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>space-between</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: space-between:</div>
+        <div class="flex-container" style="justify-content: space-between;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>space-around</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: space-around:</div>
+        <div class="flex-container" style="justify-content: space-around;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>space-evenly</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: space-evenly:</div>
+        <div class="flex-container" style="justify-content: space-evenly;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3>Сравнение <code>space-*</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>По краям</th>
+                <th>Между</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>space-between</code></td><td>Нет</td><td>Да</td></tr>
+            <tr><td><code>space-around</code></td><td>Да (половина)</td><td>Да (половина)</td></tr>
+            <tr><td><code>space-evenly</code></td><td>Да (полная)</td><td>Да (полная)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Практика:</strong> для шапки (логотип слева, меню справа) —
+        <code>justify-content: space-between</code>. Для центрирования — <code>center</code>.
+    </div>
+
+    <h2>3. <code>align-items</code> — по поперечной оси</h2>
+
+    <p>Выравнивает элементы <strong>по поперечной</strong> оси.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>stretch</code> (по умолчанию)</td><td>Растянуть на всю поперечную ось</td></tr>
+            <tr><td><code>flex-start</code></td><td>В начале</td></tr>
+            <tr><td><code>flex-end</code></td><td>В конце</td></tr>
+            <tr><td><code>center</code></td><td>По центру</td></tr>
+            <tr><td><code>baseline</code></td><td>По базовой линии текста</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>stretch</code> (по умолчанию)</h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: stretch — растянуты на всю высоту:</div>
+        <div class="flex-container" style="align-items: stretch;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>flex-start</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: flex-start — в начале поперечной оси:</div>
+        <div class="flex-container" style="align-items: flex-start;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>center</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: center — по центру:</div>
+        <div class="flex-container" style="align-items: center;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>flex-end</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: flex-end — в конце:</div>
+        <div class="flex-container" style="align-items: flex-end;">
+            <div class="flex-item">1</div>
+            <div class="flex-item">2</div>
+            <div class="flex-item">3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Самый частый случай:</strong> <code>align-items: center</code> —
+        для вертикального центрирования в строке. Это <strong>основа</strong> для
+        шапок, меню, кнопок.
+    </div>
+
+    <h2>4. <code>align-self</code> — для одного элемента</h2>
+
+    <p>
+        Переопределяет <code>align-items</code> для <strong>конкретного</strong> элемента.
+    </p>
+
+    <pre><code>.container {
+    display: flex;
+    align-items: center;
+}
+
+.special {
+    align-self: flex-start;   /* ← только этот элемент */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">align-self: у второго элемента — flex-start:</div>
+        <div class="flex-container" style="align-items: center; min-height: 100px;">
+            <div class="flex-item">1 (center)</div>
+            <div class="flex-item" style="align-self: flex-start;">2 (flex-start)</div>
+            <div class="flex-item" style="align-self: flex-end;">3 (flex-end)</div>
+            <div class="flex-item">4 (center)</div>
+        </div>
+    </div>
+
+    <h2>5. <code>align-content</code> — для строк при переносе</h2>
+
+    <p>
+        Работает <strong>только</strong> с <code>flex-wrap: wrap</code> и <strong>только</strong>
+        если есть <strong>несколько строк</strong>. Выравнивает <strong>строки</strong>
+        по поперечной оси.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>stretch</code> (по умолчанию)</td><td>Строки растянуты</td></tr>
+            <tr><td><code>flex-start</code></td><td>Строки в начале</td></tr>
+            <tr><td><code>flex-end</code></td><td>Строки в конце</td></tr>
+            <tr><td><code>center</code></td><td>Строки по центру</td></tr>
+            <tr><td><code>space-between</code></td><td>Первая в начале, последняя в конце</td></tr>
+            <tr><td><code>space-around</code></td><td>Равные промежутки</td></tr>
+            <tr><td><code>space-evenly</code></td><td>Полностью равные</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;   /* ← строки по центру */
+    height: 200px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">align-content: center (3 строки по 4 элемента):</div>
+        <div class="flex-container" style="flex-wrap: wrap; align-content: center; height: 200px;">
+            <div class="flex-item" style="flex: 0 0 22%;">1</div>
+            <div class="flex-item" style="flex: 0 0 22%;">2</div>
+            <div class="flex-item" style="flex: 0 0 22%;">3</div>
+            <div class="flex-item" style="flex: 0 0 22%;">4</div>
+            <div class="flex-item" style="flex: 0 0 22%;">5</div>
+            <div class="flex-item" style="flex: 0 0 22%;">6</div>
+            <div class="flex-item" style="flex: 0 0 22%;">7</div>
+            <div class="flex-item" style="flex: 0 0 22%;">8</div>
+            <div class="flex-item" style="flex: 0 0 22%;">9</div>
+            <div class="flex-item" style="flex: 0 0 22%;">10</div>
+            <div class="flex-item" style="flex: 0 0 22%;">11</div>
+            <div class="flex-item" style="flex: 0 0 22%;">12</div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Важно:</strong> <code>align-content</code> работает <strong>только</strong>
+        при <code>flex-wrap: wrap</code> и <strong>несколько строк</strong>. Если одна строка —
+        не работает.
+    </div>
+
+    <h2>6. <code>justify-content</code> vs <code>align-items</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Ось</th>
+                <th>Что выравнивает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>justify-content</code></td>
+                <td>Главная (→)</td>
+                <td>Всю группу элементов вдоль оси</td>
+            </tr>
+            <tr>
+                <td><code>align-items</code></td>
+                <td>Поперечная (↕)</td>
+                <td>Каждый элемент по высоте</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Аналогия:</strong>
+        <ul>
+            <li><code>justify-content</code> — «как расставить книги на полке (слева, по центру, по краям)».</li>
+            <li><code>align-items</code> — «на какой высоте поставить каждую книгу (внизу, по центру, вверху)».</li>
+        </ul>
+    </div>
+
+    <h2>7. Практика: шапка</h2>
+
+    <pre><code>.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Шапка с space-between + center:</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #1565c0; font-size: 18px;">Мой сайт</div>
+            <div style="display: flex; gap: 16px;">
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Главная</a>
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Блог</a>
+                <a href="#" style="color: #1565c0; text-decoration: none; font-weight: 500;">Контакты</a>
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Практика: hero-блок</h2>
+
+    <pre><code>.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero с полным центрированием:</div>
+        <div style="display: flex; align-items: center; justify-content: center; height: 150px; background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; color: white;">
+            <h2 style="margin: 0; font-size: 24px;">По центру</h2>
+        </div>
+    </div>
+
+    <h2>9. Практика: карточка с прижатым низом</h2>
+
+    <pre><code>.card {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.card-body {
+    flex: 1;   /* ← занимает всё свободное место */
+}
+
+.card-footer {
+    align-self: flex-end;   /* прижат к низу */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с кнопкой внизу:</div>
+        <div style="display: flex; flex-direction: column; height: 200px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 250px;">
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Заголовок</h3>
+            <p style="margin: 0 0 auto 0; color: #666; font-size: 13px;">Текст карточки</p>
+            <button style="padding: 8px 16px; background: #1565c0; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; align-self: flex-start;">Кнопка</button>
+        </div>
+    </div>
+
+    <h2>10. Практика: сетка карточек</h2>
+
+    <pre><code>.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-content: flex-start;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки с переносом и выравниванием:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-content: flex-start;">
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 1</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 2</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="flex: 1 1 150px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка 3</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть, что <code>justify-content</code> — по главной оси</td>
+                <td>При <code>column</code> — вертикаль, не горизонталь</td>
+            </tr>
+            <tr>
+                <td><code>align-content</code> без <code>flex-wrap: wrap</code></td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td><code>align-content</code> с одной строкой</td>
+                <td>Не работает — нужны минимум две строки</td>
+            </tr>
+            <tr>
+                <td>Ожидать, что <code>align-items: center</code> отцентрирует по главной оси</td>
+                <td>Нет — по поперечной. Для главной — <code>justify-content</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>align-self</code> для конкретного элемента</td>
+                <td>Все будут по <code>align-items</code></td>
+            </tr>
+            <tr>
+                <td>Ожидать центрирования без <code>height</code> или <code>align-items</code></td>
+                <td>Нет контекста — нет выравнивания</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Шпаргалка</h2>
+
+    <pre><code>/* Главная ось */
+justify-content: flex-start;   /* по умолчанию */
+justify-content: center;         /* центр */
+justify-content: space-between;  /* первый слева, последний справа */
+
+/* Поперечная ось */
+align-items: stretch;            /* по умолчанию */
+align-items: center;             /* центр */
+align-items: flex-start;         /* в начале */
+
+/* Один элемент */
+align-self: center;              /* только для этого */
+
+/* Строки при переносе */
+flex-wrap: wrap;
+align-content: center;           /* строки по центру */</code></pre>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>justify-content</code></strong> — по <strong>главной</strong> оси. <code>flex-start</code>, <code>center</code>, <code>space-between</code> и др.</li>
+        <li><strong><code>align-items</code></strong> — по <strong>поперечной</strong> оси. <code>stretch</code>, <code>center</code>, <code>flex-start</code> и др.</li>
+        <li><strong><code>align-self</code></strong> — для <strong>одного</strong> элемента, переопределяет <code>align-items</code>.</li>
+        <li><strong><code>align-content</code></strong> — для <strong>строк</strong> при переносе (с <code>flex-wrap: wrap</code>).</li>
+        <li><strong><code>space-between</code></strong> — для шапки (логотип слева, меню справа).</li>
+        <li><strong><code>align-items: center</code></strong> — для вертикального центрирования в строке.</li>
+        <li><strong><code>column</code> меняет оси</strong> — <code>justify-content</code> становится вертикальным.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 29 · Следующий урок: <em>Размеры flex — flex-grow, flex-shrink, flex-basis</em>
+    </p>
+
+</body>
+</html>

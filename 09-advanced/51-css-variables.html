@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 51: CSS-переменные — --var, var(), :root, каскад, fallback, изменение через JS.">
+    <title>CSS Урок 51. CSS-переменные</title>
+
+    <style>
+        /* ========================================================= */
+        /* 1. Объявляем переменные в :root                           */
+        /* ========================================================= */
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --secondary: #e53935;
+            --success: #43a047;
+            --warning: #ff9800;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #ffffff;
+            --border: #ddd;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --font-main: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            --font-mono: Consolas, Monaco, monospace;
+        }
+
+        /* ========================================================= */
+        /* 2. Используем переменные через var()                      */
+        /* ========================================================= */
+        body {
+            font-family: var(--font-main);
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 8px;
+        }
+
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 {
+            color: var(--text-muted);
+            margin-top: 28px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary);
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+        }
+
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid var(--secondary);
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+        }
+
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+        }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        /* Демо: кнопки с переменными */
+        .btn {
+            display: inline-block;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 14px;
+            transition: background 0.2s;
+            margin: 4px;
+        }
+
+        .btn:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--secondary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+
+        /* Демо: тема */
+        .theme-demo {
+            --theme-bg: #fff;
+            --theme-text: #222;
+            --theme-border: #ddd;
+            background: var(--theme-bg);
+            color: var(--theme-text);
+            padding: var(--space-md);
+            border: 1px solid var(--theme-border);
+            border-radius: var(--radius);
+            margin: 8px 0;
+        }
+
+        .theme-demo.dark {
+            --theme-bg: #1a1a2e;
+            --theme-text: #f0f0f0;
+            --theme-border: #333;
+        }
+
+        /* Демо: fallback */
+        .fallback-demo {
+            color: var(--nonexistent, var(--secondary));   /* fallback */
+            font-weight: bold;
+            padding: var(--space-md);
+            background: var(--bg);
+            border-radius: var(--radius);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 51. CSS-переменные</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить CSS-переменные — --var, var(), :root, -->
+    <!-- каскад, fallback, изменение через JS.                      -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое CSS-переменные</h2>
+
+    <p>
+        <strong>CSS-переменные</strong> (custom properties) — это <strong>значения,
+        которые можно переиспользовать</strong> в CSS. Как переменные в JS, но для стилей.
+    </p>
+
+    <pre><code>:root {
+    --primary: #1565c0;
+    --radius: 8px;
+}
+
+.button {
+    background: var(--primary);
+    border-radius: var(--radius);
+}</code></pre>
+
+    <div class="note">
+        <strong>Зачем:</strong>
+        <ul>
+            <li><strong>Переиспользование</strong> — цвет в одном месте.</li>
+            <li><strong>Легко менять</strong> — изменить одно значение → обновится везде.</li>
+            <li><strong>Темы</strong> — светлая / тёмная.</li>
+            <li><strong>Динамика</strong> — можно менять через JS.</li>
+        </ul>
+    </div>
+
+    <h2>2. Синтаксис</h2>
+
+    <h3>Объявление — <code>--имя: значение;</code></h3>
+
+    <pre><code>--primary: #1565c0;
+--radius: 8px;
+--font: system-ui, sans-serif;
+--shadow: 0 4px 12px rgba(0, 0, 0, 0.1);</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>--</code></td><td>Обязательный префикс</td></tr>
+            <tr><td><code>имя</code></td><td>Любое имя (без пробелов)</td></tr>
+            <tr><td><code>:</code></td><td>Разделитель</td></tr>
+            <tr><td><code>значение</code></td><td>Любое CSS-значение</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Префикс <code>--</code> обязателен.</strong> Без него — не переменная,
+        а обычное свойство (которого нет в CSS).
+    </div>
+
+    <h3>Использование — <code>var(--имя)</code></h3>
+
+    <pre><code>.button {
+    background: var(--primary);
+    border-radius: var(--radius);
+}</code></pre>
+
+    <h2>3. <code>:root</code> — где объявлять</h2>
+
+    <p>
+        <code>:root</code> — это <strong>корень документа</strong> (<code>&lt;html&gt;</code>).
+        Переменные в <code>:root</code> доступны <strong>везде</strong>.
+    </p>
+
+    <pre><code>:root {
+    --primary: #1565c0;
+    --text: #222;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кнопки, использующие переменные:</div>
+        <button class="btn">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-success">Success</button>
+        <button class="btn btn-warning">Warning</button>
+    </div>
+
+    <div class="note">
+        <strong>Почему <code>:root</code>:</strong> переменные в <code>:root</code>
+        доступны <strong>всему документу</strong>. Это «глобальные» переменные.
+        Можно объявлять и в других селекторах — тогда они будут «локальными».
+    </div>
+
+    <h2>4. Локальные переменные</h2>
+
+    <p>
+        Переменные можно объявлять <strong>в любом селекторе</strong>. Тогда они
+        доступны <strong>только внутри</strong> этого элемента и его детей.
+    </p>
+
+    <pre><code>.card {
+    --card-padding: 20px;
+    --card-bg: #fff;
+    padding: var(--card-padding);
+    background: var(--card-bg);
+}
+
+/* Вне .card — переменные недоступны */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Локальные переменные в .theme-demo:</div>
+        <div class="theme-demo">
+            Светлая тема (--theme-bg: #fff)
+        </div>
+        <div class="theme-demo dark">
+            Тёмная тема (--theme-bg: #1a1a2e)
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Сила:</strong> один класс <code>.theme-demo</code> — разные темы,
+        потому что переменные <strong>переопределены</strong> в <code>.dark</code>.
+    </div>
+
+    <h2>5. Каскад переменных</h2>
+
+    <p>
+        Переменные <strong>наследуются</strong>. Если объявить в родителе — доступны
+        детям. Если переопределить в ребёнке — у ребёнка будет новое значение.
+    </p>
+
+    <pre><code>:root {
+    --color: blue;
+}
+
+.parent {
+    --color: red;   /* переопределяем для родителя и детей */
+}
+
+.child {
+    color: var(--color);   /* red (от родителя) */
+}
+
+.sibling {
+    color: var(--color);   /* blue (от :root) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Каскад:</div>
+        <div style="color: var(--primary); font-weight: bold; padding: 8px; background: var(--bg); border-radius: var(--radius);">
+            .sibling — синий (от :root)
+            <div style="--primary: #e53935; color: var(--primary); padding: 8px; background: #fff; border-radius: 4px; margin-top: 8px;">
+                .parent с --primary: #e53935 — красный
+                <div style="color: var(--primary); padding: 8px; background: #f5f5f5; border-radius: 4px; margin-top: 4px;">
+                    .child — тоже красный (унаследовал)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>6. <code>var()</code> с fallback</h2>
+
+    <p>
+        Если переменная не задана — можно указать <strong>запасное значение</strong>:
+    </p>
+
+    <pre><code>.button {
+    color: var(--text-color, #222);   /* если --text-color нет — #222 */
+}
+
+/* Fallback тоже может быть var() */
+.button {
+    color: var(--text-color, var(--default-color, #222));
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Fallback (переменная не задана):</div>
+        <div class="fallback-demo">
+            Цвет через <code>var(--nonexistent, var(--secondary))</code> — красный
+        </div>
+    </div>
+
+    <h2>7. Изменение через JavaScript</h2>
+
+    <p>
+        CSS-переменные можно <strong>менять из JS</strong> — это делает их мощными
+        для динамики.
+    </p>
+
+    <pre><code>// Читать
+const color = getComputedStyle(document.documentElement)
+    .getPropertyValue('--primary');
+
+// Менять
+document.documentElement.style.setProperty('--primary', '#e53935');
+
+// Или на конкретном элементе
+element.style.setProperty('--primary', '#43a047');</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Изменить --primary через JS:</div>
+        <button class="btn" onclick="document.documentElement.style.setProperty('--primary', '#e53935')">Красный</button>
+        <button class="btn" onclick="document.documentElement.style.setProperty('--primary', '#43a047')">Зелёный</button>
+        <button class="btn" onclick="document.documentElement.style.setProperty('--primary', '#1565c0')">Синий</button>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Смотри на кнопки выше — они меняют цвет.</p>
+    </div>
+
+    <h2>8. Практика: система цветов</h2>
+
+    <pre><code>:root {
+    /* Основные */
+    --primary: #1565c0;
+    --primary-hover: #0d47a1;
+    --primary-light: #e3f2fd;
+
+    /* Семантические */
+    --success: #43a047;
+    --warning: #ff9800;
+    --danger: #e53935;
+
+    /* Текст */
+    --text: #222;
+    --text-muted: #666;
+    --text-inverse: #fff;
+
+    /* Фон */
+    --bg: #fafafa;
+    --bg-card: #fff;
+    --border: #ddd;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Палитра:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+            <div style="background: var(--primary); color: white; padding: 16px; border-radius: var(--radius); text-align: center; font-size: 12px; font-family: var(--font-mono);">--primary</div>
+            <div style="background: var(--primary-dark); color: white; padding: 16px; border-radius: var(--radius); text-align: center; font-size: 12px; font-family: var(--font-mono);">--primary-dark</div>
+            <div style="background: var(--secondary); color: white; padding: 16px; border-radius: var(--radius); text-align: center; font-size: 12px; font-family: var(--font-mono);">--secondary</div>
+            <div style="background: var(--success); color: white; padding: 16px; border-radius: var(--radius); text-align: center; font-size: 12px; font-family: var(--font-mono);">--success</div>
+            <div style="background: var(--warning); color: white; padding: 16px; border-radius: var(--radius); text-align: center; font-size: 12px; font-family: var(--font-mono);">--warning</div>
+        </div>
+    </div>
+
+    <h2>9. Практика: тема через переменные</h2>
+
+    <pre><code>/* Светлая тема (по умолчанию) */
+:root {
+    --bg: #fafafa;
+    --text: #222;
+    --card-bg: #fff;
+}
+
+/* Тёмная тема */
+[data-theme="dark"] {
+    --bg: #1a1a2e;
+    --text: #f0f0f0;
+    --card-bg: #16213e;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.card {
+    background: var(--card-bg);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Смена темы через JS:</div>
+        <button class="btn" onclick="document.body.style.setProperty('--primary', '#1565c0'); document.body.style.background='#fafafa'; document.body.style.color='#222'">Светлая</button>
+        <button class="btn" onclick="document.body.style.setProperty('--primary', '#42a5f5'); document.body.style.background='#1a1a2e'; document.body.style.color='#f0f0f0'">Тёмная</button>
+    </div>
+
+    <h2>10. Что можно хранить в переменных</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Что</th>
+                <th>Пример</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Цвета</td><td><code>--primary: #1565c0;</code></td></tr>
+            <tr><td>Размеры</td><td><code>--radius: 8px;</code></td></tr>
+            <tr><td>Отступы</td><td><code>--space: 16px;</code></td></tr>
+            <tr><td>Шрифты</td><td><code>--font: system-ui, sans-serif;</code></td></tr>
+            <tr><td>Тени</td><td><code>--shadow: 0 4px 12px rgba(0,0,0,0.1);</code></td></tr>
+            <tr><td>Градиенты</td><td><code>--gradient: linear-gradient(...);</code></td></tr>
+            <tr><td>Переходы</td><td><code>--transition: 0.3s ease;</code></td></tr>
+            <tr><td>Z-index</td><td><code>--z-modal: 1000;</code></td></tr>
+        </tbody>
+    </table>
+
+    <h2>11. Практика: карточка с переменными</h2>
+
+    <pre><code>:root {
+    --primary: #1565c0;
+    --white: #fff;
+    --text-muted: #666;
+    --radius-lg: 12px;
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --space-md: 16px;
+}
+
+.card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-md);
+}
+
+.card h3 {
+    color: var(--primary);
+    margin: 0 0 8px 0;
+}
+
+.card p {
+    color: var(--text-muted);
+    margin: 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с переменными:</div>
+        <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--space-md); box-shadow: var(--shadow-md); max-width: 300px;">
+            <h3 style="color: var(--primary); margin: 0 0 8px 0; font-size: 16px;">Заголовок</h3>
+            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">Описание карточки</p>
+        </div>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>--</code> при объявлении</td>
+                <td>Не переменная, а невалидное свойство</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>var()</code> при использовании</td>
+                <td><code>background: --primary;</code> — не работает</td>
+            </tr>
+            <tr>
+                <td>Объявлять всё в <code>:root</code> без причины</td>
+                <td>Загрязняет глобальную область. Для компонентов — локально</td>
+            </tr>
+            <tr>
+                <td>Использовать переменные для всего</td>
+                <td>Для одноразовых значений — <code>px</code> проще</td>
+            </tr>
+            <tr>
+                <td>Забыть про fallback</td>
+                <td>Если переменная не задана — свойство «сломается»</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>CSS-переменные</strong> — <code>--имя: значение;</code>.</li>
+        <li><strong>Использование</strong> — <code>var(--имя)</code>.</li>
+        <li><strong><code>:root</code></strong> — для глобальных переменных.</li>
+        <li><strong>Локальные</strong> — в любом селекторе.</li>
+        <li><strong>Каскад</strong> — переменные наследуются, можно переопределять.</li>
+        <li><strong>Fallback</strong> — <code>var(--имя, запасное)</code>.</li>
+        <li><strong>JS</strong> — <code>setProperty('--имя', 'значение')</code>.</li>
+        <li><strong>Темы</strong> — переопределить переменные в <code>[data-theme="dark"]</code>.</li>
+        <li><strong>Для чего:</strong> цвета, размеры, отступы, тени, шрифты, z-index.</li>
+        <li><strong>Не для всего</strong> — для одноразовых значений не нужно.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 51 · Следующий урок: <em>Функции — calc(), clamp(), min(), max(), var()</em>
+    </p>
+
+</body>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 46: псевдоклассы — :hover, :focus, :active, :nth-child, :not, :is, :where, :has.">
+    <title>CSS Урок 46. Псевдоклассы</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            margin: 4px;
+        }
+        .btn:hover { background: #0d47a1; }
+        .btn:active { transform: scale(0.98); }
+        .btn:focus { outline: 3px solid #90caf9; outline-offset: 2px; }
+        .btn:disabled { background: #bdbdbd; cursor: not-allowed; opacity: 0.6; }
+
+        .list-demo li:nth-child(odd) { background: #e3f2fd; }
+        .list-demo li:nth-child(even) { background: #fff; }
+        .list-demo li:nth-child(3) { color: #e53935; font-weight: bold; }
+        .list-demo li:first-child { border-top: 2px solid #1565c0; }
+        .list-demo li:last-child { border-bottom: 2px solid #1565c0; }
+        .list-demo {
+            list-style: none;
+            padding: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .list-demo li {
+            padding: 8px 16px;
+        }
+
+        .input-demo {
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .input-demo:focus {
+            outline: none;
+            border-color: #1565c0;
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+        }
+        .input-demo:invalid {
+            border-color: #e53935;
+        }
+
+        .is-demo h2 { color: #1565c0; }
+        .is-demo h3 { color: #43a047; }
+        .is-demo h4 { color: #ff9800; }
+
+        .is-demo :is(h2, h3, h4) {
+            margin: 8px 0;
+            font-size: 18px;
+        }
+
+        .where-demo :where(h2, h3) { color: #6a1b9a; }
+
+        .has-demo .card { padding: 16px; background: #f5f5f5; border-radius: 8px; margin: 8px 0; }
+        .has-demo .card:has(img) {
+            border-left: 4px solid #43a047;
+        }
+
+        .not-demo li { padding: 8px; }
+        .not-demo li:not(.active) { color: #999; }
+        .not-demo li.active { color: #1565c0; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 46. Псевдоклассы</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить псевдоклассы — состояния, выбор        -->
+    <!-- по позиции, логические операторы.                          -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое псевдоклассы</h2>
+
+    <p>
+        <strong>Псевдокласс</strong> — это <strong>состояние</strong> элемента или
+        <strong>уточнение</strong> селектора. Начинается с <code>:</code> (одно двоеточие).
+    </p>
+
+    <pre><code>a:hover { color: red; }      /* :hover — при наведении */
+li:nth-child(2) { }          /* :nth-child — второй по порядку */
+input:focus { }              /* :focus — в фокусе */
+</code></pre>
+
+    <div class="note">
+        <strong>Псевдокласс vs псевдоэлемент:</strong>
+        <ul>
+            <li><strong>Псевдокласс</strong> — <code>:hover</code> (одно <code>:</code>).</li>
+            <li><strong>Псевдоэлемент</strong> — <code>::before</code> (два <code>::</code>).</li>
+        </ul>
+    </div>
+
+    <h2>2. Псевдоклассы состояний</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Псевдокласс</th>
+                <th>Когда срабатывает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>:hover</code></td><td>Курсор наведён</td></tr>
+            <tr><td><code>:focus</code></td><td>Элемент в фокусе (Tab или клик)</td></tr>
+            <tr><td><code>:active</code></td><td>Элемент нажат (в момент клика)</td></tr>
+            <tr><td><code>:visited</code></td><td>Ссылка уже посещена</td></tr>
+            <tr><td><code>:link</code></td><td>Ссылка ещё не посещена</td></tr>
+            <tr><td><code>:disabled</code></td><td>Элемент отключён</td></tr>
+            <tr><td><code>:checked</code></td><td>Чекбокс / радио отмечен</td></tr>
+            <tr><td><code>:required</code></td><td>Поле обязательно</td></tr>
+            <tr><td><code>:valid</code> / <code>:invalid</code></td><td>Поле валидно / невалидно</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>:hover</code> — при наведении</h3>
+
+    <pre><code>.btn:hover {
+    background: #0d47a1;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на кнопку:</div>
+        <a href="#" class="btn">Кнопка с hover</a>
+    </div>
+
+    <h3><code>:focus</code> — в фокусе</h3>
+
+    <pre><code>.btn:focus {
+    outline: 3px solid #90caf9;
+    outline-offset: 2px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Нажми Tab — увидишь фокус:</div>
+        <a href="#" class="btn">Кнопка</a>
+        <button class="btn">Вторая</button>
+    </div>
+
+    <div class="warn">
+        <strong>Не убирай <code>:focus</code></strong> без замены. Это ломает
+        клавиатурную навигацию (доступность). Если хочешь изменить — замени на
+        свой стиль.
+    </div>
+
+    <h3><code>:active</code> — в момент нажатия</h3>
+
+    <pre><code>.btn:active {
+    transform: scale(0.98);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Нажми и держи кнопку:</div>
+        <a href="#" class="btn">Нажми меня</a>
+    </div>
+
+    <h3><code>:disabled</code> — отключён</h3>
+
+    <pre><code>.btn:disabled {
+    background: #bdbdbd;
+    cursor: not-allowed;
+    opacity: 0.6;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Disabled кнопка:</div>
+        <button class="btn" disabled>Недоступна</button>
+    </div>
+
+    <h2>3. Псевдоклассы позиции</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Псевдокласс</th>
+                <th>Что выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>:first-child</code></td><td>Первый ребёнок</td></tr>
+            <tr><td><code>:last-child</code></td><td>Последний ребёнок</td></tr>
+            <tr><td><code>:nth-child(n)</code></td><td>N-й ребёнок</td></tr>
+            <tr><td><code>:nth-child(odd)</code></td><td>Нечётные (1, 3, 5...)</td></tr>
+            <tr><td><code>:nth-child(even)</code></td><td>Чётные (2, 4, 6...)</td></tr>
+            <tr><td><code>:nth-child(3n)</code></td><td>Каждый третий (3, 6, 9...)</td></tr>
+            <tr><td><code>:nth-child(2n+1)</code></td><td>Нечётные (= odd)</td></tr>
+            <tr><td><code>:only-child</code></td><td>Единственный ребёнок</td></tr>
+            <tr><td><code>:first-of-type</code></td><td>Первый элемент своего типа</td></tr>
+            <tr><td><code>:last-of-type</code></td><td>Последний своего типа</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>:nth-child</code> — по порядку</h3>
+
+    <pre><code>li:nth-child(odd) { background: #e3f2fd; }
+li:nth-child(even) { background: #fff; }
+li:nth-child(3) { color: red; }
+li:first-child { border-top: 2px solid #1565c0; }
+li:last-child { border-bottom: 2px solid #1565c0; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Список с разными стилями:</div>
+        <ul class="list-demo">
+            <li>Первый (odd)</li>
+            <li>Второй (even)</li>
+            <li>Третий (nth-child 3)</li>
+            <li>Четвёртый (even)</li>
+            <li>Пятый (odd, last-child)</li>
+        </ul>
+    </div>
+
+    <h3>Формулы <code>nth-child</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Формула</th>
+                <th>Что выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>:nth-child(3)</code></td><td>3-й</td></tr>
+            <tr><td><code>:nth-child(2n)</code></td><td>Чётные (2, 4, 6)</td></tr>
+            <tr><td><code>:nth-child(2n+1)</code></td><td>Нечётные (1, 3, 5)</td></tr>
+            <tr><td><code>:nth-child(3n)</code></td><td>Каждый третий (3, 6, 9)</td></tr>
+            <tr><td><code>:nth-child(n+3)</code></td><td>Все, начиная с 3-го</td></tr>
+            <tr><td><code>:nth-child(-n+3)</code></td><td>Первые 3</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Полезно:</strong> <code>:nth-child(2n)</code> = <code>:nth-child(even)</code>.
+        <code>:nth-child(2n+1)</code> = <code>:nth-child(odd)</code>.
+    </div>
+
+    <h2>4. <code>:not()</code> — исключение</h2>
+
+    <p>
+        Выбирает всё, <strong>кроме</strong> указанного.
+    </p>
+
+    <pre><code>li:not(.active) {
+    color: #999;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Все li, кроме .active:</div>
+        <ul class="not-demo" style="list-style: none; padding: 0;">
+            <li class="active">Активный (синий)</li>
+            <li>Неактивный (серый)</li>
+            <li class="active">Активный</li>
+            <li>Неактивный</li>
+        </ul>
+    </div>
+
+    <h3>Комбинирование <code>:not()</code></h3>
+
+    <pre><code>li:not(:first-child):not(:last-child) {
+    /* только средние элементы */
+}
+
+input:not([type="submit"]) {
+    /* все input, кроме submit */
+}</code></pre>
+
+    <h2>5. <code>:is()</code> — группировка</h2>
+
+    <p>
+        Упрощает длинные селекторы. <code>:is(a, b, c)</code> = «a или b или c».
+    </p>
+
+    <pre><code>/* Без :is */
+h2 a, h3 a, h4 a {
+    color: #1565c0;
+}
+
+/* С :is */
+:is(h2, h3, h4) a {
+    color: #1565c0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">:is(h2, h3, h4) — одинаковый стиль:</div>
+        <div class="is-demo">
+            <h2>Заголовок h2</h2>
+            <h3>Заголовок h3</h3>
+            <h4>Заголовок h4</h4>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Специфичность <code>:is()</code>:</strong> берётся <strong>самый специфичный</strong>
+        из аргументов. <code>:is(#id, .class)</code> = <code>#id</code>.
+    </div>
+
+    <h2>6. <code>:where()</code> — как <code>:is()</code>, но без специфичности</h2>
+
+    <p>
+        <code>:where()</code> работает как <code>:is()</code>, но имеет
+        <strong>специфичность 0</strong>. Легко переопределить.
+    </p>
+
+    <pre><code>:where(h2, h3) { color: blue; }
+h2 { color: red; }   /* ← победит, потому что специфичность h2 выше :where */
+
+/* А с :is() — :is(h2, h3) победил бы */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">:where(h2, h3) — легко переопределить:</div>
+        <div class="where-demo">
+            <h2>Заголовок h2</h2>
+            <h3>Заголовок h3</h3>
+        </div>
+    </div>
+
+    <h2>7. <code>:has()</code> — «родитель по ребёнку»</h2>
+
+    <p>
+        <strong>Новинка 2023.</strong> Позволяет выбрать элемент, у которого
+        <strong>есть</strong> указанный ребёнок.
+    </p>
+
+    <pre><code>.card:has(img) {
+    border-left: 4px solid #43a047;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с картинкой — зелёная рамка:</div>
+        <div class="has-demo">
+            <div class="card">
+                <img src="https://picsum.photos/60/60?random=130" alt="Фото" style="width: 60px; height: 60px; border-radius: 6px; float: left; margin-right: 12px;">
+                Карточка с картинкой
+                <div style="clear: both;"></div>
+            </div>
+            <div class="card">
+                Карточка без картинки
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Возможности <code>:has()</code>:</strong>
+        <ul>
+            <li><code>.card:has(img)</code> — карточка с картинкой.</li>
+            <li><code>form:has(:invalid)</code> — форма с ошибкой.</li>
+            <li><code>h2:has(+ p)</code> — заголовок, после которого идёт параграф.</li>
+        </ul>
+        Поддержка: Chrome 105+, Safari 15.4+, Firefox 121+.
+    </div>
+
+    <h2>8. Псевдоклассы для форм</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Псевдокласс</th>
+                <th>Когда срабатывает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>:focus</code></td><td>В фокусе</td></tr>
+            <tr><td><code>:focus-within</code></td><td>Фокус на потомке</td></tr>
+            <tr><td><code>:valid</code></td><td>Валидное значение</td></tr>
+            <tr><td><code>:invalid</code></td><td>Невалидное</td></tr>
+            <tr><td><code>:required</code></td><td>Обязательное</td></tr>
+            <tr><td><code>:optional</code></td><td>Необязательное</td></tr>
+            <tr><td><code>:disabled</code></td><td>Отключено</td></tr>
+            <tr><td><code>:enabled</code></td><td>Включено</td></tr>
+            <tr><td><code>:checked</code></td><td>Отмечено (checkbox/radio)</td></tr>
+            <tr><td><code>:placeholder-shown</code></td><td>Показан placeholder</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>:focus</code> для input</h3>
+
+    <pre><code>.input:focus {
+    outline: none;
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кликни в поле:</div>
+        <input type="text" class="input-demo" placeholder="Введи что-нибудь">
+    </div>
+
+    <h3><code>:invalid</code> для валидации</h3>
+
+    <pre><code>.input:invalid {
+    border-color: #e53935;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Введи невалидный email:</div>
+        <input type="email" class="input-demo" placeholder="email@example.com">
+    </div>
+
+    <h2>9. Порядок псевдоклассов для ссылок</h2>
+
+    <p>
+        <strong>Правило LVHA</strong> (LoVe HAte) — порядок важен:
+    </p>
+
+    <pre><code>a:link { }      /* L — ссылка */
+a:visited { }   /* V — посещена */
+a:hover { }     /* H — наведение */
+a:active { }    /* A — нажатие */</code></pre>
+
+    <div class="warn">
+        <strong>Порядок:</strong> <code>:link</code> → <code>:visited</code> → <code>:hover</code> → <code>:active</code>.
+        Если перепутать — часть не сработает (каскад).
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Убирать <code>:focus</code> без замены</td>
+                <td>Ломает клавиатурную навигацию</td>
+            </tr>
+            <tr>
+                <td>Путать <code>:nth-child</code> и <code>:nth-of-type</code></td>
+                <td>Первый считает всех детей, второй — только своего типа</td>
+            </tr>
+            <tr>
+                <td>Нарушать порядок LVHA</td>
+                <td>Часть состояний ссылок не работает</td>
+            </tr>
+            <tr>
+                <td><code>:has()</code> без fallback</td>
+                <td>Старые браузеры не поддерживают</td>
+            </tr>
+            <tr>
+                <td><code>:nth-child(0)</code></td>
+                <td>Ничего не выбирает (нумерация с 1)</td>
+            </tr>
+            <tr>
+                <td>Слишком сложные селекторы</td>
+                <td>Сложно читать. Лучше — классы</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Псевдокласс</strong> — <code>:hover</code> (одно <code>:</code>).</li>
+        <li><strong><code>:hover</code></strong> — при наведении.</li>
+        <li><strong><code>:focus</code></strong> — в фокусе. <strong>Не убирай!</strong></li>
+        <li><strong><code>:active</code></strong> — в момент нажатия.</li>
+        <li><strong><code>:nth-child</code></strong> — по порядку. <code>odd</code>, <code>even</code>, <code>3n</code>, <code>n+3</code>.</li>
+        <li><strong><code>:first-child</code>, <code>:last-child</code></strong> — первый / последний.</li>
+        <li><strong><code>:not()</code></strong> — исключение.</li>
+        <li><strong><code>:is()</code></strong> — группировка (специфичность по сильнейшему).</li>
+        <li><strong><code>:where()</code></strong> — как <code>:is()</code>, но специфичность 0.</li>
+        <li><strong><code>:has()</code></strong> — «родитель по ребёнку». Новинка 2023.</li>
+        <li><strong>LVHA</strong> — порядок для ссылок.</li>
+        <li><strong><code>:focus-within</code></strong> — фокус на потомке (для формы).</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 46 · Следующий урок: <em>Псевдоэлементы — ::before, ::after, ::first-letter</em>
+    </p>
+
+</body>
+</html>

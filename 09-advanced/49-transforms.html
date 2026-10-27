@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 49: трансформации — translate, rotate, scale, skew, transform-origin. 2D и 3D.">
+    <title>CSS Урок 49. Трансформации</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .transform-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin: 16px 0;
+            padding: 16px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .t-box {
+            width: 80px;
+            height: 80px;
+            background: #1565c0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            margin: 0 auto;
+            transition: transform 0.3s;
+        }
+
+        .hover-translate:hover { transform: translate(20px, 0); }
+        .hover-translate-x:hover { transform: translateX(20px); }
+        .hover-translate-y:hover { transform: translateY(-20px); }
+        .hover-scale:hover { transform: scale(1.3); }
+        .hover-scale-small:hover { transform: scale(0.7); }
+        .hover-rotate:hover { transform: rotate(45deg); }
+        .hover-rotate-neg:hover { transform: rotate(-45deg); }
+        .hover-skew-x:hover { transform: skewX(20deg); }
+        .hover-skew-y:hover { transform: skewY(20deg); }
+        .hover-multiple:hover { transform: translate(10px, -10px) rotate(15deg) scale(1.2); }
+
+        .origin-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 16px 0;
+        }
+        .origin-box {
+            width: 100px;
+            height: 100px;
+            background: #43a047;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            margin: 20px auto;
+            transform: rotate(45deg);
+        }
+
+        .card-3d {
+            perspective: 1000px;
+            margin: 16px 0;
+        }
+        .card-3d-inner {
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+            border-radius: 12px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+        }
+        .card-3d-inner:hover {
+            transform: rotateY(15deg) rotateX(10deg);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 49. Трансформации</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить transform — translate, rotate, scale, -->
+    <!-- skew, transform-origin, 3D-трансформации.                  -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое transform</h2>
+
+    <p>
+        <strong>Transform</strong> — это <strong>преобразование</strong> элемента:
+        сдвиг, поворот, масштаб, наклон. <strong>Не влияет на layout</strong> —
+        другие элементы остаются на своих местах.
+    </p>
+
+    <pre><code>.box {
+    transform: translate(20px, 0);   /* сдвинуть вправо */
+}
+
+.box {
+    transform: rotate(45deg);        /* повернуть */
+}
+
+.box {
+    transform: scale(1.5);           /* увеличить */
+}
+
+.box {
+    transform: skewX(20deg);         /* наклонить */
+}</code></pre>
+
+    <div class="note">
+        <strong>Почему <code>transform</code> хорош:</strong>
+        <ul>
+            <li><strong>Не влияет на layout</strong> — другие элементы не сдвигаются.</li>
+            <li><strong>Оптимизируется на GPU</strong> — плавно.</li>
+            <li><strong>Можно комбинировать</strong> несколько преобразований.</li>
+        </ul>
+    </div>
+
+    <h2>2. <code>translate</code> — сдвиг</h2>
+
+    <p>Сдвигает элемент по <strong>X</strong> и <strong>Y</strong>.</p>
+
+    <pre><code>/* X и Y */
+transform: translate(20px, 10px);
+
+/* Только X */
+transform: translateX(20px);
+
+/* Только Y */
+transform: translateY(-10px);
+
+/* Проценты (от размера элемента) */
+transform: translate(50%, 50%);
+
+/* Одна ось */
+transform: translateX(50%);</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи (translate, translateX, translateY):</div>
+        <div class="transform-demo">
+            <div>
+                <div class="t-box hover-translate">translate</div>
+                <p style="text-align: center; font-size: 11px; color: #666; margin: 8px 0 0 0;">translate(20px, 0)</p>
+            </div>
+            <div>
+                <div class="t-box hover-translate-x">translateX</div>
+                <p style="text-align: center; font-size: 11px; color: #666; margin: 8px 0 0 0;">translateX(20px)</p>
+            </div>
+            <div>
+                <div class="t-box hover-translate-y">translateY</div>
+                <p style="text-align: center; font-size: 11px; color: #666; margin: 8px 0 0 0;">translateY(-20px)</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>3. <code>scale</code> — масштаб</h2>
+
+    <p>Увеличивает или уменьшает элемент.</p>
+
+    <pre><code>/* Одинаково по X и Y */
+transform: scale(1.5);   /* увеличить в 1.5 раза */
+transform: scale(0.5);   /* уменьшить в 2 раза */
+
+/* Разные X и Y */
+transform: scale(1.5, 0.5);
+
+/* Одна ось */
+transform: scaleX(2);
+transform: scaleY(0.5);</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи (scale):</div>
+        <div class="transform-demo">
+            <div>
+                <div class="t-box hover-scale">scale 1.3</div>
+            </div>
+            <div>
+                <div class="t-box hover-scale-small">scale 0.7</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> <code>scale</code> <strong>не меняет layout</strong>.
+        Элемент визуально увеличивается, но соседи остаются на местах. Может
+        «наезжать» на другие элементы.
+    </div>
+
+    <h2>4. <code>rotate</code> — поворот</h2>
+
+    <p>Поворачивает элемент на угол (по часовой стрелке).</p>
+
+    <pre><code>transform: rotate(45deg);     /* на 45 градусов */
+transform: rotate(-90deg);    /* на -90 (против часовой) */
+transform: rotate(1turn);      /* полный оборот */
+transform: rotate(0.5turn);    /* полоборота */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи (rotate):</div>
+        <div class="transform-demo">
+            <div>
+                <div class="t-box hover-rotate">rotate 45</div>
+            </div>
+            <div>
+                <div class="t-box hover-rotate-neg">rotate -45</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>5. <code>skew</code> — наклон</h2>
+
+    <p>Наклоняет элемент — как «скошенный» прямоугольник.</p>
+
+    <pre><code>transform: skewX(20deg);      /* наклон по X */
+transform: skewY(10deg);      /* наклон по Y */
+transform: skew(20deg, 10deg); /* оба */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи (skew):</div>
+        <div class="transform-demo">
+            <div>
+                <div class="t-box hover-skew-x">skewX</div>
+            </div>
+            <div>
+                <div class="t-box hover-skew-y">skewY</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Осторожно:</strong> <code>skew</code> искажает текст. Для текста —
+        используй <code>rotate</code>.
+    </div>
+
+    <h2>6. Несколько трансформаций</h2>
+
+    <p>Можно комбинировать через <strong>пробел</strong>:</p>
+
+    <pre><code>transform: translate(10px, -10px) rotate(15deg) scale(1.2);</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи (комбинация):</div>
+        <div class="transform-demo">
+            <div>
+                <div class="t-box hover-multiple">combo</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Порядок важен:</strong> <code>rotate(45deg) translate(20px)</code>
+        ≠ <code>translate(20px) rotate(45deg)</code>. Трансформации применяются
+        <strong>слева направо</strong> — как «слои».
+    </div>
+
+    <h2>7. <code>transform-origin</code> — точка отсчёта</h2>
+
+    <p>
+        Задаёт <strong>точку</strong>, относительно которой происходит преобразование.
+        По умолчанию — <code>50% 50%</code> (центр).
+    </p>
+
+    <pre><code>transform-origin: center;           /* центр (по умолчанию) */
+transform-origin: top left;         /* верхний левый угол */
+transform-origin: bottom right;     /* нижний правый */
+transform-origin: 0 0;              /* левый верхний */
+transform-origin: 50% 100%;         /* центр по X, низ по Y */
+transform-origin: 20px 80px;        /* точные координаты */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">rotate 45deg с разной transform-origin:</div>
+        <div class="origin-demo">
+            <div>
+                <div class="origin-box" style="transform-origin: center;">center</div>
+            </div>
+            <div>
+                <div class="origin-box" style="transform-origin: top left;">top left</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>8. Практика: hover-карточка</h2>
+
+    <pre><code>.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на карточку:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div style="background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px) scale(1.02)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'">
+                <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1565c0;">Карточка</h3>
+                <p style="margin: 0; color: #666; font-size: 14px;">Наведи</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>9. Практика: 3D-карточка</h2>
+
+    <p>
+        С <code>perspective</code> можно делать <strong>3D-эффекты</strong>.
+    </p>
+
+    <pre><code>.card-3d {
+    perspective: 1000px;   /* ← глубина 3D */
+}
+
+.card-3d-inner {
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+}
+
+.card-3d-inner:hover {
+    transform: rotateY(15deg) rotateX(10deg);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на карточку (3D):</div>
+        <div class="card-3d">
+            <div class="card-3d-inner">3D-карточка</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong><code>perspective</code></strong> — «глубина» 3D. Чем меньше
+        значение — тем сильнее эффект. <code>perspective: 1000px</code> — норма.
+    </div>
+
+    <h2>10. 3D-трансформации</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>rotateX(deg)</code></td><td>Поворот по X</td></tr>
+            <tr><td><code>rotateY(deg)</code></td><td>Поворот по Y</td></tr>
+            <tr><td><code>rotateZ(deg)</code></td><td>Поворот по Z (= <code>rotate</code>)</td></tr>
+            <tr><td><code>rotate3d(x, y, z, deg)</code></td><td>Поворот по вектору</td></tr>
+            <tr><td><code>translateZ(px)</code></td><td>Сдвиг по Z (глубина)</td></tr>
+            <tr><td><code>translate3d(x, y, z)</code></td><td>Сдвиг по трём осям</td></tr>
+            <tr><td><code>scaleZ(k)</code></td><td>Масштаб по Z</td></tr>
+        </tbody>
+    </table>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Использовать <code>transform</code> для layout</td>
+                <td>Layout не меняется — соседи остаются на местах</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>transition</code></td>
+                <td>Трансформация «прыгает»</td>
+            </tr>
+            <tr>
+                <td>Путать порядок в комбинациях</td>
+                <td><code>rotate</code> + <code>translate</code> ≠ <code>translate</code> + <code>rotate</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>transform-origin</code></td>
+                <td>Вращение вокруг центра, а не угла</td>
+            </tr>
+            <tr>
+                <td>Только <code>transform</code>, без <code>perspective</code></td>
+                <td>3D-эффект не работает</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>transform</code></strong> — преобразование элемента. Не влияет на layout.</li>
+        <li><strong><code>translate</code></strong> — сдвиг. <code>translateX</code>, <code>translateY</code>.</li>
+        <li><strong><code>scale</code></strong> — масштаб. <code>scale(1.5)</code>, <code>scaleX(2)</code>.</li>
+        <li><strong><code>rotate</code></strong> — поворот. <code>rotate(45deg)</code>.</li>
+        <li><strong><code>skew</code></strong> — наклон. <code>skewX(20deg)</code>.</li>
+        <li><strong>Комбинация</strong> — через пробел: <code>translate() rotate() scale()</code>.</li>
+        <li><strong>Порядок важен</strong> — применяются слева направо.</li>
+        <li><strong><code>transform-origin</code></strong> — точка отсчёта.</li>
+        <li><strong>3D:</strong> <code>perspective</code>, <code>rotateX</code>, <code>rotateY</code>.</li>
+        <li><strong>Для hover</strong> — <code>transform: translateY(-4px);</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 49 · Следующий урок: <em>Анимации — @keyframes, animation</em>
+    </p>
+
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 48: transition — transition-property, duration, timing-function, delay. Плавные изменения свойств.">
+    <title>CSS Урок 48. Переходы</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            margin: 4px;
+        }
+        .btn:hover {
+            background: #0d47a1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+        }
+
+        .box-demo {
+            width: 100px;
+            height: 100px;
+            background: #1565c0;
+            border-radius: 8px;
+            margin: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            text-align: center;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .timing-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .timing-box {
+            padding: 12px;
+            background: #1565c0;
+            color: white;
+            border-radius: 6px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 1s;
+        }
+        .timing-box:hover {
+            margin-left: 60px;
+        }
+        .ease { transition-timing-function: ease; }
+        .linear { transition-timing-function: linear; }
+        .ease-in { transition-timing-function: ease-in; }
+        .ease-out { transition-timing-function: ease-out; }
+        .ease-in-out { transition-timing-function: ease-in-out; }
+        .custom { transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .underline-link {
+            color: #1565c0;
+            text-decoration: none;
+            position: relative;
+        }
+        .underline-link::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1565c0;
+            transition: width 0.3s ease;
+        }
+        .underline-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 48. Переходы</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить transition — плавное изменение        -->
+    <!-- свойств при hover, focus и других состояниях.              -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое transition</h2>
+
+    <p>
+        <strong>Transition</strong> (переход) — это <strong>плавное изменение</strong>
+        CSS-свойства за определённое время. Вместо мгновенного «прыжка» — плавная
+        анимация.
+    </p>
+
+    <pre><code>.btn {
+    background: #1565c0;
+    transition: background 0.3s;   /* ← плавно за 0.3 секунды */
+}
+
+.btn:hover {
+    background: #0d47a1;   /* изменится плавно */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на кнопку:</div>
+        <button class="btn">Кнопка с transition</button>
+    </div>
+
+    <h2>2. Свойства transition</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>transition-property</code></td>
+                <td>Что анимировать</td>
+                <td><code>background</code>, <code>all</code>, <code>transform</code></td>
+            </tr>
+            <tr>
+                <td><code>transition-duration</code></td>
+                <td>Сколько длится</td>
+                <td><code>0.3s</code>, <code>300ms</code></td>
+            </tr>
+            <tr>
+                <td><code>transition-timing-function</code></td>
+                <td>Как (кривая скорости)</td>
+                <td><code>ease</code>, <code>linear</code>, <code>ease-in-out</code></td>
+            </tr>
+            <tr>
+                <td><code>transition-delay</code></td>
+                <td>Задержка перед началом</td>
+                <td><code>0.5s</code>, <code>1s</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Shorthand <code>transition</code></h3>
+
+    <pre><code>/* Полная запись */
+transition: background-color 0.3s ease 0s;
+
+/* Сокращение */
+transition: background 0.3s;
+
+/* Несколько свойств */
+transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+
+/* Все свойства */
+transition: all 0.3s;</code></pre>
+
+    <div class="note">
+        <strong>Порядок:</strong> <code>property duration timing-function delay</code>.
+        <strong>Duration</strong> — обязательна. Остальное — опционально.
+    </div>
+
+    <h2>3. <code>transition-property</code> — что анимировать</h2>
+
+    <pre><code>/* Одно свойство */
+transition: background 0.3s;
+
+/* Несколько */
+transition: background 0.3s, transform 0.2s;
+
+/* Все */
+transition: all 0.3s;</code></pre>
+
+    <div class="warn">
+        <strong>Не используй <code>all</code> без причины!</strong>
+        <ul>
+            <li>Анимируются <strong>все</strong> свойства — может тормозить.</li>
+            <li>Может анимироваться то, что не нужно.</li>
+            <li>Лучше указывать <strong>конкретные</strong> свойства.</li>
+        </ul>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">transition: all (все свойства):</div>
+        <button class="btn">Наведи</button>
+    </div>
+
+    <h2>4. <code>transition-duration</code> — длительность</h2>
+
+    <pre><code>.fast { transition: background 0.1s; }
+.normal { transition: background 0.3s; }
+.slow { transition: background 1s; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разная длительность:</div>
+        <div class="timing-demo">
+            <div class="timing-box" style="transition-duration: 0.1s;">0.1s (быстро)</div>
+            <div class="timing-box" style="transition-duration: 0.3s;">0.3s</div>
+            <div class="timing-box" style="transition-duration: 1s;">1s (медленно)</div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">Наведи на каждый — увидишь разницу.</p>
+    </div>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> для hover-эффектов — <code>0.2–0.3s</code>.
+        Для появления — <code>0.3–0.5s</code>. Слишком долго — тормозит UX.
+    </div>
+
+    <h2>5. <code>transition-timing-function</code> — кривая скорости</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>ease</code> (по умолчанию)</td><td>Медленно → быстро → медленно</td></tr>
+            <tr><td><code>linear</code></td><td>Равномерно</td></tr>
+            <tr><td><code>ease-in</code></td><td>Медленно → быстро</td></tr>
+            <tr><td><code>ease-out</code></td><td>Быстро → медленно</td></tr>
+            <tr><td><code>ease-in-out</code></td><td>Медленно → быстро → медленно (сильнее)</td></tr>
+            <tr><td><code>cubic-bezier(...)</code></td><td>Своя кривая</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Разные кривые (наведи):</div>
+        <div class="timing-demo" style="grid-template-columns: 1fr;">
+            <div class="timing-box ease">ease</div>
+            <div class="timing-box linear">linear</div>
+            <div class="timing-box ease-in">ease-in</div>
+            <div class="timing-box ease-out">ease-out</div>
+            <div class="timing-box ease-in-out">ease-in-out</div>
+            <div class="timing-box custom">cubic-bezier (bounce)</div>
+        </div>
+    </div>
+
+    <h2>6. <code>transition-delay</code> — задержка</h2>
+
+    <pre><code>.btn {
+    transition: background 0.3s 0.5s;   /* начать через 0.5s */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">С задержкой 0.5s:</div>
+        <button class="btn" style="transition: background 0.3s 0.5s;">Наведи и подожди</button>
+    </div>
+
+    <div class="note">
+        <strong>Применение:</strong> «каскадное» появление элементов (каждый
+        появляется через 0.1s после предыдущего). Или «отложенная» реакция.
+    </div>
+
+    <h2>7. Практика: карточка с hover</h2>
+
+    <pre><code>.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на карточку:</div>
+        <div class="card">
+            <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #1565c0;">Карточка</h3>
+            <p style="margin: 0; color: #666;">Наведи — карточка приподнимется.</p>
+        </div>
+    </div>
+
+    <h2>8. Практика: анимированное подчёркивание</h2>
+
+    <pre><code>.link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s ease;
+}
+
+.link:hover::after {
+    width: 100%;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на ссылку:</div>
+        <a href="#" class="underline-link">Ссылка с анимированным подчёркиванием</a>
+    </div>
+
+    <h2>9. Практика: плавная кнопка</h2>
+
+    <pre><code>.btn {
+    padding: 10px 20px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    background: #0d47a1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи и нажми:</div>
+        <button class="btn">Нажми меня</button>
+    </div>
+
+    <h2>10. Что можно и нельзя анимировать</h2>
+
+    <h3>✅ Хорошо анимируются</h3>
+
+    <ul>
+        <li><code>opacity</code> — прозрачность</li>
+        <li><code>transform</code> — трансформации</li>
+        <li><code>color</code>, <code>background-color</code></li>
+        <li><code>box-shadow</code>, <code>text-shadow</code></li>
+        <li><code>width</code>, <code>height</code> (осторожно — пересчёт layout)</li>
+    </ul>
+
+    <h3>❌ Плохо анимируются</h3>
+
+    <ul>
+        <li><code>display</code> — нельзя</li>
+        <li><code>position</code> — нельзя</li>
+        <li><code>width: auto</code> — нельзя (нужно конкретное значение)</li>
+        <li><code>height: auto</code> — нельзя</li>
+        <li><code>background-image</code> — плохо (тормозит)</li>
+    </ul>
+
+    <div class="note">
+        <strong>Почему <code>transform</code> и <code>opacity</code> — лучшие:</strong>
+        они не вызывают пересчёт layout. Браузер оптимизирует их на GPU.
+        Анимации на них — <strong>плавные</strong>.
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>transition</code></td>
+                <td>Изменения «прыгают» резко</td>
+            </tr>
+            <tr>
+                <td><code>transition: all</code> без причины</td>
+                <td>Может тормозить, анимирует лишнее</td>
+            </tr>
+            <tr>
+                <td>Анимировать <code>width: auto</code></td>
+                <td>Не работает — нужно конкретное значение</td>
+            </tr>
+            <tr>
+                <td>Слишком долгая длительность (&gt; 1s)</td>
+                <td>Тормозит UX</td>
+            </tr>
+            <tr>
+                <td>Анимировать <code>display</code></td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td>Только <code>:hover</code>, без <code>:focus</code></td>
+                <td>Плохо для доступности</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>transition</code></strong> — плавное изменение свойства.</li>
+        <li><strong>4 свойства:</strong> <code>property</code>, <code>duration</code>, <code>timing-function</code>, <code>delay</code>.</li>
+        <li><strong>Shorthand:</strong> <code>transition: background 0.3s ease;</code>.</li>
+        <li><strong>Не используй <code>all</code></strong> без причины.</li>
+        <li><strong>Для hover</strong> — <code>0.2–0.3s</code>.</li>
+        <li><strong>Timing:</strong> <code>ease</code>, <code>linear</code>, <code>ease-in-out</code>.</li>
+        <li><strong>Лучше анимировать</strong> <code>transform</code> и <code>opacity</code>.</li>
+        <li><strong>Нельзя</strong> <code>display</code>, <code>width: auto</code>.</li>
+        <li><strong>Несколько свойств</strong> — через запятую.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 48 · Следующий урок: <em>Трансформации — translate, rotate, scale, skew</em>
+    </p>
+
+</body>
+</html>

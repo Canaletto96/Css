@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 52: функции — calc(), clamp(), min(), max(), var(). Математика в CSS.">
+    <title>CSS Урок 52. Функции</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+            --header-height: 60px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        .box {
+            background: var(--primary);
+            color: white;
+            padding: var(--space);
+            border-radius: var(--radius);
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        .calc-box {
+            width: calc(100% - 80px);
+            margin: 0 auto;
+        }
+
+        .clamp-text {
+            font-size: clamp(16px, 4vw, 32px);
+            color: var(--primary);
+            font-weight: bold;
+            text-align: center;
+            padding: var(--space);
+            background: #e3f2fd;
+            border-radius: var(--radius);
+        }
+
+        .min-container {
+            width: min(100%, 400px);
+            margin: 0 auto;
+            background: #e3f2fd;
+            padding: var(--space);
+            border-radius: var(--radius);
+            border: 1px solid var(--primary);
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        .max-container {
+            width: max(200px, 50%);
+            margin: 0 auto;
+            background: #fff3e0;
+            padding: var(--space);
+            border-radius: var(--radius);
+            border: 1px solid #ff9800;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 52. Функции</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить calc(), clamp(), min(), max(), var() — -->
+    <!-- математика в CSS для адаптивных размеров.                 -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое CSS-функции</h2>
+
+    <p>
+        <strong>Функции</strong> в CSS — это <strong>вычисления</strong> прямо в
+        значениях. Позволяют смешивать единицы, ограничивать размеры, использовать
+        переменные.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>calc()</code></td><td>Вычисления (сложение, вычитание, умножение, деление)</td></tr>
+            <tr><td><code>clamp(min, val, max)</code></td><td>Зажать значение в диапазон</td></tr>
+            <tr><td><code>min(a, b)</code></td><td>Меньшее из двух</td></tr>
+            <tr><td><code>max(a, b)</code></td><td>Большее из двух</td></tr>
+            <tr><td><code>var(--name)</code></td><td>Использовать CSS-переменную</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>calc()</code> — вычисления</h2>
+
+    <p>
+        Позволяет <strong>смешивать единицы</strong> и делать <strong>вычисления</strong>:
+    </p>
+
+    <pre><code>width: calc(100% - 80px);
+height: calc(100vh - 60px);
+font-size: calc(16px + 1vw);
+padding: calc(1rem + 4px);</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">width: calc(100% - 80px):</div>
+        <div class="box calc-box">calc(100% - 80px)</div>
+    </div>
+
+    <h3>Операции в <code>calc()</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Операция</th>
+                <th>Пример</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Сложение</td><td><code>calc(100% + 20px)</code></td></tr>
+            <tr><td>Вычитание</td><td><code>calc(100% - 20px)</code></td></tr>
+            <tr><td>Умножение</td><td><code>calc(10px * 2)</code></td></tr>
+            <tr><td>Деление</td><td><code>calc(100px / 2)</code></td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Пробелы обязательны</strong> вокруг <code>+</code> и <code>-</code>:
+        <code>calc(100% - 20px)</code> ✅, <code>calc(100%-20px)</code> ❌.
+        Вокруг <code>*</code> и <code>/</code> — не обязательны.
+    </div>
+
+    <h3>Практика: контейнер</h3>
+
+    <pre><code>.container {
+    width: calc(100% - 40px);
+    max-width: 1200px;
+    margin: 0 auto;
+}</code></pre>
+
+    <div class="note">
+        <strong>Классический приём:</strong> <code>width: calc(100% - 40px)</code> —
+        контейнер с отступами по 20px с каждой стороны.
+    </div>
+
+    <h3>Практика: высота на весь экран минус шапка</h3>
+
+    <pre><code>.main {
+    height: calc(100vh - 60px);   /* 60px — высота шапки */
+}</code></pre>
+
+    <h2>3. <code>clamp()</code> — зажать в диапазон</h2>
+
+    <p>
+        <code>clamp(min, preferred, max)</code> — значение <strong>не меньше min</strong>,
+        <strong>не больше max</strong>, но <strong>адаптируется</strong> между ними.
+    </p>
+
+    <pre><code>font-size: clamp(16px, 4vw, 32px);
+/* не меньше 16px, не больше 32px, но 4vw между ними */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">clamp(16px, 4vw, 32px) — сузь окно:</div>
+        <div class="clamp-text">Адаптивный текст</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Условие</th>
+                <th>Размер</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>4vw &lt; 16px</code></td><td>16px (min)</td></tr>
+            <tr><td><code>16px ≤ 4vw ≤ 32px</code></td><td>4vw (адаптив)</td></tr>
+            <tr><td><code>4vw &gt; 32px</code></td><td>32px (max)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Главное преимущество:</strong> <strong>без media queries</strong>.
+        Одна строка — и размер адаптируется. <strong>Рекомендую</strong> для заголовков.
+    </div>
+
+    <h3>Практика: адаптивные заголовки</h3>
+
+    <pre><code>h1 {
+    font-size: clamp(24px, 5vw, 48px);
+}
+
+h2 {
+    font-size: clamp(20px, 3vw, 32px);
+}
+
+p {
+    font-size: clamp(14px, 2vw, 18px);
+}</code></pre>
+
+    <h3>Практика: адаптивные отступы</h3>
+
+    <pre><code>.section {
+    padding: clamp(16px, 4vw, 64px);
+}</code></pre>
+
+    <h2>4. <code>min()</code> — меньшее</h2>
+
+    <p>
+        <code>min(a, b)</code> — берёт <strong>меньшее</strong> из двух значений.
+    </p>
+
+    <pre><code>width: min(100%, 400px);
+/* блок не шире 400px и не шире 100% родителя */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">width: min(100%, 400px) — сузь окно:</div>
+        <div class="min-container">min(100%, 400px)</div>
+    </div>
+
+    <div class="note">
+        <strong><code>min(100%, 400px)</code></strong> — <strong>лучше</strong>, чем
+        <code>width: 400px</code>. Блок не вылезет за экран.
+    </div>
+
+    <h3>Практика: контейнер</h3>
+
+    <pre><code>.container {
+    width: min(100% - 32px, 1200px);
+    margin: 0 auto;
+}</code></pre>
+
+    <h2>5. <code>max()</code> — большее</h2>
+
+    <p>
+        <code>max(a, b)</code> — берёт <strong>большее</strong> из двух значений.
+    </p>
+
+    <pre><code>width: max(200px, 50%);
+/* блок не меньше 200px и не меньше 50% родителя */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">width: max(200px, 50%) — сузь окно:</div>
+        <div class="max-container">max(200px, 50%)</div>
+    </div>
+
+    <h3>Практика: минимальная ширина</h3>
+
+    <pre><code>.sidebar {
+    width: max(250px, 20%);
+    /* сайдбар не меньше 250px */
+}</code></pre>
+
+    <h2>6. <code>var()</code> — переменные</h2>
+
+    <p>
+        <code>var(--name)</code> — использовать CSS-переменную. Можно комбинировать
+        с другими функциями.
+    </p>
+
+    <pre><code>:root {
+    --space: 16px;
+}
+
+.box {
+    padding: calc(var(--space) * 2);
+    width: min(var(--space) * 30, 100%);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">calc(var(--space) * 2):</div>
+        <div class="box" style="padding: calc(var(--space) * 2);">padding: calc(var(--space) * 2) = 32px</div>
+    </div>
+
+    <h2>7. Комбинирование функций</h2>
+
+    <p>
+        Функции можно <strong>вкладывать</strong> друг в друга:
+    </p>
+
+    <pre><code>/* clamp + calc */
+font-size: clamp(16px, calc(14px + 1vw), 24px);
+
+/* min + var */
+width: min(var(--container), 100%);
+
+/* clamp + var */
+padding: clamp(var(--space-sm), 4vw, var(--space-lg));
+
+/* max + min */
+width: max(200px, min(50%, 400px));</code></pre>
+
+    <h2>8. Практика: адаптивная типографика</h2>
+
+    <pre><code>:root {
+    --font-min: 16px;
+    --font-max: 24px;
+    --font-fluid: 2vw;
+}
+
+body {
+    font-size: clamp(var(--font-min), var(--font-fluid), var(--font-max));
+}
+
+h1 {
+    font-size: clamp(24px, 5vw, 48px);
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: clamp(20px, 3vw, 32px);
+    line-height: 1.2;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Адаптивная типографика:</div>
+        <h1 style="font-size: clamp(24px, 5vw, 48px); line-height: 1.1; color: var(--primary); border: none; padding: 0; margin: 8px 0;">Заголовок h1</h1>
+        <h2 style="font-size: clamp(20px, 3vw, 32px); line-height: 1.2; color: var(--text); margin: 8px 0;">Заголовок h2</h2>
+        <p style="font-size: clamp(14px, 2vw, 18px); color: var(--text-muted);">Параграф текста. Сузь окно — размеры уменьшатся плавно, но не выйдут за min.</p>
+    </div>
+
+    <h2>9. Практика: контейнер</h2>
+
+    <pre><code>.container {
+    width: min(100% - 32px, 1200px);
+    margin: 0 auto;
+    padding: clamp(16px, 4vw, 32px);
+}</code></pre>
+
+    <div class="note">
+        <strong>Классический контейнер:</strong> не шире 1200px, не вылезает за экран
+        (отступ 16px), отступы внутри адаптивные.
+    </div>
+
+    <h2>10. Практика: адаптивный hero</h2>
+
+    <pre><code>.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: clamp(16px, 4vw, 64px);
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 6vw, 64px);
+    margin: 0 0 clamp(8px, 2vw, 24px) 0;
+}
+
+.hero p {
+    font-size: clamp(16px, 2.5vw, 24px);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Hero с clamp:</div>
+        <div style="display: flex; align-items: center; justify-content: center; min-height: 200px; padding: clamp(16px, 4vw, 64px); background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: var(--radius); text-align: center; color: white;">
+            <div>
+                <h2 style="font-size: clamp(20px, 4vw, 36px); margin: 0 0 clamp(8px, 2vw, 24px) 0; color: white; border: none; padding: 0;">Заголовок</h2>
+                <p style="font-size: clamp(14px, 2vw, 18px); margin: 0; opacity: 0.9;">Адаптивный текст через clamp</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>11. Таблица: что выбрать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Функция</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Смешать единицы</td><td><code>calc()</code></td></tr>
+            <tr><td>Зажать размер в диапазон</td><td><code>clamp()</code></td></tr>
+            <tr><td>Не больше X</td><td><code>min()</code></td></tr>
+            <tr><td>Не меньше X</td><td><code>max()</code></td></tr>
+            <tr><td>Использовать переменную</td><td><code>var()</code></td></tr>
+            <tr><td>Адаптивный шрифт</td><td><code>clamp()</code></td></tr>
+            <tr><td>Контейнер</td><td><code>min(100% - 32px, 1200px)</code></td></tr>
+        </tbody>
+    </table>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>calc(100%-20px)</code> без пробелов</td>
+                <td>Не работает. Нужны пробелы вокруг <code>-</code> и <code>+</code></td>
+            </tr>
+            <tr>
+                <td><code>clamp()</code> без min или max</td>
+                <td>Нужны все три значения</td>
+            </tr>
+            <tr>
+                <td><code>min(100%, 400px)</code> vs <code>max(100%, 400px)</code></td>
+                <td><code>min</code> — меньшее, <code>max</code> — большее. Не путай</td>
+            </tr>
+            <tr>
+                <td><code>width: 100vw</code> вместо <code>100%</code></td>
+                <td>Скроллбар → горизонтальная прокрутка</td>
+            </tr>
+            <tr>
+                <td><code>clamp()</code> с одинаковыми min и max</td>
+                <td>Не адаптируется — фиксированный размер</td>
+            </tr>
+            <tr>
+                <td>Слишком сложные <code>calc()</code></td>
+                <td>Сложно читать. Лучше — CSS-переменные</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>calc()</code></strong> — вычисления. Смешивает единицы. Пробелы вокруг <code>+</code> и <code>-</code>.</li>
+        <li><strong><code>clamp(min, val, max)</code></strong> — зажать в диапазон. Адаптив без media queries.</li>
+        <li><strong><code>min(a, b)</code></strong> — меньшее. Для «не больше X».</li>
+        <li><strong><code>max(a, b)</code></strong> — большее. Для «не меньше X».</li>
+        <li><strong><code>var(--name)</code></strong> — переменная. Комбинируется с другими функциями.</li>
+        <li><strong>Для шрифтов</strong> — <code>clamp(16px, 4vw, 32px)</code>.</li>
+        <li><strong>Для контейнера</strong> — <code>min(100% - 32px, 1200px)</code>.</li>
+        <li><strong>Функции можно вкладывать</strong> — <code>clamp(16px, calc(...), 24px)</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 52 · Конец блока 9 (Продвинутое) · Следующий урок: <em>Сброс стилей — reset.css, normalize.css</em>
+    </p>
+
+</body>
+</html>

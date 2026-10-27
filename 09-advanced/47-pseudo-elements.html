@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 47: псевдоэлементы — ::before, ::after, ::first-letter, ::first-line, ::selection, ::placeholder.">
+    <title>CSS Урок 47. Псевдоэлементы</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        /* Демо псевдоэлементов */
+        .quote::before {
+            content: "«";
+            color: #1565c0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .quote::after {
+            content: "»";
+            color: #1565c0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .required::after {
+            content: " *";
+            color: #e53935;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .first-letter-demo::first-letter {
+            font-size: 3em;
+            font-weight: bold;
+            color: #1565c0;
+            float: left;
+            line-height: 1;
+            margin-right: 8px;
+        }
+
+        .first-line-demo::first-line {
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .selection-demo::selection {
+            background: #ffeb3b;
+            color: #000;
+        }
+
+        .placeholder-demo::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .icon-demo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #1565c0;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .icon-demo::before {
+            content: "📥";
+        }
+
+        .underline-hover {
+            position: relative;
+            text-decoration: none;
+            color: #1565c0;
+        }
+        .underline-hover::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1565c0;
+            transition: width 0.3s;
+        }
+        .underline-hover:hover::after {
+            width: 100%;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            display: none;
+        }
+        .custom-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .custom-checkbox label::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1565c0;
+            border-radius: 4px;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .custom-checkbox input:checked + label::before {
+            content: "✓";
+            background: #1565c0;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 47. Псевдоэлементы</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить псевдоэлементы — ::before, ::after,  -->
+    <!-- ::first-letter, ::first-line, ::selection, ::placeholder. -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое псевдоэлементы</h2>
+
+    <p>
+        <strong>Псевдоэлемент</strong> — это <strong>«виртуальный» элемент</strong>,
+        которого нет в HTML. Начинается с <code>::</code> (два двоеточия).
+    </p>
+
+    <pre><code>.box::before { content: "→"; }    /* вставить перед содержимым */
+.box::after { content: "←"; }     /* вставить после */
+p::first-letter { font-size: 2em; }  /* первая буква */
+</code></pre>
+
+    <div class="note">
+        <strong>Псевдокласс vs псевдоэлемент:</strong>
+        <ul>
+            <li><strong>Псевдокласс</strong> — <code>:hover</code> (одно <code>:</code>).</li>
+            <li><strong>Псевдоэлемент</strong> — <code>::before</code> (два <code>::</code>).</li>
+        </ul>
+    </div>
+
+    <h2>2. <code>::before</code> и <code>::after</code> — вставка контента</h2>
+
+    <p>
+        Самые важные псевдоэлементы. Позволяют <strong>вставить контент</strong>
+        до или после содержимого элемента <strong>без HTML</strong>.
+    </p>
+
+    <pre><code>.element::before {
+    content: "текст";   /* ← обязательное свойство */
+    /* другие стили */
+}
+
+.element::after {
+    content: "текст";
+}</code></pre>
+
+    <div class="warn">
+        <strong>Обязательное свойство:</strong> <code>content</code>. Без него
+        <code>::before</code> и <code>::after</code> <strong>не работают</strong>.
+        Если не нужен текст — <code>content: ""</code>.
+    </div>
+
+    <h3>Пример: кавычки вокруг цитаты</h3>
+
+    <pre><code>.quote::before { content: "«"; }
+.quote::after { content: "»"; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Цитата с кавычками:</div>
+        <p class="quote">Это цитата с автоматическими кавычками.</p>
+    </div>
+
+    <h3>Пример: звёздочка у обязательного поля</h3>
+
+    <pre><code>.required::after {
+    content: " *";
+    color: red;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Обязательное поле:</div>
+        <label class="required">Email</label>
+        <input type="email" placeholder="email@example.com" style="display: block; margin-top: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+    </div>
+
+    <h3>Пример: clearfix</h3>
+
+    <pre><code>.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Clearfix (см. урок 25):</div>
+        <div class="clearfix" style="background: #f5f5f5; padding: 8px; border-radius: 6px;">
+            <div style="float: left; width: 80px; height: 60px; background: #1565c0; border-radius: 6px; margin-right: 8px;"></div>
+            <div style="float: left; width: 80px; height: 60px; background: #43a047; border-radius: 6px;"></div>
+        </div>
+    </div>
+
+    <h2>3. <code>::first-letter</code> — первая буква</h2>
+
+    <p>
+        Стилизует <strong>первую букву</strong> блока. Классика для статей
+        («буквица»).
+    </p>
+
+    <pre><code>p::first-letter {
+    font-size: 3em;
+    font-weight: bold;
+    float: left;
+    margin-right: 8px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Буквица:</div>
+        <p class="first-letter-demo">Этот параграф начинается с большой буквы. Остальной текст идёт обычным шрифтом. Так делают в книгах и журналах для красоты.</p>
+    </div>
+
+    <div class="note">
+        <strong>Ограничение:</strong> работает только для <strong>блочных</strong>
+        элементов (<code>p</code>, <code>div</code>, <code>h1</code>).
+        Для <code>span</code> (inline) — не работает.
+    </div>
+
+    <h2>4. <code>::first-line</code> — первая строка</h2>
+
+    <p>
+        Стилизует <strong>первую строку</strong> текста. Ширина строки зависит от
+        ширины блока — если окно изменится, «первая строка» может измениться.
+    </p>
+
+    <pre><code>p::first-line {
+    font-weight: bold;
+    color: #1565c0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Первая строка выделена:</div>
+        <p class="first-line-demo">Эта первая строка выделена жирным и синим. Остальной текст идёт обычным шрифтом. Сузь окно — первая строка изменится, потому что в неё войдёт разное количество слов.</p>
+    </div>
+
+    <h2>5. <code>::selection</code> — выделение</h2>
+
+    <p>
+        Стилизует <strong>выделенный текст</strong> (когда пользователь выделяет мышью).
+    </p>
+
+    <pre><code>::selection {
+    background: #ffeb3b;
+    color: #000;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Выдели текст:</div>
+        <p class="selection-demo">Выдели этот текст — увидишь жёлтый фон. Так делают для брендирования.</p>
+    </div>
+
+    <h2>6. <code>::placeholder</code> — placeholder в input</h2>
+
+    <pre><code>input::placeholder {
+    color: #999;
+    font-style: italic;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Input с placeholder:</div>
+        <input type="text" class="placeholder-demo" placeholder="Введи имя" style="padding: 10px 14px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px;">
+    </div>
+
+    <h2>7. Другие псевдоэлементы</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Псевдоэлемент</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>::before</code></td><td>Вставить до содержимого</td></tr>
+            <tr><td><code>::after</code></td><td>Вставить после содержимого</td></tr>
+            <tr><td><code>::first-letter</code></td><td>Первая буква</td></tr>
+            <tr><td><code>::first-line</code></td><td>Первая строка</td></tr>
+            <tr><td><code>::selection</code></td><td>Выделенный текст</td></tr>
+            <tr><td><code>::placeholder</code></td><td>Placeholder в input</td></tr>
+            <tr><td><code>::marker</code></td><td>Маркер списка (ul/ol)</td></tr>
+            <tr><td><code>::backdrop</code></td><td>Фон модального окна (dialog)</td></tr>
+            <tr><td><code>::file-selector-button</code></td><td>Кнопка «Выбрать файл»</td></tr>
+        </tbody>
+    </table>
+
+    <h2>8. Практика: иконка в кнопке</h2>
+
+    <pre><code>.btn-download::before {
+    content: "📥";
+    margin-right: 8px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кнопка с иконкой:</div>
+        <a href="#" class="icon-demo">Скачать</a>
+    </div>
+
+    <div class="note">
+        <strong>Плюс:</strong> иконка в CSS, не в HTML. HTML чище.
+        <strong>Минус:</strong> screen reader может прочитать эмодзи — используй
+        <code>aria-hidden</code> на кнопке.
+    </div>
+
+    <h2>9. Практика: анимированное подчёркивание</h2>
+
+    <pre><code>.link {
+    position: relative;
+    text-decoration: none;
+}
+
+.link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s;
+}
+
+.link:hover::after {
+    width: 100%;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Наведи на ссылку:</div>
+        <a href="#" class="underline-hover">Ссылка с анимированным подчёркиванием</a>
+    </div>
+
+    <h2>10. Практика: кастомный чекбокс</h2>
+
+    <pre><code>.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox label::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid #1565c0;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.custom-checkbox input:checked + label::before {
+    content: "✓";
+    background: #1565c0;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Кастомный чекбокс:</div>
+        <div class="custom-checkbox" style="margin: 8px 0;">
+            <input type="checkbox" id="check1">
+            <label for="check1">Согласен с условиями</label>
+        </div>
+        <div class="custom-checkbox" style="margin: 8px 0;">
+            <input type="checkbox" id="check2" checked>
+            <label for="check2">Подписаться на рассылку</label>
+        </div>
+    </div>
+
+    <h2>11. <code>::before</code> и <code>::after</code> — правила</h2>
+
+    <div class="warn">
+        <strong>Важно:</strong>
+        <ul>
+            <li><strong><code>content</code> обязателен</strong> — без него не работает.</li>
+            <li><strong>Нельзя использовать</strong> на <code>&lt;img&gt;</code>, <code>&lt;input&gt;</code>, <code>&lt;br&gt;</code> — у них нет содержимого.</li>
+            <li><strong>Нельзя клонировать</strong> HTML-контент — только текст и стили.</li>
+            <li><strong>Screen reader</strong> может прочитать <code>content</code> — используй <code>aria-hidden</code>.</li>
+            <li><strong>Не для важного контента</strong> — <code>::before</code> не индексируется Google.</li>
+        </ul>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>content</code></td>
+                <td>Псевдоэлемент не работает</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>::before</code> для важного контента</td>
+                <td>Google не индексирует, screen reader может не прочитать</td>
+            </tr>
+            <tr>
+                <td><code>::before</code> на <code>&lt;img&gt;</code></td>
+                <td>Не работает — у img нет содержимого</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>display: block</code> для <code>::after</code> с размерами</td>
+                <td>Псевдоэлемент не отображается</td>
+            </tr>
+            <tr>
+                <td>Путать <code>:</code> и <code>::</code></td>
+                <td>Псевдокласс vs псевдоэлемент</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Псевдоэлемент</strong> — <code>::before</code> (два <code>::</code>).</li>
+        <li><strong><code>::before</code></strong> — вставить до содержимого.</li>
+        <li><strong><code>::after</code></strong> — вставить после.</li>
+        <li><strong><code>content</code></strong> — обязателен для <code>::before</code> / <code>::after</code>.</li>
+        <li><strong><code>::first-letter</code></strong> — первая буква (буквица).</li>
+        <li><strong><code>::first-line</code></strong> — первая строка.</li>
+        <li><strong><code>::selection</code></strong> — выделенный текст.</li>
+        <li><strong><code>::placeholder</code></strong> — placeholder в input.</li>
+        <li><strong><code>::marker</code></strong> — маркер списка.</li>
+        <li><strong>Не используй</strong> для важного контента — не индексируется.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 47 · Следующий урок: <em>Переходы — transition</em>
+    </p>
+
+</body>
+</html>

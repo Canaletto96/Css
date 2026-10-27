@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 50: анимации — @keyframes, animation-name, duration, iteration-count, direction, fill-mode.">
+    <title>CSS Урок 50. Анимации</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .anim-box {
+            width: 80px;
+            height: 80px;
+            background: #1565c0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            margin: 8px;
+        }
+
+        /* 1. Простая анимация */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .anim-pulse {
+            animation: pulse 1s infinite;
+        }
+
+        /* 2. Движение */
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(200px); }
+        }
+        .anim-slide {
+            animation: slide 2s ease-in-out infinite alternate;
+        }
+
+        /* 3. Вращение */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .anim-spin {
+            animation: spin 2s linear infinite;
+        }
+
+        /* 4. Цвет */
+        @keyframes colorChange {
+            0% { background: #1565c0; }
+            33% { background: #e53935; }
+            66% { background: #43a047; }
+            100% { background: #1565c0; }
+        }
+        .anim-color {
+            animation: colorChange 3s infinite;
+        }
+
+        /* 5. Появление */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .anim-fade {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* 6. Bounce */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+        .anim-bounce {
+            animation: bounce 2s infinite;
+        }
+
+        /* 7. Загрузка */
+        @keyframes load {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e3f2fd;
+            border-top-color: #1565c0;
+            border-radius: 50%;
+            animation: load 1s linear infinite;
+        }
+
+        /* 8. Скелетон */
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+        .skeleton {
+            width: 200px;
+            height: 20px;
+            background: linear-gradient(90deg, #eee 0%, #f5f5f5 50%, #eee 100%);
+            background-size: 200px 100%;
+            border-radius: 4px;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 50. Анимации</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить @keyframes и animation — сложные      -->
+    <!-- последовательности анимаций.                              -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое animation</h2>
+
+    <p>
+        <strong>Animation</strong> — это <strong>сложная анимация</strong> с
+        несколькими <strong>ключами</strong> (keyframes). В отличие от
+        <code>transition</code> (только между двумя состояниями), <code>animation</code>
+        может проходить через <strong>много</strong> состояний.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>transition</code></th>
+                <th><code>animation</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Состояний</td><td>2 (начало / конец)</td><td><strong>Много</strong></td></tr>
+            <tr><td>Триггер</td><td>Изменение свойства</td><td>Запускается сама</td></tr>
+            <tr><td>Циклы</td><td>Нет</td><td><strong>Да</strong> (<code>infinite</code>)</td></tr>
+            <tr><td>Направление</td><td>Нет</td><td><strong>Да</strong> (<code>alternate</code>)</td></tr>
+            <tr><td>Сложность</td><td>Проще</td><td>Мощнее</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. <code>@keyframes</code> — ключевые кадры</h2>
+
+    <p>
+        <strong><code>@keyframes</code></strong> — это <strong>«сценарий»</strong>
+        анимации. Где и что происходит в каждый момент.
+    </p>
+
+    <pre><code>@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>@keyframes pulse</code></td><td>Имя анимации</td></tr>
+            <tr><td><code>0%</code></td><td>Начало</td></tr>
+            <tr><td><code>50%</code></td><td>Середина</td></tr>
+            <tr><td><code>100%</code></td><td>Конец</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong><code>from</code> = <code>0%</code></strong>, <strong><code>to</code> = <code>100%</code></strong>.
+        Можно писать <code>from</code> / <code>to</code> или проценты.
+    </div>
+
+    <h2>3. <code>animation</code> — применение</h2>
+
+    <p>
+        Применяешь анимацию к элементу через <code>animation</code>:
+    </p>
+
+    <pre><code>.box {
+    animation: pulse 1s infinite;
+    /*          имя длит. повтор */
+}</code></pre>
+
+    <h2>4. Свойства <code>animation</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>animation-name</code></td><td>Имя <code>@keyframes</code></td></tr>
+            <tr><td><code>animation-duration</code></td><td>Длительность</td></tr>
+            <tr><td><code>animation-timing-function</code></td><td>Кривая</td></tr>
+            <tr><td><code>animation-delay</code></td><td>Задержка</td></tr>
+            <tr><td><code>animation-iteration-count</code></td><td>Сколько раз (<code>infinite</code>)</td></tr>
+            <tr><td><code>animation-direction</code></td><td><code>normal</code>, <code>reverse</code>, <code>alternate</code></td></tr>
+            <tr><td><code>animation-fill-mode</code></td><td>Что после окончания</td></tr>
+            <tr><td><code>animation-play-state</code></td><td><code>running</code>, <code>paused</code></td></tr>
+        </tbody>
+    </table>
+
+    <h3>Shorthand <code>animation</code></h3>
+
+    <pre><code>animation: pulse 1s ease 0s infinite alternate both;</code></pre>
+
+    <div class="note">
+        <strong>Порядок:</strong> <code>name duration timing-function delay iteration-count direction fill-mode</code>.
+        Обязательны — <strong>name</strong> и <strong>duration</strong>.
+    </div>
+
+    <h2>5. Простые анимации</h2>
+
+    <h3><code>pulse</code> — пульсация</h3>
+
+    <pre><code>@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Пульсация:</div>
+        <div class="anim-box anim-pulse">pulse</div>
+    </div>
+
+    <h3><code>spin</code> — вращение</h3>
+
+    <pre><code>@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Вращение:</div>
+        <div class="anim-box anim-spin">spin</div>
+    </div>
+
+    <h3><code>slide</code> — движение</h3>
+
+    <pre><code>@keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(200px); }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Движение вправо-влево:</div>
+        <div class="anim-box anim-slide">slide</div>
+    </div>
+
+    <h3><code>colorChange</code> — смена цветов</h3>
+
+    <pre><code>@keyframes colorChange {
+    0% { background: #1565c0; }
+    33% { background: #e53935; }
+    66% { background: #43a047; }
+    100% { background: #1565c0; }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Смена цветов:</div>
+        <div class="anim-box anim-color">color</div>
+    </div>
+
+    <h2>6. <code>animation-direction</code> — направление</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>normal</code> (по умолчанию)</td><td>От 0% к 100%</td></tr>
+            <tr><td><code>reverse</code></td><td>От 100% к 0%</td></tr>
+            <tr><td><code>alternate</code></td><td>Туда-обратно (чётные — normal, нечётные — reverse)</td></tr>
+            <tr><td><code>alternate-reverse</code></td><td>Обратно-туда</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>alternate</code> — туда-обратно</h3>
+
+    <pre><code>.anim-slide {
+    animation: slide 2s ease-in-out infinite alternate;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">alternate — туда-обратно:</div>
+        <div class="anim-box anim-slide" style="animation-duration: 1.5s;">alternate</div>
+    </div>
+
+    <h2>7. <code>animation-fill-mode</code> — после окончания</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>none</code> (по умолчанию)</td><td>Возвращается к исходному</td></tr>
+            <tr><td><code>forwards</code></td><td>Остаётся в конечном состоянии (100%)</td></tr>
+            <tr><td><code>backwards</code></td><td>Остаётся в начальном (0%) до начала</td></tr>
+            <tr><td><code>both</code></td><td>both: backwards + forwards</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">fadeInUp с forwards — остаётся в конечном состоянии:</div>
+        <div class="anim-box anim-fade">fade</div>
+        <button onclick="document.querySelector('.anim-fade').style.animation='none'; requestAnimationFrame(() => document.querySelector('.anim-fade').style.animation='fadeInUp 0.6s ease-out forwards')" style="margin-top: 8px; padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; background: #fff;">Перезапустить</button>
+    </div>
+
+    <h2>8. <code>animation-iteration-count</code> — повторение</h2>
+
+    <pre><code>.once { animation: pulse 1s 1; }
+.three { animation: pulse 1s 3; }
+.infinite { animation: pulse 1s infinite; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разное количество повторов:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <div class="anim-box" style="animation: pulse 1s 1;">1 раз</div>
+            <div class="anim-box" style="animation: pulse 1s 3;">3 раза</div>
+            <div class="anim-box" style="animation: pulse 1s infinite;">∞</div>
+        </div>
+    </div>
+
+    <h2>9. Практика: bounce</h2>
+
+    <pre><code>@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-30px); }
+    60% { transform: translateY(-15px); }
+}
+
+.bounce {
+    animation: bounce 2s infinite;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Bounce:</div>
+        <div class="anim-box anim-bounce">bounce</div>
+    </div>
+
+    <h2>10. Практика: spinner (загрузка)</h2>
+
+    <pre><code>@keyframes load {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e3f2fd;
+    border-top-color: #1565c0;
+    border-radius: 50%;
+    animation: load 1s linear infinite;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Spinner:</div>
+        <div class="spinner"></div>
+    </div>
+
+    <h2>11. Практика: skeleton (загрузка контента)</h2>
+
+    <pre><code>@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+    width: 200px;
+    height: 20px;
+    background: linear-gradient(90deg, #eee 0%, #f5f5f5 50%, #eee 100%);
+    background-size: 200px 100%;
+    border-radius: 4px;
+    animation: shimmer 1.5s infinite;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Skeleton:</div>
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width: 150px; margin-top: 8px;"></div>
+    </div>
+
+    <h2>12. <code>animation-play-state</code> — пауза</h2>
+
+    <pre><code>.box {
+    animation: spin 2s linear infinite;
+}
+
+.box.paused {
+    animation-play-state: paused;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Пауза при hover:</div>
+        <div class="anim-box anim-spin" style="animation-duration: 3s;" onmouseover="this.style.animationPlayState='paused'" onmouseout="this.style.animationPlayState='running'">наведи</div>
+    </div>
+
+    <h2>13. <code>prefers-reduced-motion</code> — доступность</h2>
+
+    <pre><code>@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}</code></pre>
+
+    <div class="warn">
+        <strong>Важно для доступности:</strong> некоторые пользователи отключают
+        анимации (эпилепсия, чувствительность). Уважай <code>prefers-reduced-motion</code>.
+    </div>
+
+    <h2>14. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>animation-name</code></td>
+                <td>Анимация не запустится</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>animation-duration</code></td>
+                <td>Длительность 0s — мгновенно</td>
+            </tr>
+            <tr>
+                <td>Анимировать <code>width</code>/<code>height</code></td>
+                <td>Тормозит. Лучше <code>transform</code></td>
+            </tr>
+            <tr>
+                <td>Слишком много <code>infinite</code></td>
+                <td>Отвлекает, раздражает</td>
+            </tr>
+            <tr>
+                <td>Не учитывать <code>prefers-reduced-motion</code></td>
+                <td>Плохо для доступности</td>
+            </tr>
+            <tr>
+                <td>Анимация без <code>forwards</code></td>
+                <td>Возвращается в исходное после окончания</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>15. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>@keyframes</code></strong> — сценарий анимации.</li>
+        <li><strong><code>animation</code></strong> — применение к элементу.</li>
+        <li><strong>Обязательны:</strong> <code>name</code> и <code>duration</code>.</li>
+        <li><strong><code>animation-direction</code></strong> — <code>normal</code>, <code>reverse</code>, <code>alternate</code>.</li>
+        <li><strong><code>animation-iteration-count</code></strong> — <code>infinite</code>.</li>
+        <li><strong><code>animation-fill-mode</code></strong> — <code>forwards</code> (остаться в конце).</li>
+        <li><strong><code>animation-play-state</code></strong> — <code>paused</code>.</li>
+        <li><strong>Лучше анимировать</strong> <code>transform</code> и <code>opacity</code>.</li>
+        <li><strong><code>prefers-reduced-motion</code></strong> — для доступности.</li>
+        <li><strong>Не злоупотребляй</strong> <code>infinite</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 50 · Следующий урок: <em>CSS-переменные — --var, var(), :root</em>
+    </p>
+
+</body>
+</html>

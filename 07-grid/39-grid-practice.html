@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 39: практика Grid — макеты страниц, галереи, dashboard, карточки.">
+    <title>CSS Урок 39. Практика Grid</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 39. Практика Grid</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: собрать реальные макеты на Grid —            -->
+    <!-- страницы, галереи, dashboard.                             -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что будем делать</h2>
+
+    <p>В этом уроке — <strong>практика</strong>. Никакой новой теории. Собираем реальные макеты на Grid:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Макет</th>
+                <th>Что тренируем</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Макет страницы</strong></td><td><code>grid-template-areas</code>, <code>1fr</code>, <code>min-height</code></td></tr>
+            <tr><td><strong>Галерея</strong></td><td><code>repeat(auto-fit, minmax())</code>, <code>aspect-ratio</code></td></tr>
+            <tr><td><strong>Dashboard</strong></td><td>Сложная сетка с <code>span</code></td></tr>
+            <tr><td><strong>Карточки товаров</strong></td><td>Адаптивная сетка</td></tr>
+            <tr><td><strong>Masonry</strong></td><td><code>grid-auto-rows: 10px</code> + <code>span</code></td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. Макет страницы</h2>
+
+    <p><strong>Задача:</strong> шапка, сайдбар, контент, подвал. Классический макет сайта.</p>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.layout {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100vh;
+    padding: 16px;
+    background: #fafafa;
+}
+
+.header { grid-area: header; background: #1565c0; color: white; padding: 16px; }
+.sidebar { grid-area: sidebar; background: #e3f2fd; padding: 16px; }
+.main { grid-area: main; background: #fff; padding: 16px; }
+.footer { grid-area: footer; background: #333; color: white; padding: 16px; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Макет страницы:</div>
+        <div style="display: grid; grid-template-areas: 'header header' 'sidebar main' 'footer footer'; grid-template-columns: 120px 1fr; grid-template-rows: auto 1fr auto; gap: 8px; min-height: 220px; background: #fafafa; padding: 8px; border-radius: 8px;">
+            <div style="grid-area: header; background: #1565c0; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">header</div>
+            <div style="grid-area: sidebar; background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">sidebar</div>
+            <div style="grid-area: main; background: #fff; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">main</div>
+            <div style="grid-area: footer; background: #333; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">footer</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Что важно:</strong> <code>grid-template-areas</code> — «карта». <code>min-height: 100vh</code> — на всю высоту. <code>1fr</code> в строке — контент растягивается.
+    </div>
+
+    <h2>3. Галерея</h2>
+
+    <p><strong>Задача:</strong> адаптивная галерея с квадратными картинками.</p>
+
+    <pre><code>.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Галерея (сузь окно):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+            <img src="https://picsum.photos/300/300?random=60" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=61" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=62" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=63" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=64" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=65" alt="Фото" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; display: block;">
+        </div>
+    </div>
+
+    <h2>4. Dashboard</h2>
+
+    <p><strong>Задача:</strong> dashboard с боковой панелью, виджетами разного размера.</p>
+
+    <pre><code>.dashboard {
+    display: grid;
+    grid-template-areas:
+        "sidebar header header"
+        "sidebar widget-large widget-small"
+        "sidebar widget-wide widget-wide";
+    grid-template-columns: 200px 2fr 1fr;
+    grid-template-rows: auto 200px 150px;
+    gap: 16px;
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.sidebar { grid-area: sidebar; }
+.header { grid-area: header; }
+.widget-large { grid-area: widget-large; }
+.widget-small { grid-area: widget-small; }
+.widget-wide { grid-area: widget-wide; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Dashboard:</div>
+        <div style="display: grid; grid-template-areas: 'sidebar header header' 'sidebar widget-large widget-small' 'sidebar widget-wide widget-wide'; grid-template-columns: 100px 2fr 1fr; grid-template-rows: auto 100px 80px; gap: 8px; background: #fafafa; padding: 8px; border-radius: 8px;">
+            <div style="grid-area: sidebar; background: #1565c0; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 11px;">sidebar</div>
+            <div style="grid-area: header; background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 11px;">header</div>
+            <div style="grid-area: widget-large; background: #fff; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 11px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">widget-large</div>
+            <div style="grid-area: widget-small; background: #fff; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 11px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">widget-small</div>
+            <div style="grid-area: widget-wide; background: #fff; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 11px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">widget-wide</div>
+        </div>
+    </div>
+
+    <h2>5. Карточки товаров</h2>
+
+    <p><strong>Задача:</strong> адаптивная сетка карточек с фото, заголовком, ценой, кнопкой.</p>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.product-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-title {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+}
+
+.product-price {
+    font-weight: bold;
+    color: #1565c0;
+    margin: auto 0 12px 0;
+}
+
+.product button {
+    width: 100%;
+    padding: 10px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки товаров:</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+            <div style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="https://picsum.photos/300/200?random=70" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+                <div style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар 1</h3>
+                    <div style="font-weight: bold; color: #1565c0; margin: auto 0 8px 0; font-size: 13px;">500 ₽</div>
+                    <button style="width: 100%; padding: 6px; background: #1565c0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Купить</button>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="https://picsum.photos/300/200?random=71" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+                <div style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар 2</h3>
+                    <div style="font-weight: bold; color: #1565c0; margin: auto 0 8px 0; font-size: 13px;">700 ₽</div>
+                    <button style="width: 100%; padding: 6px; background: #1565c0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Купить</button>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="https://picsum.photos/300/200?random=72" alt="Товар" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;">
+                <div style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1565c0;">Товар 3</h3>
+                    <div style="font-weight: bold; color: #1565c0; margin: auto 0 8px 0; font-size: 13px;">900 ₽</div>
+                    <button style="width: 100%; padding: 6px; background: #1565c0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Купить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>6. Masonry</h2>
+
+    <p><strong>Задача:</strong> «кладка» с разной высотой элементов.</p>
+
+    <pre><code>.masonry {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 10px;
+    gap: 16px;
+}
+
+.masonry img {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+}
+
+.item-1 { grid-row: span 20; }
+.item-2 { grid-row: span 14; }
+.item-3 { grid-row: span 18; }
+/* ... */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Masonry:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 10px; gap: 8px;">
+            <img src="https://picsum.photos/300/300?random=80" alt="Фото" style="grid-row: span 12; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=81" alt="Фото" style="grid-row: span 20; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=82" alt="Фото" style="grid-row: span 16; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=83" alt="Фото" style="grid-row: span 18; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=84" alt="Фото" style="grid-row: span 10; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;">
+            <img src="https://picsum.photos/300/300?random=85" alt="Фото" style="grid-row: span 14; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block;">
+        </div>
+    </div>
+
+    <h2>7. Итоговый проект: страница</h2>
+
+    <p>Собери всё вместе — шапка, hero, сетка карточек, подвал.</p>
+
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;style&gt;
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #fafafa;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "hero hero"
+                "products products"
+                "footer footer";
+            grid-template-rows: auto 300px auto auto;
+            min-height: 100vh;
+        }
+
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .hero {
+            grid-area: hero;
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+            display: grid;
+            place-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .products-section {
+            grid-area: products;
+            padding: 40px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .product {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            grid-area: footer;
+            background: #333;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header class="header"&gt;
+        &lt;div&gt;&lt;strong&gt;Мой сайт&lt;/strong&gt;&lt;/div&gt;
+        &lt;nav class="nav"&gt;
+            &lt;a href="#"&gt;Главная&lt;/a&gt;
+            &lt;a href="#"&gt;Товары&lt;/a&gt;
+            &lt;a href="#"&gt;Контакты&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;section class="hero"&gt;
+        &lt;div&gt;
+            &lt;h1&gt;Добро пожаловать&lt;/h1&gt;
+            &lt;p&gt;Лучшие товары по лучшим ценам&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section class="products-section"&gt;
+        &lt;h2&gt;Популярные товары&lt;/h2&gt;
+        &lt;div class="products"&gt;
+            &lt;div class="product"&gt;Товар 1&lt;/div&gt;
+            &lt;div class="product"&gt;Товар 2&lt;/div&gt;
+            &lt;div class="product"&gt;Товар 3&lt;/div&gt;
+            &lt;div class="product"&gt;Товар 4&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;footer class="footer"&gt;
+        &amp;copy; 2026 Мой сайт
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Итоговая страница:</div>
+        <div style="display: grid; grid-template-areas: 'header header' 'hero hero' 'products products' 'footer footer'; grid-template-rows: auto 100px auto auto; min-height: 300px; background: #fafafa; border-radius: 8px; overflow: hidden;">
+            <div style="grid-area: header; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 12px;">
+                <strong style="color: #1565c0;">Мой сайт</strong>
+                <div style="display: flex; gap: 12px;">
+                    <span>Главная</span>
+                    <span>Товары</span>
+                    <span>Контакты</span>
+                </div>
+            </div>
+            <div style="grid-area: hero; background: linear-gradient(135deg, #1565c0, #42a5f5); display: grid; place-items: center; color: white; text-align: center; padding: 16px;">
+                <div>
+                    <h2 style="margin: 0 0 4px 0; font-size: 18px;">Добро пожаловать</h2>
+                    <p style="margin: 0; font-size: 12px; opacity: 0.9;">Лучшие товары</p>
+                </div>
+            </div>
+            <div style="grid-area: products; padding: 12px 16px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+                    <div style="background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; font-size: 12px;">Товар 1</div>
+                    <div style="background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; font-size: 12px;">Товар 2</div>
+                    <div style="background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; font-size: 12px;">Товар 3</div>
+                    <div style="background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; font-size: 12px;">Товар 4</div>
+                </div>
+            </div>
+            <div style="grid-area: footer; background: #333; color: white; padding: 10px 16px; text-align: center; font-size: 12px;">© 2026 Мой сайт</div>
+        </div>
+    </div>
+
+    <h2>8. Практическое задание</h2>
+
+    <div class="task">
+        <p><strong>Задание 1. «Макет страницы»</strong></p>
+        <p>Создай файл <code>39-practice.html</code>. Сделай страницу с макетом:</p>
+        <ul>
+            <li>Header на всю ширину.</li>
+            <li>Sidebar слева (200px).</li>
+            <li>Main справа (1fr).</li>
+            <li>Footer на всю ширину.</li>
+            <li><code>min-height: 100vh</code>.</li>
+        </ul>
+
+        <p><strong>Задание 2. «Галерея»</strong></p>
+        <ul>
+            <li>Адаптивная галерея: <code>repeat(auto-fit, minmax(150px, 1fr))</code>.</li>
+            <li>Картинки <code>aspect-ratio: 1/1; object-fit: cover</code>.</li>
+            <li><code>gap: 16px</code>.</li>
+        </ul>
+
+        <p><strong>Задание 3. «Карточки товаров»</strong></p>
+        <ul>
+            <li>Сетка карточек: <code>repeat(auto-fit, minmax(220px, 1fr))</code>.</li>
+            <li>Каждая карточка — <code>display: flex; flex-direction: column</code>.</li>
+            <li>Картинка, заголовок, цена, кнопка.</li>
+            <li>Кнопка прижата к низу.</li>
+        </ul>
+
+        <p><strong>Задание 4. «Dashboard»</strong></p>
+        <ul>
+            <li>Боковая панель + виджеты разного размера.</li>
+            <li><code>grid-template-areas</code>.</li>
+            <li><code>grid-template-columns: 200px 2fr 1fr</code>.</li>
+        </ul>
+
+        <p><strong>Задание 5. «Собери всё»</strong></p>
+        <ul>
+            <li>Шапка + hero + сетка карточек + подвал.</li>
+            <li>Используй <code>grid-template-areas</code> для макета.</li>
+            <li>Используй <code>auto-fit</code> для карточек.</li>
+            <li>Проверь в DevTools — всё ли правильно.</li>
+        </ul>
+    </div>
+
+    <h2>9. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Макет страницы</strong> — <code>grid-template-areas</code> + <code>min-height: 100vh</code>.</li>
+        <li><strong>Галерея</strong> — <code>repeat(auto-fit, minmax(150px, 1fr))</code> + <code>aspect-ratio: 1/1</code>.</li>
+        <li><strong>Карточки</strong> — <code>repeat(auto-fit, minmax(220px, 1fr))</code> + <code>flex-direction: column</code>.</li>
+        <li><strong>Dashboard</strong> — <code>grid-template-areas</code> с разными размерами.</li>
+        <li><strong>Masonry</strong> — <code>grid-auto-rows: 10px</code> + <code>span</code>.</li>
+        <li><strong>Всегда <code>box-sizing: border-box</code></strong> — в начале CSS.</li>
+        <li><strong>Всегда <code>gap</code></strong> — вместо <code>margin</code>.</li>
+        <li><strong><code>aspect-ratio</code> + <code>object-fit: cover</code></strong> — для картинок.</li>
+        <li><strong><code>min-height: 100vh</code></strong> — для полноэкранных макетов.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 39 · Конец блока 7 (Grid) · Следующий урок: <em>Что такое адаптивность — mobile-first, desktop-first</em>
+    </p>
+
+</body>
+</html>

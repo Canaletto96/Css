@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 33: Grid — идея, display: grid, строки и колонки. Чем отличается от Flexbox.">
+    <title>CSS Урок 33. Grid — введение</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        .grid-item {
+            background: #1565c0;
+            color: white;
+            padding: 24px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+            text-align: center;
+        }
+        .grid-item:nth-child(2) { background: #e53935; }
+        .grid-item:nth-child(3) { background: #43a047; }
+        .grid-item:nth-child(4) { background: #ff9800; }
+        .grid-item:nth-child(5) { background: #6a1b9a; }
+        .grid-item:nth-child(6) { background: #00acc1; }
+
+        .flex-container {
+            display: flex;
+            gap: 12px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 33. Grid — введение</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять идею Grid, чем отличается от Flexbox,  -->
+    <!-- и как включить сетку через display: grid.                 -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое Grid</h2>
+
+    <p>
+        <strong>CSS Grid</strong> (Grid Layout) — это способ раскладки, который
+        создаёт <strong>двумерную сетку</strong>: <strong>строки и колонки</strong>
+        одновременно.
+    </p>
+
+    <p>
+        В отличие от Flexbox (одномерный), Grid позволяет управлять <strong>и
+        горизонталью, и вертикалью</strong> сразу.
+    </p>
+
+    <div class="note">
+        <strong>Аналогия:</strong>
+        <ul>
+            <li><strong>Flexbox</strong> — ряд полок. Элементы стоят в один ряд (или колонку).</li>
+            <li><strong>Grid</strong> — шкаф с полками и ячейками. Элементы можно ставить в любую ячейку.</li>
+        </ul>
+    </div>
+
+    <h2>2. Grid vs Flexbox</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Flexbox</th>
+                <th>Grid</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Размерность</td>
+                <td><strong>1D</strong> — ряд или колонка</td>
+                <td><strong>2D</strong> — строки и колонки</td>
+            </tr>
+            <tr>
+                <td>Управление</td>
+                <td>От элементов (контент решает)</td>
+                <td>От контейнера (сетка решает)</td>
+            </tr>
+            <tr>
+                <td>Когда использовать</td>
+                <td>Меню, карточки в ряд, центрирование</td>
+                <td>Макеты страниц, галереи, сложные сетки</td>
+            </tr>
+            <tr>
+                <td>Сложность</td>
+                <td>Проще</td>
+                <td>Мощнее, но чуть сложнее</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Правило:</strong>
+        <ul>
+            <li><strong>1D</strong> (ряд <em>или</em> колонка) — <strong>Flexbox</strong>.</li>
+            <li><strong>2D</strong> (строки <strong>и</strong> колонки одновременно) — <strong>Grid</strong>.</li>
+        </ul>
+        Но они <strong>не заменяют</strong> друг друга — <strong>дополняют</strong>.
+        Можно использовать вместе.
+    </div>
+
+    <h2>3. Как включить Grid</h2>
+
+    <p>
+        Как и Flexbox — <code>display: grid</code> на <strong>родителя</strong>.
+        Дети становятся grid-элементами <strong>автоматически</strong>.
+    </p>
+
+    <pre><code>.container {
+    display: grid;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">display: grid (без колонок) — элементы друг под другом:</div>
+        <div style="display: grid; gap: 12px; background: #f5f5f5; border: 2px solid #999; border-radius: 8px; padding: 12px;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <p>
+        <strong>По умолчанию</strong> Grid создаёт <strong>одну колонку</strong> —
+        элементы идут друг под другом (как <code>block</code>).
+    </p>
+
+    <h2>4. Строки и колонки</h2>
+
+    <p>
+        Чтобы задать сетку, нужны <strong>два свойства</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>grid-template-columns</code></td>
+                <td>Колонки (сколько и какой ширины)</td>
+            </tr>
+            <tr>
+                <td><code>grid-template-rows</code></td>
+                <td>Строки (сколько и какой высоты)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: grid;
+    grid-template-columns: 200px 200px 200px;   /* 3 колонки по 200px */
+    grid-template-rows: 100px 100px;            /* 2 строки по 100px */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки по 100px, 2 строки:</div>
+        <div style="display: grid; grid-template-columns: 100px 100px 100px; grid-template-rows: 80px 80px; gap: 8px; background: #f5f5f5; border: 2px solid #999; border-radius: 8px; padding: 12px;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h2>5. Единица <code>fr</code></h2>
+
+    <p>
+        <code>fr</code> (fraction — «доля») — специальная единица Grid. Она означает
+        <strong>«одна доля свободного места»</strong>.
+    </p>
+
+    <pre><code>.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;   /* 3 равные колонки */
+}</code></pre>
+
+    <p>Это <strong>как <code>flex: 1</code></strong>, но для сетки.</p>
+
+    <div class="demo">
+        <div class="demo-label">grid-template-columns: 1fr 1fr 1fr:</div>
+        <div class="grid-container">
+            <div class="grid-item">1fr</div>
+            <div class="grid-item">1fr</div>
+            <div class="grid-item">1fr</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h3>Разные доли</h3>
+
+    <pre><code>.container {
+    grid-template-columns: 1fr 2fr 1fr;   /* средняя в 2 раза шире */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">1fr 2fr 1fr:</div>
+        <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 8px; background: #f5f5f5; border: 2px solid #999; border-radius: 8px; padding: 12px;">
+            <div class="grid-item">1fr</div>
+            <div class="grid-item">2fr</div>
+            <div class="grid-item">1fr</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong><code>fr</code> — это «доля».</strong> Сумма всех <code>fr</code>
+        определяет, как делится свободное место. <code>1fr 2fr 1fr</code> = 25% + 50% + 25%.
+    </div>
+
+    <h2>6. <code>repeat()</code> — повторение</h2>
+
+    <p>
+        Вместо <code>1fr 1fr 1fr</code> можно написать <code>repeat(3, 1fr)</code>.
+    </p>
+
+    <pre><code>grid-template-columns: repeat(3, 1fr);</code></pre>
+
+    <p>Эквивалентно <code>1fr 1fr 1fr</code>.</p>
+
+    <div class="demo">
+        <div class="demo-label">repeat(3, 1fr) — то же самое:</div>
+        <div class="grid-container">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h3>Повторение с разными значениями</h3>
+
+    <pre><code>grid-template-columns: repeat(2, 1fr 2fr);   /* 1fr 2fr 1fr 2fr */
+grid-template-columns: 100px repeat(3, 1fr);  /* 100px + 3 колонки */</code></pre>
+
+    <h2>7. <code>gap</code> — расстояние</h2>
+
+    <p>Работает так же, как во Flexbox:</p>
+
+    <pre><code>.container {
+    display: grid;
+    gap: 16px;              /* и между строками, и между колонками */
+    /* или */
+    row-gap: 8px;           /* только строки */
+    column-gap: 16px;       /* только колонки */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">gap: 20px:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; background: #f5f5f5; border: 2px solid #999; border-radius: 8px; padding: 12px;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h2>8. Как Grid распределяет элементы</h2>
+
+    <p>По умолчанию элементы <strong>заполняют сетку по порядку</strong>:</p>
+
+    <ol>
+        <li>Заполняют первую строку слева направо.</li>
+        <li>Потом вторую, третью и т.д.</li>
+        <li>Если элементов больше, чем ячеек — создаются <strong>новые строки автоматически</strong>.</li>
+    </ol>
+
+    <pre><code>.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 колонки. Строк — сколько нужно */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки, 7 элементов — 3 строки (последняя неполная):</div>
+        <div class="grid-container">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+            <div class="grid-item">7</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Строки автоматические:</strong> если не задать <code>grid-template-rows</code>,
+        Grid создаёт столько строк, сколько нужно. Высота — по содержимому.
+    </div>
+
+    <h2>9. Практика: сетка карточек</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточки через Grid:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 1</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 2</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 3</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 4</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 5</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 6</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>10. Практика: макет страницы</h2>
+
+    <pre><code>.layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 400px;
+}
+
+.header { grid-column: 1 / -1; }    /* на всю ширину */
+.sidebar { }
+.main { }
+.footer { grid-column: 1 / -1; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Макет: шапка + сайдбар + контент + подвал:</div>
+        <div style="display: grid; grid-template-columns: 120px 1fr; grid-template-rows: auto 1fr auto; gap: 8px; min-height: 240px; background: #f5f5f5; padding: 12px; border-radius: 8px;">
+            <div style="grid-column: 1 / -1; background: #1565c0; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Header</div>
+            <div style="background: #c8e6c9; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Sidebar</div>
+            <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Main</div>
+            <div style="grid-column: 1 / -1; background: #333; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Footer</div>
+        </div>
+    </div>
+
+    <p>Подробно про <code>grid-column</code> — в уроке 35.</p>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>display: grid</code> без <code>grid-template-columns</code></td>
+                <td>Одна колонка — как block</td>
+            </tr>
+            <tr>
+                <td>Использовать Grid для 1D</td>
+                <td>Flexbox проще для рядов</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code></td>
+                <td>Элементы «слипаются»</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>px</code> вместо <code>fr</code></td>
+                <td>Не адаптируется к экрану</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>box-sizing: border-box</code></td>
+                <td>Размеры с padding «ломаются»</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Grid</strong> — <strong>двумерная</strong> раскладка: строки <strong>и</strong> колонки.</li>
+        <li><strong>Flexbox</strong> — <strong>одномерная</strong>: ряд <strong>или</strong> колонка.</li>
+        <li><strong><code>display: grid</code></strong> — на <strong>родителя</strong>.</li>
+        <li><strong><code>grid-template-columns</code></strong> — колонки.</li>
+        <li><strong><code>grid-template-rows</code></strong> — строки.</li>
+        <li><strong><code>fr</code></strong> — «доля». <code>1fr 1fr 1fr</code> = 3 равные колонки.</li>
+        <li><strong><code>repeat(3, 1fr)</code></strong> = <code>1fr 1fr 1fr</code>.</li>
+        <li><strong><code>gap</code></strong> — расстояние между элементами.</li>
+        <li><strong>По умолчанию</strong> — одна колонка (как block).</li>
+        <li><strong>Grid и Flexbox</strong> — не заменяют, а <strong>дополняют</strong>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 33 · Следующий урок: <em>Колонки и строки — template-columns, fr, repeat, minmax</em>
+    </p>
+
+</body>
+</html>

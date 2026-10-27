@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 36: grid-template-areas, grid-area — именованные области. Самый удобный способ для макетов страниц.">
+    <title>CSS Урок 36. Области Grid</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .grid-container {
+            display: grid;
+            gap: 12px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        .grid-item {
+            background: #1565c0;
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            text-align: center;
+        }
+        .grid-item:nth-child(2) { background: #e53935; }
+        .grid-item:nth-child(3) { background: #43a047; }
+        .grid-item:nth-child(4) { background: #ff9800; }
+        .grid-item:nth-child(5) { background: #6a1b9a; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 36. Области Grid</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить grid-template-areas и grid-area —      -->
+    <!-- «визуальный» способ создавать макеты.                     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое области</h2>
+
+    <p>
+        <strong>Области</strong> (areas) — это <strong>именованные ячейки</strong> сетки.
+        Ты даёшь имя каждой зоне и потом «рисуешь» макет <strong>прямо в CSS</strong>.
+    </p>
+
+    <p>Это <strong>самый наглядный</strong> способ для макетов страниц.</p>
+
+    <pre><code>.layout {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+}</code></pre>
+
+    <h2>2. <code>grid-template-areas</code> — «рисование» макета</h2>
+
+    <p>
+        Свойство задаётся <strong>строками</strong>. Каждая строка — в кавычках.
+        Внутри — имена зон через пробел.
+    </p>
+
+    <pre><code>grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";</code></pre>
+
+    <p>
+        Это <strong>3 строки × 2 колонки</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Колонка 1</th>
+                <th>Колонка 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Строка 1</td><td><code>header</code></td><td><code>header</code></td></tr>
+            <tr><td>Строка 2</td><td><code>sidebar</code></td><td><code>main</code></td></tr>
+            <tr><td>Строка 3</td><td><code>footer</code></td><td><code>footer</code></td></tr>
+        </tbody>
+    </table>
+
+    <h2>3. <code>grid-area</code> — привязка элемента к области</h2>
+
+    <p>
+        Каждому элементу задаёшь <strong>имя области</strong> через <code>grid-area</code>:
+    </p>
+
+    <pre><code>.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.footer { grid-area: footer; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Макет: header / sidebar / main / footer:</div>
+        <div class="grid-container" style="grid-template-areas: 'header header' 'sidebar main' 'footer footer'; grid-template-columns: 150px 1fr; grid-template-rows: auto 1fr auto; min-height: 240px;">
+            <div class="grid-item" style="grid-area: header;">header</div>
+            <div class="grid-item" style="grid-area: sidebar;">sidebar</div>
+            <div class="grid-item" style="grid-area: main;">main</div>
+            <div class="grid-item" style="grid-area: footer;">footer</div>
+        </div>
+    </div>
+
+    <h2>4. Правила областей</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Правило</th>
+                <th>Почему</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Все строки — <strong>одинаковой длины</strong></td>
+                <td>Иначе ошибка</td>
+            </tr>
+            <tr>
+                <td>Имена — <strong>без пробелов</strong></td>
+                <td>Пробел — разделитель зон</td>
+            </tr>
+            <tr>
+                <td>Одна зона — <strong>прямоугольник</strong></td>
+                <td>Нельзя «Г-образную» форму</td>
+            </tr>
+            <tr>
+                <td><code>.</code> — пустая ячейка</td>
+                <td>Если нужно оставить пусто</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Пример с пустой ячейкой</h3>
+
+    <pre><code>grid-template-areas:
+    "header header"
+    ". main"
+    "footer footer";</code></pre>
+
+    <p>Левая ячейка второй строки — <strong>пустая</strong>.</p>
+
+    <div class="demo">
+        <div class="demo-label">Пустая ячейка (`.`):</div>
+        <div class="grid-container" style="grid-template-areas: 'header header' '. main' 'footer footer'; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; min-height: 180px;">
+            <div class="grid-item" style="grid-area: header;">header</div>
+            <div class="grid-item" style="grid-area: main;">main</div>
+            <div class="grid-item" style="grid-area: footer;">footer</div>
+        </div>
+    </div>
+
+    <h2>5. <code>grid-template-areas</code> + <code>grid-template-columns</code></h2>
+
+    <p>
+        <strong>Области не задают размеры.</strong> Нужно <strong>дополнительно</strong>
+        указать <code>grid-template-columns</code> и <code>grid-template-rows</code>.
+    </p>
+
+    <pre><code>.layout {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100vh;
+}</code></pre>
+
+    <div class="note">
+        <strong>Порядок:</strong> <code>grid-template-areas</code> задаёт <strong>карту</strong>,
+        а <code>grid-template-columns</code> / <code>grid-template-rows</code> —
+        <strong>размеры</strong>. Они работают <strong>вместе</strong>.
+    </div>
+
+    <h2>6. Адаптивность с областями</h2>
+
+    <p>
+        <strong>Главная сила</strong> областей — легко менять макет на разных экранах:
+    </p>
+
+    <pre><code>/* Мобильный — одна колонка */
+.layout {
+    grid-template-areas:
+        "header"
+        "main"
+        "sidebar"
+        "footer";
+    grid-template-columns: 1fr;
+}
+
+/* Десктоп — две колонки */
+@media (min-width: 768px) {
+    .layout {
+        grid-template-areas:
+            "header header"
+            "sidebar main"
+            "footer footer";
+        grid-template-columns: 200px 1fr;
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Мобильный макет (одна колонка):</div>
+        <div class="grid-container" style="grid-template-areas: 'header' 'main' 'sidebar' 'footer'; grid-template-columns: 1fr; grid-template-rows: auto; gap: 8px;">
+            <div class="grid-item" style="grid-area: header; padding: 12px; font-size: 12px;">header</div>
+            <div class="grid-item" style="grid-area: main; padding: 12px; font-size: 12px;">main</div>
+            <div class="grid-item" style="grid-area: sidebar; padding: 12px; font-size: 12px;">sidebar</div>
+            <div class="grid-item" style="grid-area: footer; padding: 12px; font-size: 12px;">footer</div>
+        </div>
+    </div>
+
+    <h2>7. Практика: макет сайта</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.layout {
+    display: grid;
+    grid-template-areas:
+        "header header header"
+        "sidebar main aside"
+        "footer footer footer";
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100vh;
+    padding: 16px;
+    background: #fafafa;
+}
+
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.aside { grid-area: aside; }
+.footer { grid-area: footer; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Трёхколоночный макет:</div>
+        <div class="grid-container" style="grid-template-areas: 'header header header' 'sidebar main aside' 'footer footer footer'; grid-template-columns: 100px 1fr 100px; grid-template-rows: auto 1fr auto; min-height: 220px; gap: 8px;">
+            <div class="grid-item" style="grid-area: header; padding: 12px; font-size: 12px;">header</div>
+            <div class="grid-item" style="grid-area: sidebar; padding: 12px; font-size: 12px;">sidebar</div>
+            <div class="grid-item" style="grid-area: main; padding: 12px; font-size: 12px;">main</div>
+            <div class="grid-item" style="grid-area: aside; padding: 12px; font-size: 12px;">aside</div>
+            <div class="grid-item" style="grid-area: footer; padding: 12px; font-size: 12px;">footer</div>
+        </div>
+    </div>
+
+    <h2>8. Практика: карточки с «выделенной»</h2>
+
+    <pre><code>.cards {
+    display: grid;
+    grid-template-areas:
+        "featured featured side"
+        "featured featured side2";
+    grid-template-columns: 1fr 1fr 200px;
+    gap: 16px;
+}
+
+.featured { grid-area: featured; }
+.side { grid-area: side; }
+.side2 { grid-area: side2; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Featured 2×2 + боковые:</div>
+        <div class="grid-container" style="grid-template-areas: 'featured featured side' 'featured featured side2'; grid-template-columns: 1fr 1fr 100px; grid-template-rows: 1fr 1fr; min-height: 200px; gap: 8px;">
+            <div class="grid-item" style="grid-area: featured; display: flex; align-items: center; justify-content: center; font-size: 16px;">featured (2×2)</div>
+            <div class="grid-item" style="grid-area: side; padding: 12px; font-size: 12px;">side</div>
+            <div class="grid-item" style="grid-area: side2; padding: 12px; font-size: 12px;">side2</div>
+        </div>
+    </div>
+
+    <h2>9. Области vs линии</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Области (areas)</th>
+                <th>Линии (columns/rows)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Наглядность</td>
+                <td><strong>Высокая</strong> — видно макет</td>
+                <td>Низкая — нужно считать линии</td>
+            </tr>
+            <tr>
+                <td>Сложность</td>
+                <td>Проще</td>
+                <td>Сложнее</td>
+            </tr>
+            <tr>
+                <td>Гибкость</td>
+                <td>Для «прямоугольных» макетов</td>
+                <td>Для любых</td>
+            </tr>
+            <tr>
+                <td>Когда использовать</td>
+                <td><strong>Макеты страниц</strong></td>
+                <td>Отдельные элементы</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Совет:</strong> для <strong>макетов страниц</strong> — области. Для
+        <strong>отдельных элементов</strong> внутри — линии или <code>span</code>.
+        Можно <strong>комбинировать</strong>.
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Разная длина строк</td>
+                <td>Ошибка — все строки должны быть одинаковой длины</td>
+            </tr>
+            <tr>
+                <td>Пробел в имени зоны</td>
+                <td>Пробел — разделитель. Используй дефис</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>grid-template-columns</code></td>
+                <td>Размеры не заданы</td>
+            </tr>
+            <tr>
+                <td>«Г-образная» область</td>
+                <td>Область должна быть прямоугольником</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>grid-area</code> у элемента</td>
+                <td>Элемент не попадёт в область</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>grid-template-areas</code></strong> — «карта» макета. Каждая строка в кавычках.</li>
+        <li><strong><code>grid-area</code></strong> у элемента — привязка к области.</li>
+        <li><strong>Все строки</strong> должны быть <strong>одинаковой длины</strong>.</li>
+        <li><strong>Область</strong> — прямоугольник. Нельзя «Г-образную».</li>
+        <li><strong><code>.</code></strong> — пустая ячейка.</li>
+        <li><strong>Размеры</strong> — отдельно через <code>grid-template-columns</code> / <code>rows</code>.</li>
+        <li><strong>Главная сила</strong> — адаптивность. Легко менять макет на разных экранах.</li>
+        <li><strong>Для макетов</strong> — области. Для элементов — линии / <code>span</code>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 36 · Следующий урок: <em>Автоматическая сетка — grid-auto-flow</em>
+    </p>
+
+</body>
+</html>

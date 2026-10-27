@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 34: grid-template-columns, grid-template-rows, fr, repeat, minmax, auto-fit.">
+    <title>CSS Урок 34. Колонки и строки Grid</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .grid-container {
+            display: grid;
+            gap: 12px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        .grid-item {
+            background: #1565c0;
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            text-align: center;
+        }
+        .grid-item:nth-child(2) { background: #e53935; }
+        .grid-item:nth-child(3) { background: #43a047; }
+        .grid-item:nth-child(4) { background: #ff9800; }
+        .grid-item:nth-child(5) { background: #6a1b9a; }
+        .grid-item:nth-child(6) { background: #00acc1; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 34. Колонки и строки</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: досконально разобрать grid-template-columns,  -->
+    <!-- grid-template-rows, fr, repeat, minmax, auto-fit.          -->
+    <!-- ========================================================= -->
+
+    <h2>1. Два главных свойства</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что задаёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>grid-template-columns</code></td>
+                <td>Колонки — сколько и какой ширины</td>
+            </tr>
+            <tr>
+                <td><code>grid-template-rows</code></td>
+                <td>Строки — сколько и какой высоты</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-rows: 100px 1fr 100px;
+}</code></pre>
+
+    <h2>2. <code>grid-template-columns</code> — колонки</h2>
+
+    <h3>Фиксированные размеры</h3>
+
+    <pre><code>grid-template-columns: 200px 200px 200px;   /* 3 колонки по 200px */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки по 100px:</div>
+        <div class="grid-container" style="grid-template-columns: 100px 100px 100px;">
+            <div class="grid-item">100px</div>
+            <div class="grid-item">100px</div>
+            <div class="grid-item">100px</div>
+        </div>
+    </div>
+
+    <h3>Проценты</h3>
+
+    <pre><code>grid-template-columns: 25% 50% 25%;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">25% 50% 25%:</div>
+        <div class="grid-container" style="grid-template-columns: 25% 50% 25%;">
+            <div class="grid-item">25%</div>
+            <div class="grid-item">50%</div>
+            <div class="grid-item">25%</div>
+        </div>
+    </div>
+
+    <h3><code>auto</code></h3>
+
+    <pre><code>grid-template-columns: auto auto auto;   /* по содержимому */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">auto auto auto:</div>
+        <div class="grid-container" style="grid-template-columns: auto auto auto;">
+            <div class="grid-item">Короткий</div>
+            <div class="grid-item">Средний текст</div>
+            <div class="grid-item">Очень длинный текст для проверки</div>
+        </div>
+    </div>
+
+    <h2>3. <code>fr</code> — доли</h2>
+
+    <p>
+        <strong><code>fr</code></strong> (fraction) — «доля свободного места».
+        Главная единица Grid.
+    </p>
+
+    <pre><code>grid-template-columns: 1fr 1fr 1fr;   /* 3 равные колонки */
+grid-template-columns: 1fr 2fr 1fr;   /* средняя в 2 раза шире */
+grid-template-columns: 200px 1fr;     /* фикс + растягивающаяся */
+grid-template-columns: 2fr 1fr;       /* 2/3 + 1/3 */
+</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">1fr 2fr 1fr:</div>
+        <div class="grid-container" style="grid-template-columns: 1fr 2fr 1fr;">
+            <div class="grid-item">1fr</div>
+            <div class="grid-item">2fr</div>
+            <div class="grid-item">1fr</div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">200px 1fr (фикс + растяжение):</div>
+        <div class="grid-container" style="grid-template-columns: 200px 1fr;">
+            <div class="grid-item">200px</div>
+            <div class="grid-item">1fr</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong><code>fr</code> — это доля от <em>свободного</em> места</strong>
+        (после вычета фиксированных размеров и gap). <code>1fr 2fr 1fr</code> =
+        25% + 50% + 25% <strong>от свободного места</strong>.
+    </div>
+
+    <h2>4. <code>repeat()</code> — повторение</h2>
+
+    <p>Сокращает запись повторяющихся значений:</p>
+
+    <pre><code>grid-template-columns: repeat(3, 1fr);        /* 1fr 1fr 1fr */
+grid-template-columns: repeat(2, 100px 1fr);  /* 100px 1fr 100px 1fr */
+grid-template-columns: 200px repeat(3, 1fr);   /* 200px + 3 колонки */
+</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">repeat(4, 1fr):</div>
+        <div class="grid-container" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+        </div>
+    </div>
+
+    <h2>5. <code>minmax()</code> — минимальный и максимальный размер</h2>
+
+    <p>
+        <code>minmax(min, max)</code> — задаёт <strong>диапазон</strong> размера
+        колонки: от <code>min</code> до <code>max</code>.
+    </p>
+
+    <pre><code>grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr);</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">minmax(100px, 1fr) — не меньше 100px, но растягивается:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, minmax(100px, 1fr));">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h3>Где <code>minmax</code> полезен</h3>
+
+    <ul>
+        <li><strong>Адаптивные карточки:</strong> не меньше 200px, но растягиваются.</li>
+        <li><strong>Сайдбар:</strong> <code>minmax(200px, 300px)</code> — от 200 до 300px.</li>
+        <li><strong>Контент:</strong> <code>minmax(0, 1fr)</code> — чтобы текст не «ломал» сетку.</li>
+    </ul>
+
+    <h2>6. <code>auto-fit</code> и <code>auto-fill</code> — адаптивные сетки</h2>
+
+    <p>
+        <strong>Магия адаптива.</strong> Позволяет сетке <strong>самой</strong> решать,
+        сколько колонок поместится.
+    </p>
+
+    <pre><code>grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));</code></pre>
+
+    <p>
+        «Создай столько колонок, сколько поместится, но каждая — не меньше 200px,
+        и растягивай их равномерно».
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">repeat(auto-fit, minmax(150px, 1fr)) — сузь окно, увидишь:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h3><code>auto-fit</code> vs <code>auto-fill</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>auto-fit</code></th>
+                <th><code>auto-fill</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Пустые колонки</td>
+                <td><strong>Схлопываются</strong></td>
+                <td><strong>Остаются</strong></td>
+            </tr>
+            <tr>
+                <td>Когда использовать</td>
+                <td>Карточки, галереи</td>
+                <td>Когда важно сохранить сетку</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>На практике</strong> чаще используют <code>auto-fit</code> —
+        он «схлопывает» пустые колонки, и элементы растягиваются.
+    </div>
+
+    <h2>7. <code>grid-template-rows</code> — строки</h2>
+
+    <p>Аналогично колонкам — но для строк:</p>
+
+    <pre><code>grid-template-rows: 100px 200px 100px;   /* 3 строки */
+grid-template-rows: auto 1fr auto;        /* шапка / контент / подвал */
+</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-template-rows: 60px 120px 60px:</div>
+        <div class="grid-container" style="grid-template-columns: 1fr; grid-template-rows: 60px 120px 60px;">
+            <div class="grid-item">60px</div>
+            <div class="grid-item">120px</div>
+            <div class="grid-item">60px</div>
+        </div>
+    </div>
+
+    <h3>Автоматические строки</h3>
+
+    <p>
+        Если строк больше, чем задано в <code>grid-template-rows</code> —
+        остальные создаются <strong>автоматически</strong> (высота по содержимому).
+    </p>
+
+    <pre><code>.container {
+    grid-template-rows: 100px;   /* только первая строка 100px */
+    /* остальные — автоматические */
+}</code></pre>
+
+    <p>Для настройки автоматических строк — <code>grid-auto-rows</code> (урок 37).</p>
+
+    <h2>8. Практика: сетка карточек</h2>
+
+    <pre><code>*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Адаптивные карточки (сузь окно):</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 1</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 2</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 3</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+            <div style="background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 8px 0; font-size: 15px; color: #1565c0;">Карточка 4</h3>
+                <p style="margin: 0; color: #666; font-size: 13px;">Описание</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>9. Практика: макет страницы</h2>
+
+    <pre><code>.layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100vh;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Сайдбар 120px + контент, 3 строки:</div>
+        <div style="display: grid; grid-template-columns: 120px 1fr; grid-template-rows: 50px 100px 40px; gap: 8px; background: #f5f5f5; padding: 12px; border-radius: 8px;">
+            <div style="grid-column: 1 / -1; background: #1565c0; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Header</div>
+            <div style="background: #c8e6c9; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Sidebar</div>
+            <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Main</div>
+            <div style="grid-column: 1 / -1; background: #333; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Footer</div>
+        </div>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>repeat(3, 1fr)</code> vs <code>1fr 1fr 1fr</code> — одно и то же</td>
+                <td>Не ошибка, но <code>repeat</code> короче</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>box-sizing: border-box</code></td>
+                <td>Padding «ломает» размеры</td>
+            </tr>
+            <tr>
+                <td><code>minmax(200px, 1fr)</code> без <code>auto-fit</code></td>
+                <td>Не адаптируется — всегда 3 колонки</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>auto-fill</code> вместо <code>auto-fit</code></td>
+                <td>Остаются пустые колонки</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code></td>
+                <td>Элементы «слипаются»</td>
+            </tr>
+            <tr>
+                <td><code>1fr</code> в <code>grid-template-rows</code> без <code>height</code></td>
+                <td>Не работает — нет свободного места</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>grid-template-columns</code></strong> — колонки.</li>
+        <li><strong><code>grid-template-rows</code></strong> — строки.</li>
+        <li><strong><code>fr</code></strong> — доля свободного места. Главная единица Grid.</li>
+        <li><strong><code>repeat(3, 1fr)</code></strong> = <code>1fr 1fr 1fr</code>.</li>
+        <li><strong><code>minmax(min, max)</code></strong> — диапазон размера.</li>
+        <li><strong><code>repeat(auto-fit, minmax(200px, 1fr))</code></strong> — адаптивная сетка.</li>
+        <li><strong><code>auto-fit</code></strong> — пустые колонки схлопываются.</li>
+        <li><strong><code>auto-fill</code></strong> — пустые колонки остаются.</li>
+        <li><strong>Автоматические строки</strong> — если не задано <code>grid-template-rows</code>.</li>
+        <li><strong><code>1fr</code> в строках</strong> требует <code>height</code> у контейнера.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 34 · Следующий урок: <em>Позиционирование в Grid — grid-column, grid-row, span</em>
+    </p>
+
+</body>
+</html>

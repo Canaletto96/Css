@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 38: gap и выравнивание в Grid — justify-items, align-items, place-items, justify-content, align-content.">
+    <title>CSS Урок 38. Выравнивание в Grid</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .grid-container {
+            display: grid;
+            gap: 12px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        .grid-item {
+            background: #1565c0;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+        .grid-item:nth-child(2) { background: #e53935; }
+        .grid-item:nth-child(3) { background: #43a047; }
+        .grid-item:nth-child(4) { background: #ff9800; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 38. Выравнивание в Grid</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить выравнивание в Grid — justify-items,   -->
+    <!-- align-items, place-items, justify-content, align-content.  -->
+    <!-- ========================================================= -->
+
+    <h2>1. Четыре свойства выравнивания</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что выравнивает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>justify-items</code></td>
+                <td>Элементы внутри ячеек по <strong>горизонтали</strong></td>
+            </tr>
+            <tr>
+                <td><code>align-items</code></td>
+                <td>Элементы внутри ячеек по <strong>вертикали</strong></td>
+            </tr>
+            <tr>
+                <td><code>justify-content</code></td>
+                <td>Всю сетку по <strong>горизонтали</strong></td>
+            </tr>
+            <tr>
+                <td><code>align-content</code></td>
+                <td>Всю сетку по <strong>вертикали</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Разница:</strong>
+        <ul>
+            <li><strong><code>*-items</code></strong> — выравнивают <strong>элементы</strong> внутри их ячеек.</li>
+            <li><strong><code>*-content</code></strong> — выравнивают <strong>всю сетку</strong> внутри контейнера.</li>
+        </ul>
+    </div>
+
+    <h2>2. <code>justify-items</code> — элементы по горизонтали</h2>
+
+    <p>Выравнивает <strong>элементы внутри их ячеек</strong> по горизонтали.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>stretch</code> (по умолчанию)</td><td>Растянуть на всю ширину ячейки</td></tr>
+            <tr><td><code>start</code></td><td>В начале (слева)</td></tr>
+            <tr><td><code>end</code></td><td>В конце (справа)</td></tr>
+            <tr><td><code>center</code></td><td>По центру</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>stretch</code> (по умолчанию)</h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-items: stretch — элементы растянуты:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); justify-items: stretch;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>center</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-items: center — элементы по центру ячеек:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); justify-items: center;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>start</code> и <code>end</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">justify-items: start:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); justify-items: start;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">justify-items: end:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); justify-items: end;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h2>3. <code>align-items</code> — элементы по вертикали</h2>
+
+    <p>Выравнивает <strong>элементы внутри их ячеек</strong> по вертикали.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>stretch</code> (по умолчанию)</td><td>Растянуть на всю высоту ячейки</td></tr>
+            <tr><td><code>start</code></td><td>В начале (сверху)</td></tr>
+            <tr><td><code>end</code></td><td>В конце (снизу)</td></tr>
+            <tr><td><code>center</code></td><td>По центру</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>stretch</code> (по умолчанию)</h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: stretch — элементы растянуты по высоте:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 100px; align-items: stretch;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>center</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: center — элементы по центру вертикали:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 100px; align-items: center;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h3><code>start</code> и <code>end</code></h3>
+
+    <div class="demo">
+        <div class="demo-label">align-items: start:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 100px; align-items: start;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">align-items: end:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 100px; align-items: end;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <h2>4. <code>place-items</code> — сокращение</h2>
+
+    <p>
+        <code>place-items</code> = <code>align-items</code> + <code>justify-items</code>.
+    </p>
+
+    <pre><code>.container {
+    place-items: center;             /* и по X, и по Y */
+    /* place-items: center start;    — align-items: center, justify-items: start */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">place-items: center — по центру ячеек:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 100px; place-items: center;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong><code>place-items: center</code></strong> — <strong>самый частый</strong>
+        способ центрирования в Grid. Одна строка — и по X, и по Y.
+    </div>
+
+    <h2>5. <code>justify-content</code> — вся сетка по горизонтали</h2>
+
+    <p>
+        Выравнивает <strong>всю сетку</strong> внутри контейнера, если сетка
+        <strong>меньше</strong> контейнера.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Значение</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>start</code> (по умолчанию)</td><td>В начале</td></tr>
+            <tr><td><code>end</code></td><td>В конце</td></tr>
+            <tr><td><code>center</code></td><td>По центру</td></tr>
+            <tr><td><code>space-between</code></td><td>По краям + промежутки</td></tr>
+            <tr><td><code>space-around</code></td><td>Равные промежутки</td></tr>
+            <tr><td><code>space-evenly</code></td><td>Полностью равные</td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>.container {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;   /* фиксированная ширина */
+    justify-content: center;                      /* ← сетка по центру */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">justify-content: center (сетка уже контейнера):</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 100px); justify-content: center;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <div class="warn">
+        <strong>Важно:</strong> <code>justify-content</code> работает, только если
+        сетка <strong>уже</strong> контейнера. Если колонки растянуты на всю ширину
+        (например, <code>1fr 1fr 1fr</code>) — эффекта не будет.
+    </div>
+
+    <h2>6. <code>align-content</code> — вся сетка по вертикали</h2>
+
+    <p>
+        Аналогично — для вертикали. Работает, если сетка <strong>ниже</strong> контейнера.
+    </p>
+
+    <pre><code>.container {
+    display: grid;
+    grid-template-rows: 50px 50px;
+    align-content: center;   /* ← сетка по центру по вертикали */
+    height: 300px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">align-content: center (сетка ниже контейнера):</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 50px 50px; align-content: center; height: 200px;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h2>7. <code>place-content</code> — сокращение</h2>
+
+    <pre><code>.container {
+    place-content: center;   /* align-content + justify-content */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">place-content: center:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(2, 50px); place-content: center; height: 200px;">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+            <div class="grid-item">6</div>
+        </div>
+    </div>
+
+    <h2>8. Сводная таблица</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Свойство</th>
+                <th>Что выравнивает</th>
+                <th>Ось</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>justify-items</code></td>
+                <td>Элементы в ячейках</td>
+                <td>Горизонталь</td>
+            </tr>
+            <tr>
+                <td><code>align-items</code></td>
+                <td>Элементы в ячейках</td>
+                <td>Вертикаль</td>
+            </tr>
+            <tr>
+                <td><code>place-items</code></td>
+                <td>Элементы в ячейках</td>
+                <td>Обе</td>
+            </tr>
+            <tr>
+                <td><code>justify-content</code></td>
+                <td>Всю сетку</td>
+                <td>Горизонталь</td>
+            </tr>
+            <tr>
+                <td><code>align-content</code></td>
+                <td>Всю сетку</td>
+                <td>Вертикаль</td>
+            </tr>
+            <tr>
+                <td><code>place-content</code></td>
+                <td>Всю сетку</td>
+                <td>Обе</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>9. Практика: центрирование</h2>
+
+    <pre><code>/* Полное центрирование */
+.hero {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: white;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Центрирование через place-items:</div>
+        <div style="display: grid; place-items: center; height: 150px; background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; color: white;">
+            <h2 style="margin: 0; font-size: 24px;">По центру</h2>
+        </div>
+    </div>
+
+    <h2>10. Практика: иконки в ячейках</h2>
+
+    <pre><code>.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.feature-icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    background: #e3f2fd;
+    border-radius: 12px;
+    color: #1565c0;
+    font-size: 24px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Иконки по центру:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <div style="display: grid; place-items: center; height: 60px; background: #e3f2fd; border-radius: 12px; color: #1565c0; font-size: 24px;">📦</div>
+            <div style="display: grid; place-items: center; height: 60px; background: #e3f2fd; border-radius: 12px; color: #1565c0; font-size: 24px;">🚚</div>
+            <div style="display: grid; place-items: center; height: 60px; background: #e3f2fd; border-radius: 12px; color: #1565c0; font-size: 24px;">⭐</div>
+        </div>
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Путать <code>*-items</code> и <code>*-content</code></td>
+                <td><code>*-items</code> — элементы, <code>*-content</code> — сетка</td>
+            </tr>
+            <tr>
+                <td><code>justify-content: center</code> с <code>1fr</code></td>
+                <td>Не работает — сетка и так на всю ширину</td>
+            </tr>
+            <tr>
+                <td><code>align-content</code> без <code>height</code> контейнера</td>
+                <td>Не работает — нет свободного места</td>
+            </tr>
+            <tr>
+                <td><code>place-items</code> без <code>display: grid</code></td>
+                <td>Не работает</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code></td>
+                <td>Элементы слипаются</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong><code>justify-items</code></strong> — элементы в ячейках по горизонтали.</li>
+        <li><strong><code>align-items</code></strong> — элементы в ячейках по вертикали.</li>
+        <li><strong><code>place-items: center</code></strong> — и по X, и по Y. <strong>Самый частый</strong>.</li>
+        <li><strong><code>justify-content</code></strong> — вся сетка по горизонтали (если уже контейнера).</li>
+        <li><strong><code>align-content</code></strong> — вся сетка по вертикали (если ниже контейнера).</li>
+        <li><strong><code>place-content: center</code></strong> — и по X, и по Y.</li>
+        <li><strong><code>stretch</code></strong> — по умолчанию для <code>*-items</code>.</li>
+        <li><strong>Разница:</strong> <code>*-items</code> — элементы, <code>*-content</code> — сетка.</li>
+        <li><strong><code>place-items: center</code></strong> — центрирование через Grid.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 38 · Следующий урок: <em>Практика Grid — макеты страниц, галереи</em>
+    </p>
+
+</body>
+</html>

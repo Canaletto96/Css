@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 35: позиционирование в Grid — grid-column, grid-row, span, линии сетки.">
+    <title>CSS Урок 35. Позиционирование в Grid</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #222;
+            background: #fafafa;
+        }
+        h1 { color: #1565c0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; }
+        h2 { color: #333; margin-top: 40px; }
+        h3 { color: #555; margin-top: 28px; border-left: 4px solid #1565c0; padding-left: 12px; }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        pre code { background: none; color: inherit; padding: 0; }
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: #fff;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f5f5f5; }
+
+        .grid-container {
+            display: grid;
+            gap: 8px;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+        }
+        .grid-item {
+            background: #1565c0;
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+        .grid-item:nth-child(2) { background: #e53935; }
+        .grid-item:nth-child(3) { background: #43a047; }
+        .grid-item:nth-child(4) { background: #ff9800; }
+        .grid-item:nth-child(5) { background: #6a1b9a; }
+        .grid-item:nth-child(6) { background: #00acc1; }
+
+        .grid-lines {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            background: #fff;
+            border: 2px solid #999;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            position: relative;
+        }
+        .grid-lines::before {
+            content: "Линии:    1        2        3        4";
+            position: absolute;
+            top: -20px;
+            left: 12px;
+            right: 12px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 11px;
+            color: #c62828;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 35. Позиционирование в Grid</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить grid-column, grid-row, span —         -->
+    <!-- как размещать элементы в сетке и растягивать на несколько -->
+    <!-- ячеек.                                                     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Линии сетки (grid lines)</h2>
+
+    <p>
+        Сетка Grid — это <strong>линии</strong>, между которыми находятся ячейки.
+        Линии нумеруются <strong>с 1</strong>.
+    </p>
+
+    <pre><code>grid-template-columns: repeat(3, 1fr);
+/* Линии:      1        2        3        4
+   Колонки:      [ 1fr ][ 1fr ][ 1fr ] */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">3 колонки = 4 линии:</div>
+        <div class="grid-lines">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Важно:</strong> линии нумеруются <strong>с 1</strong>, а не с 0.
+        Для 3 колонок — <strong>4 линии</strong> (1 — левый край, 4 — правый).
+    </div>
+
+    <h2>2. <code>grid-column</code> — позиция по колонкам</h2>
+
+    <p>
+        Задаёт, <strong>с какой линии по какую</strong> элемент занимает колонки.
+    </p>
+
+    <pre><code>.item {
+    grid-column: 1 / 3;   /* от линии 1 до линии 3 (2 колонки) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-column: 1 / 3 — занимает 2 колонки:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-item" style="grid-column: 1 / 3;">1 / 3</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">5</div>
+        </div>
+    </div>
+
+    <h2>3. <code>grid-row</code> — позиция по строкам</h2>
+
+    <p>
+        Задаёт, <strong>с какой линии по какую</strong> элемент занимает строки.
+    </p>
+
+    <pre><code>.item {
+    grid-row: 1 / 3;   /* от линии 1 до линии 3 (2 строки) */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-row: 1 / 3 — занимает 2 строки:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 60px);">
+            <div class="grid-item" style="grid-row: 1 / 3;">1 / 3</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+        </div>
+    </div>
+
+    <h2>4. <code>span</code> — «занять N ячеек»</h2>
+
+    <p>
+        Вместо линий можно указать <strong>span</strong> — «растянуть на N ячеек».
+    </p>
+
+    <pre><code>.item {
+    grid-column: span 2;   /* занять 2 колонки */
+}
+
+.item {
+    grid-row: span 2;      /* занять 2 строки */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-column: span 2:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-item" style="grid-column: span 2;">span 2</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+        </div>
+    </div>
+
+    <h3><code>grid-column: 1 / 3</code> vs <code>grid-column: span 2</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Запись</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>grid-column: 1 / 3</code></td>
+                <td>От линии 1 до линии 3 (позиция + размер)</td>
+            </tr>
+            <tr>
+                <td><code>grid-column: span 2</code></td>
+                <td>Занять 2 колонки (только размер)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Разница:</strong> <code>1 / 3</code> — <strong>фиксированная</strong>
+        позиция. <code>span 2</code> — <strong>автоматическая</strong> позиция,
+        но занимает 2 ячейки.
+    </div>
+
+    <h2>5. <code>grid-column: 1 / -1</code> — «на всю ширину»</h2>
+
+    <p>
+        <code>-1</code> — это <strong>последняя линия</strong> сетки. Запись
+        <code>1 / -1</code> означает «от первой до последней линии».
+    </p>
+
+    <pre><code>.header {
+    grid-column: 1 / -1;   /* на всю ширину */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-column: 1 / -1 — на всю ширину:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-item" style="grid-column: 1 / -1;">Header (1 / -1)</div>
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item" style="grid-column: 1 / -1;">Footer (1 / -1)</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Правило:</strong> <code>1 / -1</code> — «на всю ширину». Работает
+        при любом количестве колонок. Не нужно знать, сколько их.
+    </div>
+
+    <h2>6. <code>grid-area</code> — сокращение</h2>
+
+    <p>
+        <code>grid-area</code> — сокращение для <code>grid-row-start</code>,
+        <code>grid-column-start</code>, <code>grid-row-end</code>, <code>grid-column-end</code>.
+    </p>
+
+    <pre><code>/* Полная запись */
+.item {
+    grid-row-start: 1;
+    grid-column-start: 1;
+    grid-row-end: 3;
+    grid-column-end: 4;
+}
+
+/* Через grid-area */
+.item {
+    grid-area: 1 / 1 / 3 / 4;   /* row-start / col-start / row-end / col-end */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-area: 1 / 1 / 3 / 3 — занимает 2×2:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 60px);">
+            <div class="grid-item" style="grid-area: 1 / 1 / 3 / 3;">2×2</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">4</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Порядок в <code>grid-area</code>:</strong>
+        <code>row-start / column-start / row-end / column-end</code>.
+        Сложно запомнить — но полезно.
+    </div>
+
+    <h2>7. Практика: макет страницы</h2>
+
+    <pre><code>.layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100vh;
+}
+
+.header { grid-column: 1 / -1; }
+.sidebar { grid-column: 1; grid-row: 2; }
+.main { grid-column: 2; grid-row: 2; }
+.footer { grid-column: 1 / -1; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Макет: header + sidebar + main + footer:</div>
+        <div style="display: grid; grid-template-columns: 120px 1fr; grid-template-rows: auto 1fr auto; gap: 8px; min-height: 240px; background: #f5f5f5; padding: 12px; border-radius: 8px;">
+            <div style="grid-column: 1 / -1; background: #1565c0; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Header (1 / -1)</div>
+            <div style="grid-column: 1; grid-row: 2; background: #c8e6c9; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Sidebar</div>
+            <div style="grid-column: 2; grid-row: 2; background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Main</div>
+            <div style="grid-column: 1 / -1; background: #333; color: white; padding: 12px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">Footer (1 / -1)</div>
+        </div>
+    </div>
+
+    <h2>8. Практика: сетка с «выделенной» карточкой</h2>
+
+    <pre><code>.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.card.featured {
+    grid-column: span 2;   /* ← занимает 2 колонки */
+    grid-row: span 2;      /* ← занимает 2 строки */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Featured карточка занимает 2×2:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 60px; gap: 8px;">
+            <div style="grid-column: span 2; grid-row: span 2; background: #1565c0; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 13px;">Featured (2×2)</div>
+            <div style="background: #e53935; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2</div>
+            <div style="background: #43a047; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3</div>
+            <div style="background: #ff9800; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">4</div>
+            <div style="background: #6a1b9a; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">5</div>
+        </div>
+    </div>
+
+    <h2>9. Практика: «сломанная» сетка</h2>
+
+    <pre><code>.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.item:nth-child(1) { grid-column: 1 / 3; }
+.item:nth-child(2) { grid-column: 3 / 5; }
+.item:nth-child(3) { grid-column: 1 / 2; }
+.item:nth-child(4) { grid-column: 2 / 5; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Разные размеры:</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+            <div style="grid-column: 1 / 3; background: #1565c0; color: white; padding: 16px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1 / 3</div>
+            <div style="grid-column: 3 / 5; background: #e53935; color: white; padding: 16px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">3 / 5</div>
+            <div style="grid-column: 1 / 2; background: #43a047; color: white; padding: 16px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">1 / 2</div>
+            <div style="grid-column: 2 / 5; background: #ff9800; color: white; padding: 16px; border-radius: 6px; text-align: center; font-family: Consolas, Monaco, monospace; font-size: 12px;">2 / 5</div>
+        </div>
+    </div>
+
+    <h2>10. Линии с конца (<code>-1</code>, <code>-2</code>)</h2>
+
+    <p>
+        Линии можно считать <strong>с конца</strong>: <code>-1</code> — последняя,
+        <code>-2</code> — предпоследняя.
+    </p>
+
+    <pre><code>.item {
+    grid-column: -3 / -1;   /* 2 последние колонки */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">grid-column: -3 / -1 — 2 последние колонки:</div>
+        <div class="grid-container" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="grid-item">1</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item" style="grid-column: -3 / -1;">-3 / -1</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Где полезно:</strong> когда не знаешь точное число колонок, но
+        хочешь «прижать к правому краю». Например, <code>-2 / -1</code> — последняя колонка.
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Считать линии с 0</td>
+                <td>Линии нумеруются с 1</td>
+            </tr>
+            <tr>
+                <td><code>grid-column: 1 / 3</code> для «1 колонки»</td>
+                <td>Это 2 колонки (от 1 до 3)</td>
+            </tr>
+            <tr>
+                <td><code>1 / -1</code> для «первой колонки»</td>
+                <td>Это «на всю ширину». Для первой — <code>1 / 2</code></td>
+            </tr>
+            <tr>
+                <td>Забыть <code>gap</code></td>
+                <td>Элементы слипаются</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>grid-auto-rows</code> при <code>grid-row: span 2</code></td>
+                <td>Строки могут «схлопнуться»</td>
+            </tr>
+            <tr>
+                <td>Путать <code>grid-column: 1 / 3</code> и <code>grid-column: 1 / 4</code></td>
+                <td>1/3 — 2 колонки, 1/4 — 3 колонки</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Линии сетки</strong> нумеруются <strong>с 1</strong>. Для 3 колонок — 4 линии.</li>
+        <li><strong><code>grid-column: start / end</code></strong> — позиция по колонкам.</li>
+        <li><strong><code>grid-row: start / end</code></strong> — позиция по строкам.</li>
+        <li><strong><code>grid-column: 1 / 3</code></strong> — занимает 2 колонки (от 1 до 3).</li>
+        <li><strong><code>grid-column: span 2</code></strong> — занять 2 колонки.</li>
+        <li><strong><code>1 / -1</code></strong> — «на всю ширину». Работает при любом числе колонок.</li>
+        <li><strong><code>grid-area: row-start / col-start / row-end / col-end</code></strong> — сокращение.</li>
+        <li><strong>Отрицательные линии</strong> — с конца: <code>-1</code> — последняя.</li>
+        <li><strong><code>grid-column: span 2</code></strong> vs <code>1 / 3</code> — span только размер, без позиции.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 35 · Следующий урок: <em>Области — grid-template-areas</em>
+    </p>
+
+</body>
+</html>

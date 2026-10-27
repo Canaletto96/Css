@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 58: фреймворки — Bootstrap, Tailwind, Bulma. За и против, когда использовать.">
+    <title>CSS Урок 58. CSS-фреймворки</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        @media (max-width: 600px) {
+            .compare { grid-template-columns: 1fr; }
+        }
+        .compare > div h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Демо Bootstrap-подобных классов */
+        .bs-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .bs-btn-primary { background: #0d6efd; color: white; border-color: #0d6efd; }
+        .bs-btn-secondary { background: #6c757d; color: white; border-color: #6c757d; }
+        .bs-btn-success { background: #198754; color: white; border-color: #198754; }
+        .bs-btn-lg { padding: 8px 16px; font-size: 16px; }
+
+        .bs-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 300px;
+        }
+        .bs-card-body { padding: 16px; }
+        .bs-card-title { margin: 0 0 8px 0; font-size: 18px; }
+
+        /* Демо Tailwind-подобных классов */
+        .tw-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .tw-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 58. CSS-фреймворки</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, что такое CSS-фреймворки, зачем они    -->
+    <!-- нужны, и когда их использовать (на примере Bootstrap и     -->
+    <!-- Tailwind).                                                  -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое CSS-фреймворк</h2>
+
+    <p>
+        <strong>CSS-фреймворк</strong> — это <strong>готовая библиотека</strong>
+        CSS-классов и компонентов. Подключаешь — и получаешь готовые кнопки,
+        карточки, сетки, формы.
+    </p>
+
+    <pre><code>&lt;link rel="stylesheet" href="bootstrap.css"&gt;
+
+&lt;button class="btn btn-primary"&gt;Кнопка&lt;/button&gt;</code></pre>
+
+    <div class="note">
+        <strong>Аналогия:</strong> фреймворк — как <strong>конструктор LEGO</strong>.
+        Не нужно делать кирпичики самому — берёшь готовые и собираешь.
+    </div>
+
+    <h2>2. Зачем фреймворки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Плюсы</th>
+                <th>Минусы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Быстро</strong> — не пишешь CSS с нуля</td>
+                <td><strong>Одинаковый</strong> вид — «все на Bootstrap»</td>
+            </tr>
+            <tr>
+                <td><strong>Адаптивность</strong> из коробки</td>
+                <td><strong>Большой размер</strong> — 200+ КБ</td>
+            </tr>
+            <tr>
+                <td><strong>Кроссбраузерность</strong> — протестировано</td>
+                <td><strong>Сложно кастомизировать</strong> — переопределять</td>
+            </tr>
+            <tr>
+                <td><strong>Готовые компоненты</strong> — модалки, формы</td>
+                <td><strong>Нужно учить</strong> классы фреймворка</td>
+            </tr>
+            <tr>
+                <td><strong>Документация</strong> — примеры</td>
+                <td><strong>Не для всех</strong> — маленькие проекты</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. Два подхода: компонентный vs утилитарный</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Bootstrap (компонентный)</th>
+                <th>Tailwind (утилитарный)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Идея</td>
+                <td>Готовые компоненты</td>
+                <td>Утилитарные классы</td>
+            </tr>
+            <tr>
+                <td>Пример</td>
+                <td><code>class="btn btn-primary"</code></td>
+                <td><code>class="bg-blue-500 px-4 py-2 rounded"</code></td>
+            </tr>
+            <tr>
+                <td>Стиль</td>
+                <td>Готовый</td>
+                <td>Собираешь сам</td>
+            </tr>
+            <tr>
+                <td>Размер</td>
+                <td>200+ КБ</td>
+                <td>Маленький (только используемые классы)</td>
+            </tr>
+            <tr>
+                <td>Гибкость</td>
+                <td>Средняя</td>
+                <td><strong>Высокая</strong></td>
+            </tr>
+            <tr>
+                <td>Порог входа</td>
+                <td>Низкий</td>
+                <td>Средний</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. Bootstrap — компонентный</h2>
+
+    <p>
+        <strong>Bootstrap</strong> — самый популярный CSS-фреймворк. Готовые
+        <strong>компоненты</strong>: кнопки, карточки, формы, модалки, навигация.
+    </p>
+
+    <h3>Подключение</h3>
+
+    <pre><code>&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;</code></pre>
+
+    <h3>Кнопки</h3>
+
+    <pre><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="btn btn-success btn-lg"&gt;Large Success&lt;/button&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Bootstrap-подобные кнопки:</div>
+        <button class="bs-btn bs-btn-primary">Primary</button>
+        <button class="bs-btn bs-btn-secondary">Secondary</button>
+        <button class="bs-btn bs-btn-success bs-btn-lg">Large Success</button>
+    </div>
+
+    <h3>Карточка</h3>
+
+    <pre><code>&lt;div class="card"&gt;
+    &lt;div class="card-body"&gt;
+        &lt;h5 class="card-title"&gt;Заголовок&lt;/h5&gt;
+        &lt;p class="card-text"&gt;Описание карточки.&lt;/p&gt;
+        &lt;a href="#" class="btn btn-primary"&gt;Кнопка&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Bootstrap-подобная карточка:</div>
+        <div class="bs-card">
+            <div class="bs-card-body">
+                <h5 class="bs-card-title">Заголовок</h5>
+                <p style="margin: 0 0 12px 0; color: #666; font-size: 14px;">Описание карточки.</p>
+                <a href="#" class="bs-btn bs-btn-primary">Кнопка</a>
+            </div>
+        </div>
+    </div>
+
+    <h3>Сетка (grid)</h3>
+
+    <pre><code>&lt;div class="row"&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;Колонка 1&lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;Колонка 2&lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;Колонка 3&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="note">
+        <strong>Bootstrap grid:</strong> <code>col-12</code> — на мобильных,
+        <code>col-md-6</code> — на планшетах, <code>col-lg-4</code> — на десктопе.
+        <strong>Адаптивность</strong> из коробки.
+    </div>
+
+    <h3>Утилиты Bootstrap</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Класс</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>mt-3</code></td><td>margin-top: 1rem</td></tr>
+            <tr><td><code>p-4</code></td><td>padding: 1.5rem</td></tr>
+            <tr><td><code>text-center</code></td><td>text-align: center</td></tr>
+            <tr><td><code>text-primary</code></td><td>цвет текста</td></tr>
+            <tr><td><code>bg-light</code></td><td>цвет фона</td></tr>
+            <tr><td><code>d-flex</code></td><td>display: flex</td></tr>
+            <tr><td><code>shadow</code></td><td>тень</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Итог по Bootstrap:</strong> быстрый старт, готовые компоненты,
+        много кода. Хорошо для админок, дашбордов, прототипов.
+    </div>
+
+    <h2>5. Tailwind CSS — утилитарный</h2>
+
+    <p>
+        <strong>Tailwind CSS</strong> — не даёт готовых компонентов. Даёт
+        <strong>утилитарные классы</strong>: каждый класс делает <strong>одно</strong>
+        дело. Ты собираешь компонент сам.
+    </p>
+
+    <h3>Подключение</h3>
+
+    <pre><code>&lt;link href="https://cdn.tailwindcss.com" rel="stylesheet"&gt;</code></pre>
+
+    <h3>Кнопка</h3>
+
+    <pre><code>&lt;button class="bg-blue-500 text-white px-4 py-2 rounded"&gt;
+    Кнопка
+&lt;/button&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Tailwind-подобная кнопка:</div>
+        <button class="tw-btn">Кнопка</button>
+    </div>
+
+    <h3>Карточка</h3>
+
+    <pre><code>&lt;div class="bg-white rounded-lg p-4 shadow-md"&gt;
+    &lt;h5 class="text-lg font-bold mb-2"&gt;Заголовок&lt;/h5&gt;
+    &lt;p class="text-gray-600 text-sm"&gt;Описание карточки.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Tailwind-подобная карточка:</div>
+        <div class="tw-card">
+            <h5 style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">Заголовок</h5>
+            <p style="margin: 0; color: #666; font-size: 14px;">Описание карточки.</p>
+        </div>
+    </div>
+
+    <h3>Утилиты Tailwind</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Класс</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>p-4</code></td><td>padding: 1rem</td></tr>
+            <tr><td><code>mt-2</code></td><td>margin-top: 0.5rem</td></tr>
+            <tr><td><code>bg-blue-500</code></td><td>фон синий</td></tr>
+            <tr><td><code>text-white</code></td><td>текст белый</td></tr>
+            <tr><td><code>rounded-lg</code></td><td>скругление</td></tr>
+            <tr><td><code>shadow-md</code></td><td>тень</td></tr>
+            <tr><td><code>flex</code></td><td>display: flex</td></tr>
+            <tr><td><code>items-center</code></td><td>align-items: center</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Итог по Tailwind:</strong> гибкий, маленький (только используемые
+        классы), но <strong>длинный HTML</strong>. Хорошо для кастомных дизайнов.
+    </div>
+
+    <h2>6. Сравнение Bootstrap и Tailwind</h2>
+
+    <div class="compare">
+        <div>
+            <h4>Bootstrap</h4>
+            <pre><code>&lt;button class="btn btn-primary"&gt;
+    Кнопка
+&lt;/button&gt;</code></pre>
+        </div>
+        <div>
+            <h4>Tailwind</h4>
+            <pre><code>&lt;button class="bg-blue-500
+                text-white px-4 py-2
+                rounded"&gt;
+    Кнопка
+&lt;/button&gt;</code></pre>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Bootstrap</th>
+                <th>Tailwind</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>HTML</td>
+                <td>Короткий</td>
+                <td><strong>Длинный</strong></td>
+            </tr>
+            <tr>
+                <td>CSS</td>
+                <td>Готовый</td>
+                <td>Собираешь сам</td>
+            </tr>
+            <tr>
+                <td>Кастомизация</td>
+                <td>Средняя</td>
+                <td><strong>Высокая</strong></td>
+            </tr>
+            <tr>
+                <td>Размер</td>
+                <td>Большой</td>
+                <td>Маленький</td>
+            </tr>
+            <tr>
+                <td>Порог входа</td>
+                <td>Низкий</td>
+                <td>Средний</td>
+            </tr>
+            <tr>
+                <td>Для чего</td>
+                <td>Админки, прототипы</td>
+                <td>Кастомные дизайны</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>7. Другие фреймворки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Фреймворк</th>
+                <th>Особенность</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Bulma</strong></td><td>Только CSS, без JS. Простой синтаксис.</td></tr>
+            <tr><td><strong>Foundation</strong></td><td>Мощный, но сложный. Для больших проектов.</td></tr>
+            <tr><td><strong>Materialize</strong></td><td>Material Design от Google.</td></tr>
+            <tr><td><strong>UIkit</strong></td><td>Лёгкий, модульный.</td></tr>
+            <tr><td><strong>Primer</strong></td><td>От GitHub. Для продуктов.</td></tr>
+            <tr><td><strong>Pico.css</strong></td><td>Минималистичный, «класс-less».</td></tr>
+        </tbody>
+    </table>
+
+    <h2>8. Когда использовать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ситуация</th>
+                <th>Фреймворк?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Учебный проект</td>
+                <td><strong>Нет</strong> — учи CSS</td>
+            </tr>
+            <tr>
+                <td>Маленький сайт (1–3 страницы)</td>
+                <td>Не нужен</td>
+            </tr>
+            <tr>
+                <td>Админка, дашборд</td>
+                <td><strong>Bootstrap</strong></td>
+            </tr>
+            <tr>
+                <td>Прототип</td>
+                <td>Bootstrap / Tailwind</td>
+            </tr>
+            <tr>
+                <td>Кастомный дизайн</td>
+                <td><strong>Tailwind</strong></td>
+            </tr>
+            <tr>
+                <td>Большой проект</td>
+                <td>Свой CSS / Tailwind</td>
+            </tr>
+            <tr>
+                <td>Лендинг</td>
+                <td>Tailwind</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Не начинай с фреймворка!</strong>
+        <ul>
+            <li>Сначала <strong>освой чистый CSS</strong>.</li>
+            <li>Пойми, как работает каскад, Flexbox, Grid.</li>
+            <li>Потом — фреймворк. Иначе — «магия» без понимания.</li>
+        </ul>
+    </div>
+
+    <h2>9. Проблемы фреймворков</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Проблема</th>
+                <th>Что делать</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Одинаковый вид</td>
+                <td>Кастомизировать через переменные</td>
+            </tr>
+            <tr>
+                <td>Большой размер</td>
+                <td>Tailwind / сборка только нужного</td>
+            </tr>
+            <tr>
+                <td>Сложно переопределить</td>
+                <td>CSS-переменные, <code>!important</code></td>
+            </tr>
+            <tr>
+                <td>Зависимость от версии</td>
+                <td>Фиксировать версию в <code>package.json</code></td>
+            </tr>
+            <tr>
+                <td>Долго учить классы</td>
+                <td>Документация + практика</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>10. Практика: сравни</h2>
+
+    <p>Сделай одну и ту же кнопку тремя способами:</p>
+
+    <h3>Чистый CSS</h3>
+
+    <pre><code>.btn {
+    padding: 8px 16px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}</code></pre>
+
+    <h3>Bootstrap</h3>
+
+    <pre><code>&lt;button class="btn btn-primary"&gt;Кнопка&lt;/button&gt;</code></pre>
+
+    <h3>Tailwind</h3>
+
+    <pre><code>&lt;button class="bg-blue-500 text-white px-4 py-2 rounded"&gt;
+    Кнопка
+&lt;/button&gt;</code></pre>
+
+    <div class="note">
+        <strong>Сравни:</strong> чистый CSS — контроль, Bootstrap — короткий HTML,
+        Tailwind — длинный HTML, но гибкий.
+    </div>
+
+    <h2>11. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Учить фреймворк до CSS</td>
+                <td>Не поймёшь, как работает</td>
+            </tr>
+            <tr>
+                <td>Использовать Bootstrap для всего</td>
+                <td>«Все сайты одинаковые»</td>
+            </tr>
+            <tr>
+                <td>Не кастомизировать</td>
+                <td>Сайт «как у всех»</td>
+            </tr>
+            <tr>
+                <td>Подключать весь Bootstrap</td>
+                <td>200+ КБ — медленно</td>
+            </tr>
+            <tr>
+                <td>Tailwind без сборки</td>
+                <td>Все классы — большой файл</td>
+            </tr>
+            <tr>
+                <td>Смешивать фреймворки</td>
+                <td>Конфликты стилей</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Фреймворк</strong> — готовая библиотека CSS-классов.</li>
+        <li><strong>Bootstrap</strong> — компонентный. Готовые кнопки, карточки, сетка.</li>
+        <li><strong>Tailwind</strong> — утилитарный. Каждый класс = одно свойство.</li>
+        <li><strong>Bootstrap:</strong> короткий HTML, готовый вид. Для админок, прототипов.</li>
+        <li><strong>Tailwind:</strong> длинный HTML, гибкий. Для кастомных дизайнов.</li>
+        <li><strong>Не начинай с фреймворка</strong> — сначала чистый CSS.</li>
+        <li><strong>Кастомизируй</strong> — иначе «как у всех».</li>
+        <li><strong>Не подключай весь Bootstrap</strong> — 200+ КБ.</li>
+        <li><strong>Для лендингов</strong> — Tailwind. Для админок — Bootstrap.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 58 · Следующий урок: <em>Современный CSS — nesting, :has(), container queries</em>
+    </p>
+
+</body>
+</html>

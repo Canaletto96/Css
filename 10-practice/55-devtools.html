@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 55: DevTools для CSS — Elements, Styles, Computed, Grid/Flex inspector, редактирование вживую.">
+    <title>CSS Урок 55. DevTools для CSS</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        kbd {
+            background: #333;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.85em;
+            box-shadow: 0 2px 0 #000;
+        }
+
+        .devtools-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: var(--space);
+            margin: 8px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+        .grid-item-demo {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+
+        .flex-demo {
+            display: flex;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+        .flex-item-demo {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 55. DevTools для CSS</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить DevTools — главный инструмент        -->
+    <!-- для отладки CSS. Elements, Styles, Computed, Grid/Flex.   -->
+    <!-- ========================================================= -->
+
+    <h2>1. Как открыть DevTools</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Способ</th>
+                <th>Клавиши</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Горячие клавиши</td><td><kbd>F12</kbd> или <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Mac: <kbd>Cmd</kbd>+<kbd>Option</kbd>+<kbd>I</kbd>)</td></tr>
+            <tr><td>Правый клик</td><td>«Просмотреть код» / «Inspect»</td></tr>
+            <tr><td>Меню браузера</td><td>Дополнительные инструменты → Инструменты разработчика</td></tr>
+        </tbody>
+    </table>
+
+    <h2>2. Вкладка Elements</h2>
+
+    <p>
+        <strong>Elements</strong> — главная вкладка для CSS. Здесь ты видишь
+        <strong>DOM-дерево</strong> и <strong>стили</strong> элемента.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Слева — DOM</td><td>HTML-структура страницы</td></tr>
+            <tr><td>Справа — Styles</td><td>CSS-правила, которые применились</td></tr>
+            <tr><td>Вкладка Computed</td><td>Итоговые вычисленные стили</td></tr>
+            <tr><td>Вкладка Layout</td><td>Grid и Flex отладка</td></tr>
+        </tbody>
+    </table>
+
+    <h2>3. Как найти элемент</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Способ</th>
+                <th>Как</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Клик по элементу</td><td>Кнопка «стрелка» в DevTools → клик по элементу</td></tr>
+            <tr><td>Правый клик</td><td>«Inspect» на элементе</td></tr>
+            <tr><td>Поиск</td><td><kbd>Ctrl</kbd>+<kbd>F</kbd> в DevTools → ввести селектор</td></tr>
+        </tbody>
+    </table>
+
+    <div class="demo">
+        <div class="demo-label">Попробуй: правый клик на этом тексте → Inspect</div>
+        <div class="devtools-box">
+            <h3 style="margin: 0 0 8px 0; color: var(--primary); border: none; padding: 0;">Этот блок можно исследовать</h3>
+            <p style="margin: 0; color: var(--text-muted);">Правый клик → Inspect. Справа увидишь стили этого элемента.</p>
+        </div>
+    </div>
+
+    <h2>4. Панель Styles — что там</h2>
+
+    <p>
+        Когда выбран элемент, справа видно <strong>все CSS-правила</strong>,
+        которые к нему применились.
+    </p>
+
+    <pre><code>.devtools-box {          /* ← откуда: style.css:50 */
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+user agent stylesheet {   /* ← стили браузера (серым) */
+    display: block;
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Что видно</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Обычный текст</td><td>Применённое свойство</td></tr>
+            <tr><td><s>Зачёркнутый</s></td><td>Перебито другим правилом</td></tr>
+            <tr><td>Серый текст</td><td>Стили браузера (user agent)</td></tr>
+            <tr><td>Ссылка справа</td><td>Файл и строка</td></tr>
+            <tr><td>Стрелка слева</td><td>Раскрыть/свернуть</td></tr>
+        </tbody>
+    </table>
+
+    <h2>5. Редактирование вживую</h2>
+
+    <p>
+        В Styles можно <strong>менять стили прямо в браузере</strong>:
+    </p>
+
+    <ol>
+        <li><strong>Кликнуть</strong> на значение → изменить → <kbd>Enter</kbd>.</li>
+        <li><strong>Снять галочку</strong> слева от свойства — отключить.</li>
+        <li><strong>Двойной клик</strong> на селекторе — изменить селектор.</li>
+        <li><strong>Плюс</strong> в правом верхнем углу — добавить новое свойство.</li>
+    </ol>
+
+    <div class="note">
+        <strong>Важно:</strong> изменения <strong>не сохраняются</strong> — только
+        для теста. Обнови страницу — всё вернётся. Если что-то понравилось —
+        <strong>скопируй</strong> в свой CSS.
+    </div>
+
+    <h2>6. Вкладка Computed — вычисленные стили</h2>
+
+    <p>
+        <strong>Computed</strong> показывает <strong>итоговые</strong> значения
+        всех свойств — то, что реально применилось.
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">Выбери этот блок в DevTools → Computed:</div>
+        <div class="devtools-box" style="max-width: 300px;">
+            <p style="margin: 0;">Увидишь все свойства: width, height, padding, margin, font-size, color.</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Что искать в Computed</th>
+                <th>Зачем</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>width</code>, <code>height</code></td><td>Реальные размеры</td></tr>
+            <tr><td><code>padding</code>, <code>margin</code></td><td>Отступы</td></tr>
+            <tr><td><code>font-size</code>, <code>line-height</code></td><td>Шрифты</td></tr>
+            <tr><td><code>color</code>, <code>background-color</code></td><td>Цвета</td></tr>
+            <tr><td><code>display</code></td><td>Тип отображения</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Box Model</strong> в Computed — визуальная схема content / padding /
+        border / margin. <strong>Лучший способ</strong> понять, почему блок такого размера.
+    </div>
+
+    <h2>7. Grid inspector</h2>
+
+    <p>
+        DevTools умеет <strong>показывать Grid-сетку</strong> прямо на странице.
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">Grid — выбери в DevTools, увидишь сетку:</div>
+        <div class="grid-demo">
+            <div class="grid-item-demo">1</div>
+            <div class="grid-item-demo">2</div>
+            <div class="grid-item-demo">3</div>
+            <div class="grid-item-demo">4</div>
+            <div class="grid-item-demo">5</div>
+            <div class="grid-item-demo">6</div>
+        </div>
+    </div>
+
+    <p>В DevTools рядом с <code>display: grid</code> — кнопка <strong>«grid»</strong>. Нажми — увидишь:</p>
+
+    <ul>
+        <li><strong>Линии сетки</strong> (номера).</li>
+        <li><strong>Области</strong> (если <code>grid-template-areas</code>).</li>
+        <li><strong>Размеры</strong> колонок и строк.</li>
+    </ul>
+
+    <h2>8. Flexbox inspector</h2>
+
+    <p>
+        Аналогично — для Flexbox. Рядом с <code>display: flex</code> — кнопка
+        <strong>«flex»</strong>.
+    </p>
+
+    <div class="demo">
+        <div class="demo-label">Flex — выбери в DevTools:</div>
+        <div class="flex-demo">
+            <div class="flex-item-demo">1</div>
+            <div class="flex-item-demo">2</div>
+            <div class="flex-item-demo">3</div>
+        </div>
+    </div>
+
+    <p>Показывает:</p>
+
+    <ul>
+        <li><strong>Оси</strong> (главная и поперечная).</li>
+        <li><strong>Размеры</strong> элементов.</li>
+        <li><strong>Свободное место</strong>.</li>
+    </ul>
+
+    <h2>9. Полезные фишки DevTools</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Фишка</th>
+                <th>Как</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Режим устройства</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd></td></tr>
+            <tr><td>Показать линейки</td><td>Настройки DevTools → Show rulers</td></tr>
+            <tr><td>Показать сетку</td><td>Кнопка «grid» рядом с <code>display: grid</code></td></tr>
+            <tr><td>Изменить цвет</td><td>Клик на квадратик цвета → палитра</td></tr>
+            <tr><td>Скопировать стиль</td><td>Правый клик на правиле → Copy</td></tr>
+            <tr><td>Форс :hover</td><td>В Styles → <code>:hov</code> → выбрать состояние</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Форс :hover — очень полезно</h3>
+
+    <p>
+        Если у элемента есть стиль на <code>:hover</code>, но ты не можешь его
+        увидеть (например, на мобильном) — можно «включить» hover принудительно:
+    </p>
+
+    <ol>
+        <li>Выбери элемент в Elements.</li>
+        <li>В Styles найди <code>:hov</code> (вверху).</li>
+        <li>Поставь галочку на <code>:hover</code>.</li>
+        <li>Стиль применится.</li>
+    </ol>
+
+    <h2>10. Практика: найди проблему</h2>
+
+    <div class="demo">
+        <div class="demo-label">Найди, почему этот блок «не работает»:</div>
+        <div style="background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin: 8px 0;">
+            <div style="background: #e3f2fd; color: #1565c0; padding: 8px; border-radius: 4px; font-size: 13px;">
+                Этот блок должен быть красным, но он синий. Почему?
+            </div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">
+            Открой DevTools → выбери блок → Styles. Найди правило, которое
+            «перебивает» красный.
+        </p>
+    </div>
+
+    <h2>11. Частые проблемы и как их найти</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Проблема</th>
+                <th>Что искать в DevTools</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Стиль «не применяется»</td><td>Styles → зачёркнутые правила. Кто перебивает?</td></tr>
+            <tr><td>Блок не того размера</td><td>Computed → Box Model. Что не так: padding, border, margin?</td></tr>
+            <tr><td>Элемент «не виден»</td><td>Elements → проверь <code>display: none</code>, <code>opacity: 0</code>, <code>visibility: hidden</code></td></tr>
+            <tr><td>Не работает sticky</td><td>Elements → проверь, нет ли у родителя <code>overflow</code></td></tr>
+            <tr><td>Grid не работает</td><td>Elements → кнопка «grid» рядом с <code>display: grid</code></td></tr>
+            <tr><td>Не работает hover</td><td>Styles → <code>:hov</code> → поставь :hover принудительно</td></tr>
+            <tr><td>Шрифт не тот</td><td>Computed → <code>font-family</code> → что реально применилось</td></tr>
+            <tr><td>Не работает transition</td><td>Styles → проверь <code>transition</code> и <code>duration</code></td></tr>
+        </tbody>
+    </table>
+
+    <h2>12. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>DevTools</strong> — <kbd>F12</kbd>. Главный инструмент CSS.</li>
+        <li><strong>Elements</strong> — DOM + стили.</li>
+        <li><strong>Styles</strong> — применённые правила. <s>Зачёркнутые</s> — перебитые.</li>
+        <li><strong>Computed</strong> — итоговые значения.</li>
+        <li><strong>Box Model</strong> — content / padding / border / margin.</li>
+        <li><strong>Grid inspector</strong> — кнопка «grid».</li>
+        <li><strong>Flex inspector</strong> — кнопка «flex».</li>
+        <li><strong>Редактирование вживую</strong> — клик по значению.</li>
+        <li><strong>Форс :hover</strong> — <code>:hov</code> в Styles.</li>
+        <li><strong>Режим устройства</strong> — <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 55 · Следующий урок: <em>Организация CSS-файлов — один vs несколько, @import</em>
+    </p>
+
+</body>
+</html>

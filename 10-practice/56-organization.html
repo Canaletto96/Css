@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 56: организация CSS-файлов — один файл vs несколько, @import, структура проекта, порядок подключения.">
+    <title>CSS Урок 56. Организация CSS</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        .tree {
+            background: #f5f5f5;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .tree .folder { color: #1565c0; font-weight: bold; }
+        .tree .file { color: #2e7d32; }
+        .tree .comment { color: #999; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 56. Организация CSS-файлов</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, как организовать CSS в проекте —      -->
+    <!-- один файл vs несколько, @import, порядок подключения.     -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: один огромный файл</h2>
+
+    <p>
+        В начале проекта — <strong>один</strong> <code>style.css</code>. Через
+        месяц — <strong>3000 строк</strong>. Найти что-то — боль.
+    </p>
+
+    <pre><code>/* style.css (3000 строк) */
+/* reset */
+/* typography */
+/* header */
+/* nav */
+/* cards */
+/* forms */
+/* footer */
+/* ... */</code></pre>
+
+    <p>
+        <strong>Решение</strong> — разбить на <strong>несколько файлов</strong>
+        по смыслу.
+    </p>
+
+    <h2>2. Один файл vs несколько</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Один файл</th>
+                <th>Несколько файлов</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Простота</td>
+                <td>Проще начать</td>
+                <td>Сложнее</td>
+            </tr>
+            <tr>
+                <td>Найти код</td>
+                <td>Сложно (3000 строк)</td>
+                <td><strong>Легко</strong> (по названию)</td>
+            </tr>
+            <tr>
+                <td>Команда</td>
+                <td>Конфликты при merge</td>
+                <td>Каждый в своём файле</td>
+            </tr>
+            <tr>
+                <td>Кеш</td>
+                <td>Один файл</td>
+                <td>Несколько файлов</td>
+            </tr>
+            <tr>
+                <td>Загрузка</td>
+                <td>Один запрос</td>
+                <td>Много запросов</td>
+            </tr>
+            <tr>
+                <td>Когда</td>
+                <td>Маленькие проекты</td>
+                <td>Средние и большие</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Правило:</strong> до <strong>500 строк</strong> — можно один файл.
+        Больше — <strong>разбивать</strong>.
+    </div>
+
+    <h2>3. Как разбить CSS</h2>
+
+    <h3>Способ 1: по типу</h3>
+
+    <div class="tree"><span class="folder">css/</span>
+├── <span class="file">reset.css</span>        <span class="comment">← сброс стилей</span>
+├── <span class="file">typography.css</span>   <span class="comment">← шрифты, заголовки</span>
+├── <span class="file">layout.css</span>       <span class="comment">← сетка, контейнеры</span>
+├── <span class="file">components.css</span>   <span class="comment">← кнопки, карточки</span>
+└── <span class="file">utilities.css</span>    <span class="comment">← утилиты (.hidden, .mt-4)</span></div>
+
+    <h3>Способ 2: по компонентам (BEM)</h3>
+
+    <div class="tree"><span class="folder">css/</span>
+├── <span class="file">base.css</span>         <span class="comment">← reset, переменные</span>
+├── <span class="folder">components/</span>
+│   ├── <span class="file">button.css</span>
+│   ├── <span class="file">card.css</span>
+│   ├── <span class="file">header.css</span>
+│   └── <span class="file">footer.css</span>
+└── <span class="file">pages/</span>
+    ├── <span class="file">home.css</span>
+    └── <span class="file">about.css</span></div>
+
+    <h3>Способ 3: по страницам</h3>
+
+    <div class="tree"><span class="folder">css/</span>
+├── <span class="file">common.css</span>       <span class="comment">← общее для всех</span>
+├── <span class="file">home.css</span>        <span class="comment">← только главная</span>
+├── <span class="file">about.css</span>       <span class="comment">← только «О нас»</span>
+└── <span class="file">contact.css</span>     <span class="comment">← только «Контакты»</span></div>
+
+    <div class="note">
+        <strong>Рекомендую:</strong> <strong>по компонентам</strong> (способ 2). Легче
+        найти, что относится к кнопке, а что к карточке. Хорошо сочетается с BEM.
+    </div>
+
+    <h2>4. Как подключить несколько файлов</h2>
+
+    <h3>Способ 1: несколько <code>&lt;link&gt;</code></h3>
+
+    <pre><code>&lt;link rel="stylesheet" href="css/reset.css"&gt;
+&lt;link rel="stylesheet" href="css/typography.css"&gt;
+&lt;link rel="stylesheet" href="css/layout.css"&gt;
+&lt;link rel="stylesheet" href="css/components.css"&gt;
+&lt;link rel="stylesheet" href="css/utilities.css"&gt;</code></pre>
+
+    <h3>Способ 2: <code>@import</code> в одном файле</h3>
+
+    <pre><code>/* style.css */
+@import url("reset.css");
+@import url("typography.css");
+@import url("layout.css");
+@import url("components.css");
+@import url("utilities.css");</code></pre>
+
+    <pre><code>&lt;link rel="stylesheet" href="css/style.css"&gt;</code></pre>
+
+    <h2>5. <code>&lt;link&gt;</code> vs <code>@import</code></h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th><code>&lt;link&gt;</code></th>
+                <th><code>@import</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Загрузка</td>
+                <td><strong>Параллельно</strong></td>
+                <td>Последовательно</td>
+            </tr>
+            <tr>
+                <td>Скорость</td>
+                <td><strong>Быстрее</strong></td>
+                <td>Медленнее</td>
+            </tr>
+            <tr>
+                <td>Где писать</td>
+                <td>В HTML</td>
+                <td>В CSS</td>
+            </tr>
+            <tr>
+                <td>Кеширование</td>
+                <td>Обычное</td>
+                <td>Обычное</td>
+            </tr>
+            <tr>
+                <td>Рекомендация</td>
+                <td><strong>Да</strong></td>
+                <td>Только для сборки</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Не используй <code>@import</code> в продакшене!</strong>
+        <ul>
+            <li>Загружается <strong>последовательно</strong> — медленнее.</li>
+            <li>Нельзя распараллелить.</li>
+            <li>Сложнее отлаживать.</li>
+        </ul>
+        <strong>Используй <code>&lt;link&gt;</code></strong> или сборщики (Webpack, Vite, Parcel).
+    </div>
+
+    <h2>6. Порядок подключения</h2>
+
+    <p>
+        <strong>Порядок важен</strong> — CSS каскадируется. Кто ниже — тот
+        «перебивает».
+    </p>
+
+    <pre><code>&lt;!-- 1. Reset — первым --&gt;
+&lt;link rel="stylesheet" href="css/reset.css"&gt;
+
+&lt;!-- 2. Base — переменные, шрифты --&gt;
+&lt;link rel="stylesheet" href="css/base.css"&gt;
+
+&lt;!-- 3. Layout — сетка, контейнеры --&gt;
+&lt;link rel="stylesheet" href="css/layout.css"&gt;
+
+&lt;!-- 4. Components — кнопки, карточки --&gt;
+&lt;link rel="stylesheet" href="css/components.css"&gt;
+
+&lt;!-- 5. Pages — специфика страниц --&gt;
+&lt;link rel="stylesheet" href="css/pages.css"&gt;
+
+&lt;!-- 6. Utilities — утилиты (последними) --&gt;
+&lt;link rel="stylesheet" href="css/utilities.css"&gt;</code></pre>
+
+    <div class="note">
+        <strong>Правило:</strong>
+        <ol>
+            <li><strong>Reset</strong> — первым (убирает стили браузера).</li>
+            <li><strong>Base</strong> — переменные, шрифты.</li>
+            <li><strong>Layout</strong> — сетка.</li>
+            <li><strong>Components</strong> — компоненты.</li>
+            <li><strong>Pages</strong> — специфика страниц.</li>
+            <li><strong>Utilities</strong> — последними (перебивают всё).</li>
+        </ol>
+    </div>
+
+    <h2>7. Пример структуры проекта</h2>
+
+    <div class="tree"><span class="folder">my-site/</span>
+├── <span class="file">index.html</span>
+├── <span class="file">about.html</span>
+├── <span class="folder">css/</span>
+│   ├── <span class="file">reset.css</span>        <span class="comment">← сброс</span>
+│   ├── <span class="file">variables.css</span>    <span class="comment">← CSS-переменные</span>
+│   ├── <span class="file">base.css</span>         <span class="comment">← body, шрифты</span>
+│   ├── <span class="folder">components/</span>
+│   │   ├── <span class="file">button.css</span>
+│   │   ├── <span class="file">card.css</span>
+│   │   ├── <span class="file">header.css</span>
+│   │   └── <span class="file">footer.css</span>
+│   ├── <span class="file">layout.css</span>       <span class="comment">← сетка</span>
+│   └── <span class="file">utilities.css</span>    <span class="comment">← утилиты</span>
+└── <span class="folder">images/</span></div>
+
+    <h2>8. Альтернатива: сборщики</h2>
+
+    <p>
+        В реальных проектах используют <strong>сборщики</strong>, которые
+        <strong>объединяют</strong> все CSS в один файл <strong>автоматически</strong>.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Инструмент</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Vite</strong></td><td>Современный сборщик</td></tr>
+            <tr><td><strong>Webpack</strong></td><td>Мощный, сложный</td></tr>
+            <tr><td><strong>Parcel</strong></td><td>Простой, без настройки</td></tr>
+            <tr><td><strong>Sass</strong></td><td>Препроцессор + <code>@import</code> / <code>@use</code></td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Как работает:</strong> в проекте — <strong>много</strong> файлов,
+        но сборщик <strong>объединяет</strong> их в <strong>один</strong>
+        <code>bundle.css</code>. Браузер грузит <strong>один</strong> файл —
+        быстро.
+    </div>
+
+    <h2>9. Практика: разбей CSS</h2>
+
+    <p>
+        Возьми свой <code>style.css</code> и разбей на части:
+    </p>
+
+    <ol>
+        <li><strong><code>reset.css</code></strong> — <code>*, body, img, input, button</code>.</li>
+        <li><strong><code>variables.css</code></strong> — <code>:root { --primary: ... }</code>.</li>
+        <li><strong><code>base.css</code></strong> — <code>body</code>, <code>h1</code>–<code>h6</code>, <code>p</code>, <code>a</code>.</li>
+        <li><strong><code>components/button.css</code></strong> — <code>.btn</code>.</li>
+        <li><strong><code>components/card.css</code></strong> — <code>.card</code>.</li>
+        <li><strong><code>layout.css</code></strong> — <code>.container</code>, <code>.grid</code>.</li>
+        <li><strong><code>utilities.css</code></strong> — <code>.hidden</code>, <code>.mt-4</code>.</li>
+    </ol>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>@import</code> в продакшене</td>
+                <td>Загружается последовательно — медленнее</td>
+            </tr>
+            <tr>
+                <td>Подключать <code>utilities.css</code> первым</td>
+                <td>Утилиты должны быть последними (перебивают всё)</td>
+            </tr>
+            <tr>
+                <td>Один огромный файл</td>
+                <td>Сложно найти, конфликты в команде</td>
+            </tr>
+            <tr>
+                <td>Слишком много файлов (20+)</td>
+                <td>Много запросов — медленно</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>reset.css</code></td>
+                <td>Стили браузера «мешают»</td>
+            </tr>
+            <tr>
+                <td>Перемешать компоненты и утилиты</td>
+                <td>Сложно понять, что где</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Один файл</strong> — для маленьких проектов (&lt; 500 строк).</li>
+        <li><strong>Несколько файлов</strong> — для больших.</li>
+        <li><strong>Разбивать по компонентам</strong> — лучший способ.</li>
+        <li><strong>Порядок подключения:</strong> reset → base → layout → components → pages → utilities.</li>
+        <li><strong><code>&lt;link&gt;</code> лучше <code>@import</code></strong> — параллельная загрузка.</li>
+        <li><strong>Сборщики</strong> (Vite, Webpack) — для реальных проектов.</li>
+        <li><strong>Не 20+ файлов</strong> — много запросов.</li>
+        <li><strong>Утилиты — последними</strong> (перебивают всё).</li>
+        <li><strong>Reset — первым.</strong></li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 56 · Следующий урок: <em>Препроцессоры — Sass, LESS (обзорно)</em>
+    </p>
+
+</body>
+</html>

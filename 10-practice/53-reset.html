@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 53: сброс стилей — reset.css, normalize.css, современный reset. Зачем нужен.">
+    <title>CSS Урок 53. Сброс стилей</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        .reset-demo {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: var(--space);
+            margin: var(--space) 0;
+            background: var(--white);
+        }
+
+        .reset-demo h3 {
+            border: none;
+            padding: 0;
+            margin: 0 0 8px 0;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 53. Сброс стилей</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, зачем нужен reset / normalize,        -->
+    <!-- и как написать современный сброс.                         -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: разные браузеры — разные стили</h2>
+
+    <p>
+        Каждый браузер применяет свои <strong>стили по умолчанию</strong> (user agent
+        stylesheet). Chrome, Firefox, Safari, Edge — <strong>разные</strong> отступы,
+        размеры, шрифты у одинаковых тегов.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Элемент</th>
+                <th>Chrome</th>
+                <th>Firefox</th>
+                <th>Safari</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>&lt;body&gt;</code></td>
+                <td><code>margin: 8px</code></td>
+                <td><code>margin: 8px</code></td>
+                <td><code>margin: 8px</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;h1&gt;</code></td>
+                <td><code>font-size: 2em</code></td>
+                <td><code>font-size: 2em</code></td>
+                <td>Может отличаться</td>
+            </tr>
+            <tr>
+                <td><code>&lt;button&gt;</code></td>
+                <td>Свой стиль</td>
+                <td>Свой стиль</td>
+                <td>Свой стиль</td>
+            </tr>
+            <tr>
+                <td><code>&lt;input&gt;</code></td>
+                <td>Свой стиль</td>
+                <td>Другой</td>
+                <td>Третий</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Проблема:</strong> сайт выглядит <strong>по-разному</strong> в разных
+        браузерах. Особенно заметно на <code>&lt;button&gt;</code>, <code>&lt;input&gt;</code>,
+        <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>.
+    </div>
+
+    <h2>2. Что такое сброс стилей</h2>
+
+    <p>
+        <strong>Сброс стилей</strong> (reset / normalize) — это CSS-файл, который
+        <strong>убирает</strong> или <strong>выравнивает</strong> стили браузера,
+        чтобы начать «с чистого листа».
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Подход</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong><code>reset.css</code></strong></td>
+                <td><strong>Убирает ВСЁ</strong>: margin, padding, border, list-style</td>
+            </tr>
+            <tr>
+                <td><strong><code>normalize.css</code></strong></td>
+                <td><strong>Выравнивает</strong> стили браузеров, но <strong>сохраняет</strong> полезное</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. <code>reset.css</code> — «убрать всё»</h2>
+
+    <p>
+        Классический reset (Eric Meyer, 2000-е) убирает <strong>все</strong> стили
+        браузера:
+    </p>
+
+    <pre><code>/* reset.css (классический) */
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">С reset:</div>
+        <div class="reset-demo" style="margin: 0; padding: 0;">
+            <h3 style="margin: 0; padding: 0; font-size: 1em; font-weight: normal;">Заголовок h3</h3>
+            <p style="margin: 0; padding: 0;">Параграф без отступов.</p>
+            <ul style="margin: 0; padding: 0; list-style: none;">
+                <li>Список без маркеров</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Плюсы и минусы <code>reset.css</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Плюсы</th>
+                <th>Минусы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Полный контроль</td>
+                <td>Приходится <strong>всё</strong> задавать заново</td>
+            </tr>
+            <tr>
+                <td>Одинаково во всех браузерах</td>
+                <td>Теряются полезные стили (<code>h1</code> больше не жирный)</td>
+            </tr>
+            <tr>
+                <td>Чистый старт</td>
+                <td>Много кода для базовых стилей</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. <code>normalize.css</code> — «выровнять, но сохранить»</h2>
+
+    <p>
+        <strong>normalize.css</strong> (Nicolas Gallagher, 2011) — «умный» сброс.
+        Он <strong>выравнивает</strong> стили браузеров, но <strong>сохраняет</strong>
+        полезные:
+    </p>
+
+    <ul>
+        <li><strong><code>h1</code> остаётся жирным</strong> и крупным.</li>
+        <li><strong><code>ul</code> остаётся с маркерами</strong>.</li>
+        <li><strong><code>button</code> остаётся кнопкой</strong>.</li>
+        <li><strong>Но</strong> — одинаково во всех браузерах.</li>
+    </ul>
+
+    <pre><code>/* normalize.css (фрагмент) */
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+button,
+input {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">С normalize (стили сохранены, но выровнены):</div>
+        <div class="reset-demo">
+            <h3>Заголовок h3</h3>
+            <p>Параграф с отступами.</p>
+            <ul>
+                <li>Список с маркерами</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>normalize.css</strong> — <strong>лучший выбор</strong> для большинства
+        проектов. Сохраняет полезное, выравнивает различия.
+    </div>
+
+    <h2>5. Как подключить</h2>
+
+    <h3>Через CDN</h3>
+
+    <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css"&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+
+    <h3>Локально</h3>
+
+    <pre><code>&lt;!-- Сначала reset, потом свои стили --&gt;
+&lt;link rel="stylesheet" href="css/normalize.css"&gt;
+&lt;link rel="stylesheet" href="css/style.css"&gt;</code></pre>
+
+    <div class="warn">
+        <strong>Порядок важен:</strong> <code>normalize.css</code> — <strong>первым</strong>.
+        Свои стили — <strong>после</strong>. Иначе reset перебьёт твои стили.
+    </div>
+
+    <h2>6. Современный reset (рекомендую)</h2>
+
+    <p>
+        Сейчас <code>normalize.css</code> уже не так актуален — браузеры стали
+        ближе. <strong>Современный reset</strong> — минимальный, но эффективный:
+    </p>
+
+    <pre><code>/* modern-reset.css */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}</code></pre>
+
+    <h2>7. Что делает современный reset</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Правило</th>
+                <th>Зачем</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>box-sizing: border-box</code></td>
+                <td>Padding не увеличивает ширину (урок 12)</td>
+            </tr>
+            <tr>
+                <td><code>body { margin: 0 }</code></td>
+                <td>Убирает отступ 8px у body</td>
+            </tr>
+            <tr>
+                <td><code>img { display: block }</code></td>
+                <td>Убирает зазор под картинкой</td>
+            </tr>
+            <tr>
+                <td><code>img { max-width: 100% }</code></td>
+                <td>Картинка не вылезает за экран</td>
+            </tr>
+            <tr>
+                <td><code>input, button { font: inherit }</code></td>
+                <td>Кнопки/поля наследуют шрифт</td>
+            </tr>
+            <tr>
+                <td><code>overflow-wrap: break-word</code></td>
+                <td>Длинные слова не вылезают</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>8. Полный современный reset</h2>
+
+    <pre><code>/* ============================================================
+   Modern CSS Reset (Andy Bell, 2023)
+   ============================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select {
+    font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+
+#root, #__next {
+    isolation: isolate;
+}</code></pre>
+
+    <div class="note">
+        <strong>Этот reset — 16 строк.</strong> Он убирает главные проблемы, но
+        оставляет полезные стили (<code>h1</code> — жирный, <code>ul</code> — с маркерами).
+    </div>
+
+    <h2>9. Что НЕ надо сбрасывать</h2>
+
+    <div class="warn">
+        <strong>Не сбрасывай:</strong>
+        <ul>
+            <li><strong>Размеры заголовков</strong> — <code>h1</code> должен быть крупным.</li>
+            <li><strong>Маркеры списков</strong> — <code>ul</code> должен быть с точками.</li>
+            <li><strong>Стили кнопок</strong> — <code>button</code> должна выглядеть как кнопка.</li>
+            <li><strong>Отступы параграфов</strong> — <code>p</code> должен иметь отступы.</li>
+        </ul>
+        Иначе — придётся <strong>всё задавать заново</strong>.
+    </div>
+
+    <h2>10. Практика: свой reset</h2>
+
+    <p>Создай файл <code>reset.css</code> и подключи его первым:</p>
+
+    <pre><code>/* reset.css */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select {
+    font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}</code></pre>
+
+    <pre><code>&lt;!-- index.html --&gt;
+&lt;link rel="stylesheet" href="reset.css"&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+
+    <h2>11. Сравнение подходов</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>reset.css</th>
+                <th>normalize.css</th>
+                <th>Modern reset</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Стили браузера</td>
+                <td>Убирает всё</td>
+                <td>Выравнивает</td>
+                <td>Убирает главное</td>
+            </tr>
+            <tr>
+                <td>Полезное</td>
+                <td>Теряется</td>
+                <td>Сохраняется</td>
+                <td>Сохраняется</td>
+            </tr>
+            <tr>
+                <td>Размер</td>
+                <td>Много</td>
+                <td>Средний</td>
+                <td><strong>16 строк</strong></td>
+            </tr>
+            <tr>
+                <td>Рекомендация</td>
+                <td>Legacy</td>
+                <td>Хорошо</td>
+                <td><strong>Да</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Подключить reset <strong>после</strong> своих стилей</td>
+                <td>Reset перебьёт твои стили</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>* { margin: 0; padding: 0; }</code></td>
+                <td>Теряются полезные отступы</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>box-sizing: border-box</code></td>
+                <td>Padding «ломает» размеры</td>
+            </tr>
+            <tr>
+                <td>Сбрасывать <code>h1</code> до <code>font-size: 1em</code></td>
+                <td>Заголовок перестаёт быть заголовком</td>
+            </tr>
+            <tr>
+                <td>Сбрасывать <code>ul</code> без <code>list-style</code></td>
+                <td>Список теряет маркеры</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Сброс стилей</strong> — убрать/выровнять стили браузера.</li>
+        <li><strong><code>reset.css</code></strong> — убирает всё. Много кода, теряет полезное.</li>
+        <li><strong><code>normalize.css</code></strong> — выравнивает, сохраняет полезное.</li>
+        <li><strong>Современный reset</strong> — 16 строк, минимальный.</li>
+        <li><strong><code>box-sizing: border-box</code></strong> — обязательно.</li>
+        <li><strong><code>body { margin: 0 }</code></strong> — убирает отступ 8px.</li>
+        <li><strong><code>img { display: block; max-width: 100% }</code></strong> — картинки.</li>
+        <li><strong><code>input, button { font: inherit }</code></strong> — наследуют шрифт.</li>
+        <li><strong>Подключать первым</strong> — до своих стилей.</li>
+        <li><strong>Не сбрасывать</strong> полезное: размеры заголовков, маркеры списков.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 53 · Следующий урок: <em>CSS-методологии — BEM, OOCSS, Atomic CSS</em>
+    </p>
+
+</body>
+</html>

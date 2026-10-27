@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 54: методологии — BEM, OOCSS, Atomic CSS, SMACSS. Как организовать классы.">
+    <title>CSS Урок 54. CSS-методологии</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        /* ============================================================ */
+        /* ДЕМО: BEM                                                     */
+        /* ============================================================ */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: var(--space);
+            box-shadow: var(--shadow-md);
+            max-width: 300px;
+        }
+        .card__title {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        .card__text {
+            margin: 0 0 16px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .card__button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .card--featured {
+            border: 2px solid var(--primary);
+            background: #e3f2fd;
+        }
+
+        /* ============================================================ */
+        /* ДЕМО: Atomic CSS                                              */
+        /* ============================================================ */
+        .p-4 { padding: 16px; }
+        .bg-white { background: #fff; }
+        .rounded-lg { border-radius: 12px; }
+        .shadow { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .text-primary { color: var(--primary); }
+        .text-muted { color: var(--text-muted); }
+        .text-lg { font-size: 18px; }
+        .text-sm { font-size: 14px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mt-4 { margin-top: 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 54. CSS-методологии</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить подходы к организации CSS-классов —   -->
+    <!-- BEM, OOCSS, Atomic CSS, SMACSS.                           -->
+    <!-- ========================================================= -->
+
+    <h2>1. Проблема: как называть классы</h2>
+
+    <p>
+        В большом проекте — <strong>сотни классов</strong>. Без правил — каша:
+    </p>
+
+    <pre><code>.button { }
+.red-button { }
+.button-big { }
+.button-big-red { }
+.sidebar .button { }
+#header .button { }   /* ??? */</code></pre>
+
+    <p>
+        <strong>Методологии</strong> — это <strong>правила</strong>, как организовывать
+        классы, чтобы код был <strong>понятным</strong> и <strong>поддерживаемым</strong>.
+    </p>
+
+    <h2>2. Обзор методологий</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Методология</th>
+                <th>Идея</th>
+                <th>Сложность</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>BEM</strong></td>
+                <td>Блок + Элемент + Модификатор</td>
+                <td>Средняя</td>
+            </tr>
+            <tr>
+                <td><strong>OOCSS</strong></td>
+                <td>Разделение структуры и оформления</td>
+                <td>Средняя</td>
+            </tr>
+            <tr>
+                <td><strong>Atomic CSS</strong></td>
+                <td>Один класс = одно свойство</td>
+                <td>Простая</td>
+            </tr>
+            <tr>
+                <td><strong>SMACSS</strong></td>
+                <td>Категории: base, layout, module, state, theme</td>
+                <td>Средняя</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3. BEM — Block, Element, Modifier</h2>
+
+    <p>
+        <strong>BEM</strong> (БЭМ) — самая популярная методология. Три части:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Часть</th>
+                <th>Что</th>
+                <th>Синтаксис</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Block</strong></td>
+                <td>Независимый компонент</td>
+                <td><code>.card</code></td>
+            </tr>
+            <tr>
+                <td><strong>Element</strong></td>
+                <td>Часть блока (зависит от блока)</td>
+                <td><code>.card__title</code></td>
+            </tr>
+            <tr>
+                <td><strong>Modifier</strong></td>
+                <td>Вариант блока/элемента</td>
+                <td><code>.card--featured</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Синтаксис BEM</h3>
+
+    <pre><code>/* Блок */
+.card { }
+
+/* Элемент — через __ */
+.card__title { }
+.card__text { }
+.card__button { }
+
+/* Модификатор — через -- */
+.card--featured { }
+.card--dark { }
+.card__button--large { }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">BEM: карточка</div>
+        <div class="card">
+            <h3 class="card__title">Заголовок</h3>
+            <p class="card__text">Описание карточки.</p>
+            <button class="card__button">Кнопка</button>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">BEM: модификатор --featured</div>
+        <div class="card card--featured">
+            <h3 class="card__title">Выделенная карточка</h3>
+            <p class="card__text">С модификатором --featured.</p>
+            <button class="card__button">Кнопка</button>
+        </div>
+    </div>
+
+    <h3>Правила BEM</h3>
+
+    <ul>
+        <li><strong>Блок</strong> — независимый. Можно переместить в другое место.</li>
+        <li><strong>Элемент</strong> — <strong>не может</strong> существовать без блока. Имя — <code>блок__элемент</code>.</li>
+        <li><strong>Модификатор</strong> — <strong>вариант</strong>. Имя — <code>блок--модификатор</code> или <code>блок__элемент--модификатор</code>.</li>
+        <li><strong>Не использовать</strong> id для стилей.</li>
+        <li><strong>Не вкладывать</strong> селекторы: <code>.card .title</code> — плохо, <code>.card__title</code> — хорошо.</li>
+    </ul>
+
+    <div class="note">
+        <strong>Плюсы BEM:</strong>
+        <ul>
+            <li><strong>Понятно</strong> из имени, что за элемент.</li>
+            <li><strong>Низкая специфичность</strong> — легко переопределить.</li>
+            <li><strong>Независимость</strong> блоков.</li>
+            <li><strong>Масштабируемость</strong>.</li>
+        </ul>
+    </div>
+
+    <div class="warn">
+        <strong>Минусы BEM:</strong>
+        <ul>
+            <li><strong>Длинные имена</strong>: <code>.card__button--large-primary</code>.</li>
+            <li><strong>Много классов</strong> в HTML.</li>
+            <li><strong>Не для маленьких проектов</strong> — избыточно.</li>
+        </ul>
+    </div>
+
+    <h2>4. OOCSS — Object-Oriented CSS</h2>
+
+    <p>
+        <strong>OOCSS</strong> — разделение <strong>структуры</strong> и
+        <strong>оформления</strong>. Один класс — структура, другой — вид.
+    </p>
+
+    <pre><code>/* Структура */
+.card {
+    padding: 16px;
+    border-radius: 8px;
+}
+
+/* Оформление */
+.card-primary {
+    background: #1565c0;
+    color: white;
+}
+
+.card-secondary {
+    background: #f5f5f5;
+    color: #222;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">OOCSS: структура + оформление</div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <div style="padding: 16px; border-radius: 8px; background: #1565c0; color: white;">
+                card card-primary
+            </div>
+            <div style="padding: 16px; border-radius: 8px; background: #f5f5f5; color: #222;">
+                card card-secondary
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Плюсы OOCSS:</strong> переиспользование, меньше кода.
+        <strong>Минусы:</strong> сложно понять, какие классы комбинировать.
+    </div>
+
+    <h2>5. Atomic CSS — «один класс = одно свойство»</h2>
+
+    <p>
+        <strong>Atomic CSS</strong> (Functional CSS, Utility-first) — каждый класс
+        делает <strong>одно</strong> дело. Как в Tailwind CSS.
+    </p>
+
+    <pre><code>.p-4 { padding: 16px; }
+.m-4 { margin: 16px; }
+.text-red { color: red; }
+.bg-white { background: white; }
+.rounded { border-radius: 8px; }
+.shadow { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+.font-bold { font-weight: bold; }
+.text-lg { font-size: 18px; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Atomic CSS:</div>
+        <div class="p-4 bg-white rounded-lg shadow" style="max-width: 300px;">
+            <h3 class="text-primary text-lg mb-2" style="margin-top: 0;">Заголовок</h3>
+            <p class="text-muted text-sm" style="margin: 0 0 16px 0;">Описание карточки.</p>
+            <button style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">Кнопка</button>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Плюсы Atomic CSS:</strong>
+        <ul>
+            <li><strong>Быстро</strong> — не пишешь CSS, комбинируешь классы.</li>
+            <li><strong>Нет «мёртвого» CSS</strong> — используются только нужные классы.</li>
+            <li><strong>Легко менять</strong> — один класс.</li>
+        </ul>
+        <strong>Минусы:</strong>
+        <ul>
+            <li><strong>Длинный HTML</strong>: <code>class="p-4 bg-white rounded shadow text-lg ..."</code>.</li>
+            <li><strong>Сложно читать</strong> в больших компонентах.</li>
+            <li><strong>Не для всех</strong> — некоторым не нравится.</li>
+        </ul>
+    </div>
+
+    <h2>6. SMACSS — Scalable and Modular Architecture</h2>
+
+    <p>
+        <strong>SMACSS</strong> — разделение CSS на <strong>5 категорий</strong>:
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Категория</th>
+                <th>Что</th>
+                <th>Пример</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Base</strong></td><td>Базовые стили (reset, шрифты)</td><td><code>body { }</code>, <code>h1 { }</code></td></tr>
+            <tr><td><strong>Layout</strong></td><td>Макет страницы</td><td><code>.l-header { }</code>, <code>.l-sidebar { }</code></td></tr>
+            <tr><td><strong>Module</strong></td><td>Компоненты</td><td><code>.card { }</code>, <code>.btn { }</code></td></tr>
+            <tr><td><strong>State</strong></td><td>Состояния</td><td><code>.is-active { }</code>, <code>.is-hidden { }</code></td></tr>
+            <tr><td><strong>Theme</strong></td><td>Темы</td><td><code>.theme-dark { }</code></td></tr>
+        </tbody>
+    </table>
+
+    <pre><code>/* Base */
+body { font-family: system-ui; }
+
+/* Layout */
+.l-header { }
+.l-sidebar { }
+.l-main { }
+
+/* Module */
+.card { }
+.btn { }
+
+/* State */
+.is-active { }
+.is-disabled { }
+
+/* Theme */
+.theme-dark { }</code></pre>
+
+    <h2>7. Сравнение методологий</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>BEM</th>
+                <th>OOCSS</th>
+                <th>Atomic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Имена</td>
+                <td>Длинные</td>
+                <td>Средние</td>
+                <td>Короткие</td>
+            </tr>
+            <tr>
+                <td>HTML</td>
+                <td>Средний</td>
+                <td>Средний</td>
+                <td><strong>Длинный</strong></td>
+            </tr>
+            <tr>
+                <td>CSS</td>
+                <td>Много</td>
+                <td>Средне</td>
+                <td><strong>Мало</strong></td>
+            </tr>
+            <tr>
+                <td>Сложность</td>
+                <td>Средняя</td>
+                <td>Средняя</td>
+                <td>Простая</td>
+            </tr>
+            <tr>
+                <td>Для чего</td>
+                <td>Большие проекты</td>
+                <td>Средние</td>
+                <td>Любые</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>8. Что выбрать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ситуация</th>
+                <th>Методология</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Маленький проект (1–5 страниц)</td>
+                <td>Без методологии, просто классы</td>
+            </tr>
+            <tr>
+                <td>Средний проект</td>
+                <td>BEM</td>
+            </tr>
+            <tr>
+                <td>Большой проект</td>
+                <td>BEM + SMACSS</td>
+            </tr>
+            <tr>
+                <td>Хочешь быстро</td>
+                <td>Atomic CSS (Tailwind)</td>
+            </tr>
+            <tr>
+                <td>Команда</td>
+                <td>BEM (стандарт)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Современная практика:</strong> BEM — самый популярный. Atomic CSS —
+        растёт (Tailwind CSS). Многие комбинируют: BEM для компонентов, Atomic
+        для утилит.
+    </div>
+
+    <h2>9. Практика: карточка на BEM</h2>
+
+    <pre><code>&lt;div class="card"&gt;
+    &lt;h3 class="card__title"&gt;Заголовок&lt;/h3&gt;
+    &lt;p class="card__text"&gt;Описание&lt;/p&gt;
+    &lt;button class="card__button"&gt;Кнопка&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="card card--featured"&gt;
+    &lt;h3 class="card__title"&gt;Выделенная&lt;/h3&gt;
+    &lt;p class="card__text"&gt;С модификатором&lt;/p&gt;
+    &lt;button class="card__button card__button--large"&gt;Большая кнопка&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <pre><code>.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card__title {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #1565c0;
+}
+
+.card__text {
+    margin: 0 0 16px 0;
+    color: #666;
+}
+
+.card__button {
+    padding: 10px 20px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.card--featured {
+    border: 2px solid #1565c0;
+    background: #e3f2fd;
+}
+
+.card__button--large {
+    padding: 14px 28px;
+    font-size: 16px;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">BEM: обычная и выделенная карточки</div>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <div class="card">
+                <h3 class="card__title">Заголовок</h3>
+                <p class="card__text">Описание карточки.</p>
+                <button class="card__button">Кнопка</button>
+            </div>
+            <div class="card card--featured">
+                <h3 class="card__title">Выделенная</h3>
+                <p class="card__text">С модификатором --featured.</p>
+                <button class="card__button">Кнопка</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>.card .title</code> вместо <code>.card__title</code></td>
+                <td>Высокая специфичность, сложно переопределить</td>
+            </tr>
+            <tr>
+                <td><code>#id</code> для стилей</td>
+                <td>Слишком высокая специфичность</td>
+            </tr>
+            <tr>
+                <td>Модификатор без базового класса</td>
+                <td><code>.card--featured</code> без <code>.card</code> — не работает</td>
+            </tr>
+            <tr>
+                <td>Элемент без блока</td>
+                <td><code>.card__title</code> без <code>.card</code> — семантически неверно</td>
+            </tr>
+            <tr>
+                <td>Слишком длинные имена</td>
+                <td><code>.card__button__icon__left</code> — плохо</td>
+            </tr>
+            <tr>
+                <td>Atomic CSS без Tailwind</td>
+                <td>Писать вручную — много классов</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Методологии</strong> — правила именования классов.</li>
+        <li><strong>BEM:</strong> <code>блок__элемент--модификатор</code>.</li>
+        <li><strong>BEM:</strong> блок независим, элемент зависит, модификатор — вариант.</li>
+        <li><strong>OOCSS:</strong> структура отдельно, оформление отдельно.</li>
+        <li><strong>Atomic CSS:</strong> один класс = одно свойство.</li>
+        <li><strong>SMACSS:</strong> 5 категорий — base, layout, module, state, theme.</li>
+        <li><strong>BEM</strong> — самый популярный.</li>
+        <li><strong>Atomic CSS</strong> — растёт (Tailwind).</li>
+        <li><strong>Не используй</strong> <code>#id</code> для стилей.</li>
+        <li><strong>Не вкладывай</strong> селекторы: <code>.card .title</code> — плохо.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 54 · Следующий урок: <em>DevTools для CSS — как отлаживать стили</em>
+    </p>
+
+</body>
+</html>

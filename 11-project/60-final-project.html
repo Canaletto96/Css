@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 60: итоговый проект — собираем полноценный адаптивный сайт на всём, что изучили за 60 уроков.">
+    <title>CSS Урок 60. Итоговый проект</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --primary-light: #e3f2fd;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --space: 16px;
+            --transition: 0.3s ease;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        * {
+            margin: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img,
+        picture,
+        video,
+        canvas,
+        svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        input,
+        button,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        /* ========================================================= */
+        /* Урок 60 — стили страницы урока                             */
+        /* ========================================================= */
+
+        .lesson {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 8px;
+        }
+
+        h2 {
+            color: var(--text);
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: var(--text-muted);
+            margin-top: 28px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .note {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+        }
+
+        .warn {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+        }
+
+        .task {
+            background: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f5f5f5;
+        }
+
+        .checklist {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+        }
+
+        .checklist ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist li::before {
+            content: "☐ ";
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* ========================================================= */
+        /* Демо: готовый сайт (мини-версия)                          */
+        /* ========================================================= */
+
+        .site-demo {
+            border: 2px dashed #999;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin: 16px 0;
+            background: var(--white);
+        }
+
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space) 24px;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .site-logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .site-nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .site-nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+
+        .site-nav a:hover {
+            color: var(--primary);
+        }
+
+        .site-hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            padding: clamp(24px, 5vw, 64px);
+            background: linear-gradient(135deg, var(--primary), #42a5f5);
+            color: white;
+            text-align: center;
+        }
+
+        .site-hero h1 {
+            font-size: clamp(28px, 5vw, 48px);
+            margin: 0 0 16px 0;
+            color: white;
+            border: none;
+            padding: 0;
+        }
+
+        .site-hero p {
+            font-size: clamp(14px, 2vw, 18px);
+            opacity: 0.9;
+            margin: 0 0 24px 0;
+        }
+
+        .site-hero button {
+            padding: 12px 28px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .site-hero button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .site-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px 24px;
+        }
+
+        .site-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .site-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .site-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: var(--primary);
+            border: none;
+            padding: 0;
+        }
+
+        .site-card p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .site-footer {
+            background: #333;
+            color: white;
+            padding: 24px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .site-nav {
+                gap: 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lesson">
+
+        <h1>CSS Урок 60. Итоговый проект</h1>
+
+        <!-- ========================================================= -->
+        <!-- ЦЕЛЬ УРОКА: собрать всё, что изучили за 60 уроков,        -->
+        <!-- в один полноценный адаптивный сайт.                        -->
+        <!-- ========================================================= -->
+
+        <h2>1. Что будем делать</h2>
+
+        <p>
+            Ты прошёл <strong>60 уроков CSS</strong>. Пора собрать всё вместе —
+            <strong>полноценный адаптивный сайт</strong>.
+        </p>
+
+        <p>Это не просто упражнение — это <strong>портфолио</strong>. Такой сайт можно
+           показать работодателю или использовать как личную страницу.</p>
+
+        <h2>2. Что должен уметь сайт</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Требование</th>
+                    <th>Урок</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Сброс стилей</td><td>53</td></tr>
+                <tr><td>CSS-переменные</td><td>51</td></tr>
+                <tr><td>Шапка с навигацией</td><td>22, 32</td></tr>
+                <tr><td>Адаптивная сетка карточек</td><td>39, 44</td></tr>
+                <tr><td>Flexbox для компонентов</td><td>27–32</td></tr>
+                <tr><td>Grid для макета</td><td>33–39</td></tr>
+                <tr><td>Адаптивность (mobile-first)</td><td>40–45</td></tr>
+                <tr><td>Hover-эффекты</td><td>46, 48</td></tr>
+                <tr><td>Анимации</td><td>49, 50</td></tr>
+                <tr><td>Современные функции (<code>clamp()</code>)</td><td>52</td></tr>
+                <tr><td>BEM-нейминг</td><td>54</td></tr>
+            </tbody>
+        </table>
+
+        <h2>3. Структура проекта</h2>
+
+        <pre><code>my-site/
+├── index.html
+├── about.html
+├── css/
+│   ├── reset.css
+│   ├── variables.css
+│   ├── base.css
+│   ├── layout.css
+│   ├── components/
+│   │   ├── header.css
+│   │   ├── hero.css
+│   │   ├── card.css
+│   │   └── footer.css
+│   └── pages/
+│       ├── home.css
+│       └── about.css
+├── images/
+│   ├── logo.svg
+│   └── photos/
+└── js/
+    └── script.js</code></pre>
+
+        <h2>4. Что использовать из курса</h2>
+
+        <h3>Основы</h3>
+        <ul>
+            <li><strong>Сброс</strong> — modern reset (урок 53).</li>
+            <li><strong>Переменные</strong> — <code>:root { --primary: ... }</code> (урок 51).</li>
+            <li><strong>Типографика</strong> — <code>clamp()</code> для заголовков (урок 52).</li>
+        </ul>
+
+        <h3>Компоненты</h3>
+        <ul>
+            <li><strong>Шапка</strong> — <code>display: flex; justify-content: space-between</code> (урок 32).</li>
+            <li><strong>Hero</strong> — <code>display: flex; align-items: center; justify-content: center</code> (урок 29).</li>
+            <li><strong>Карточки</strong> — <code>display: grid; repeat(auto-fit, minmax(...))</code> (урок 44).</li>
+            <li><strong>Подвал</strong> — <code>display: flex; flex-direction: column</code> (урок 32).</li>
+        </ul>
+
+        <h3>Адаптивность</h3>
+        <ul>
+            <li><strong>Mobile-first</strong> — базовые стили для мобильных, <code>@media (min-width: ...)</code> (урок 41).</li>
+            <li><strong><code>clamp()</code></strong> — для шрифтов и отступов (урок 52).</li>
+            <li><strong><code>auto-fit</code></strong> — для сеток (урок 44).</li>
+        </ul>
+
+        <h3>Современное</h3>
+        <ul>
+            <li><strong>Nesting</strong> — вложенность (урок 59).</li>
+            <li><strong><code>:has()</code></strong> — родитель по ребёнку (урок 59).</li>
+            <li><strong>Container Queries</strong> — адаптив по контейнеру (урок 45).</li>
+        </ul>
+
+        <h2>5. Мини-версия готового сайта</h2>
+
+        <p>Вот <strong>пример</strong> того, что должно получиться. Прокрути — увидишь все компоненты.</p>
+
+        <div class="site-demo">
+            <header class="site-header">
+                <div class="site-logo">Мой сайт</div>
+                <nav class="site-nav">
+                    <a href="#">Главная</a>
+                    <a href="#">О нас</a>
+                    <a href="#">Контакты</a>
+                </nav>
+            </header>
+
+            <section class="site-hero">
+                <div>
+                    <h1>Добро пожаловать</h1>
+                    <p>Сайт, собранный на чистом CSS</p>
+                    <button>Начать</button>
+                </div>
+            </section>
+
+            <section class="site-cards">
+                <div class="site-card">
+                    <h3>Карточка 1</h3>
+                    <p>Собрана на Flexbox и Grid. Адаптивна.</p>
+                </div>
+                <div class="site-card">
+                    <h3>Карточка 2</h3>
+                    <p>Использует CSS-переменные и hover-эффекты.</p>
+                </div>
+                <div class="site-card">
+                    <h3>Карточка 3</h3>
+                    <p>На мобильных — в одну колонку.</p>
+                </div>
+            </section>
+
+            <footer class="site-footer">
+                &copy; 2026 Мой сайт. Сделано на чистом CSS.
+            </footer>
+        </div>
+
+        <h2>6. Полный код сайта (один файл)</h2>
+
+        <p>
+            Для простоты — <strong>один HTML</strong> с CSS внутри. В реальном
+            проекте — разбить на файлы (урок 56).
+        </p>
+
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Мой сайт&lt;/title&gt;
+    &lt;style&gt;
+        /* ============ RESET ============ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        * {
+            margin: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img, picture, video, canvas, svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        input, button, textarea, select {
+            font: inherit;
+        }
+
+        /* ============ VARIABLES ============ */
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --primary-light: #e3f2fd;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --space: 16px;
+            --transition: 0.3s ease;
+        }
+
+        /* ============ LAYOUT ============ */
+        .container {
+            width: min(100% - 32px, 1200px);
+            margin: 0 auto;
+        }
+
+        /* ============ HEADER ============ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space) 0;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header__logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .header__nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .header__link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+
+        .header__link:hover {
+            color: var(--primary);
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            padding: clamp(24px, 5vw, 64px) 0;
+            background: linear-gradient(135deg, var(--primary), #42a5f5);
+            color: white;
+            text-align: center;
+        }
+
+        .hero__title {
+            font-size: clamp(28px, 5vw, 48px);
+            margin: 0 0 16px 0;
+        }
+
+        .hero__text {
+            font-size: clamp(14px, 2vw, 18px);
+            opacity: 0.9;
+            margin: 0 0 24px 0;
+        }
+
+        .hero__button {
+            padding: 12px 28px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .hero__button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ============ CARDS ============ */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 0;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card__title {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .card__text {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 24px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* ============ ADAPTIVE ============ */
+        @media (max-width: 600px) {
+            .header {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .header__nav {
+                gap: 16px;
+                font-size: 14px;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;header class="header"&gt;
+        &lt;div class="container"&gt;
+            &lt;a href="/" class="header__logo"&gt;Мой сайт&lt;/a&gt;
+            &lt;nav class="header__nav"&gt;
+                &lt;a href="#" class="header__link"&gt;Главная&lt;/a&gt;
+                &lt;a href="#" class="header__link"&gt;О нас&lt;/a&gt;
+                &lt;a href="#" class="header__link"&gt;Контакты&lt;/a&gt;
+            &lt;/nav&gt;
+        &lt;/div&gt;
+    &lt;/header&gt;
+
+    &lt;section class="hero"&gt;
+        &lt;div class="container"&gt;
+            &lt;h1 class="hero__title"&gt;Добро пожаловать&lt;/h1&gt;
+            &lt;p class="hero__text"&gt;Сайт, собранный на чистом CSS&lt;/p&gt;
+            &lt;button class="hero__button"&gt;Начать&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section class="container"&gt;
+        &lt;div class="cards"&gt;
+            &lt;article class="card"&gt;
+                &lt;h3 class="card__title"&gt;Карточка 1&lt;/h3&gt;
+                &lt;p class="card__text"&gt;Собрана на Flexbox и Grid.&lt;/p&gt;
+            &lt;/article&gt;
+            &lt;article class="card"&gt;
+                &lt;h3 class="card__title"&gt;Карточка 2&lt;/h3&gt;
+                &lt;p class="card__text"&gt;Использует CSS-переменные.&lt;/p&gt;
+            &lt;/article&gt;
+            &lt;article class="card"&gt;
+                &lt;h3 class="card__title"&gt;Карточка 3&lt;/h3&gt;
+                &lt;p class="card__text"&gt;На мобильных — в одну колонку.&lt;/p&gt;
+            &lt;/article&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;footer class="footer"&gt;
+        &lt;div class="container"&gt;
+            &amp;copy; 2026 Мой сайт
+        &lt;/div&gt;
+    &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <h2>7. Чек-лист перед публикацией</h2>
+
+        <div class="checklist">
+            <ul>
+                <li>Каркас: DOCTYPE, html lang, head с charset и viewport</li>
+                <li>Title — до 60 символов, уникальный</li>
+                <li>Meta description — 120–160 символов</li>
+                <li>Один h1 на страницу</li>
+                <li>Иерархия заголовков: h1 → h2 → h3 без пропусков</li>
+                <li>Семантические теги: header, nav, main, section, article, footer</li>
+                <li>Сброс стилей (modern reset)</li>
+                <li><code>box-sizing: border-box</code></li>
+                <li>CSS-переменные в <code>:root</code></li>
+                <li>BEM-нейминг классов</li>
+                <li>Адаптивность: mobile-first, <code>@media (min-width: ...)</code></li>
+                <li><code>clamp()</code> для шрифтов</li>
+                <li><code>repeat(auto-fit, minmax(...))</code> для сеток</li>
+                <li>Hover-эффекты для интерактивных элементов</li>
+                <li><code>transition</code> для плавности</li>
+                <li>Все <code>&lt;img&gt;</code> с <code>alt</code></li>
+                <li>Все <code>&lt;img&gt;</code> с <code>max-width: 100%</code></li>
+                <li>Все ссылки с осмысленным текстом</li>
+                <li>Все <code>id</code> уникальны</li>
+                <li>Все теги закрыты</li>
+                <li>Нет ошибок в W3C Validator</li>
+                <li>DevTools → Console: нет красных ошибок</li>
+                <li>DevTools → Network: нет 404</li>
+                <li>Lighthouse: хорошие оценки (зелёные)</li>
+                <li>Работает на телефоне (DevTools → режим устройства)</li>
+                <li>Работает с клавиатуры (Tab, Enter)</li>
+            </ul>
+        </div>
+
+        <h2>8. Что делать после курса</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Тема</th>
+                    <th>Зачем</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>JavaScript</strong></td><td>Интерактивность: формы, кнопки, динамика</td></tr>
+                <tr><td><strong>Git и GitHub</strong></td><td>Контроль версий, публикация проектов</td></tr>
+                <tr><td><strong>Адаптивная вёрстка (глубже)</strong></td><td>Media queries, flexbox, grid</td></tr>
+                <tr><td><strong>Препроцессоры (Sass)</strong></td><td>Когда CSS станет много</td></tr>
+                <tr><td><strong>Фреймворки</strong></td><td>React, Vue — когда освоишь базу</td></tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <strong>Совет:</strong> не пытайся выучить всё сразу. CSS — это
+            <strong>фундамент</strong>. Освой его до автоматизма, потом иди дальше.
+            Практика важнее теории: делай проекты, даже маленькие.
+        </div>
+
+        <h2>9. Идеи для дальнейших проектов</h2>
+
+        <ul>
+            <li><strong>Портфолио</strong> — с проектами в <code>&lt;article&gt;</code>.</li>
+            <li><strong>Лендинг</strong> — с заголовком, преимуществами, CTA-кнопкой.</li>
+            <li><strong>Блог</strong> — с несколькими статьями.</li>
+            <li><strong>Магазин</strong> — с карточками товаров.</li>
+            <li><strong>Дашборд</strong> — с сеткой виджетов.</li>
+            <li><strong>Страница рецепта</strong> — с шагами, ингредиентами, фото.</li>
+            <li><strong>FAQ-страница</strong> — с <code>&lt;details&gt;</code>.</li>
+            <li><strong>Резюме</strong> — с опытом, навыками, контактами.</li>
+        </ul>
+
+        <h2>10. Финальное задание</h2>
+
+        <div class="task">
+            <p><strong>Собери свой проект.</strong></p>
+            <ol>
+                <li>Создай папку <code>my-site/</code>.</li>
+                <li>Напиши <code>index.html</code> — с шапкой, hero, карточками, подвалом.</li>
+                <li>Напиши CSS — с reset, переменными, BEM, адаптивом.</li>
+                <li>Пройди чек-лист из раздела 7.</li>
+                <li>Проверь валидатором (<a href="https://validator.w3.org" target="_blank">validator.w3.org</a>).</li>
+                <li>Проверь в DevTools (<kbd>F12</kbd>): Console, Network, Lighthouse.</li>
+                <li>Проверь на телефоне (DevTools → режим устройства).</li>
+                <li>Загрузи на GitHub Pages или Netlify.</li>
+                <li>Получи ссылку, открой на телефоне.</li>
+                <li>Если всё работает — <strong>ты прошёл курс CSS</strong>! 🎉</li>
+            </ol>
+
+            <p><strong>Дополнительно (по желанию):</strong></p>
+            <ul>
+                <li>Добавь вторую страницу (<code>about.html</code>) с общими стилями.</li>
+                <li>Сделай тёмную тему через <code>prefers-color-scheme</code>.</li>
+                <li>Добавь анимации (<code>@keyframes</code>).</li>
+                <li>Подключи WebP-картинки с fallback.</li>
+                <li>Используй <code>:has()</code> для карточек с картинками.</li>
+            </ul>
+        </div>
+
+        <h2>11. Что ты теперь умеешь</h2>
+
+        <p>После 60 уроков CSS ты:</p>
+
+        <ul>
+            <li>✅ Понимаешь каскад, специфичность, наследование.</li>
+            <li>✅ Знаешь все единицы измерения и цвета.</li>
+            <li>✅ Умеешь работать с блочной моделью.</li>
+            <li>✅ Делаешь фоны, градиенты, тени.</li>
+            <li>✅ Владеешь позиционированием.</li>
+            <li>✅ Используешь <strong>Flexbox</strong> для компонентов.</li>
+            <li>✅ Используешь <strong>Grid</strong> для макетов.</li>
+            <li>✅ Делаешь <strong>адаптивные</strong> сайты (mobile-first, <code>clamp()</code>, <code>auto-fit</code>).</li>
+            <li>✅ Пишешь <strong>псевдоклассы</strong> и <strong>псевдоэлементы</strong>.</li>
+            <li>✅ Добавляешь <strong>переходы</strong> и <strong>анимации</strong>.</li>
+            <li>✅ Используешь <strong>CSS-переменные</strong>.</li>
+            <li>✅ Применяешь <strong>функции</strong> (<code>calc()</code>, <code>clamp()</code>).</li>
+            <li>✅ Организуешь CSS (BEM, файлы).</li>
+            <li>✅ Отлаживаешь через <strong>DevTools</strong>.</li>
+            <li>✅ Используешь <strong>современный CSS</strong> (nesting, <code>:has()</code>, container queries).</li>
+        </ul>
+
+        <div class="note">
+            <strong>Поздравляю!</strong> Ты прошёл курс CSS. Это только начало пути.
+            Впереди — JavaScript, фреймворки, реальные проекты. Но база у тебя уже есть.
+            Практикуйся каждый день, делай проекты, не бойся ошибок. Удачи! 🚀
+        </div>
+
+        <h2>12. Что запомнить из урока</h2>
+
+        <ul>
+            <li><strong>Практика важнее теории.</strong> Сделай свой проект.</li>
+            <li><strong>Не копируй</strong> — пиши сам. Так запоминается.</li>
+            <li><strong>Проверяй</strong> всё: валидатор, DevTools, телефон.</li>
+            <li><strong>CSS — фундамент.</strong> Дальше — JavaScript и фреймворки.</li>
+            <li><strong>Mobile-first</strong> — стандарт.</li>
+            <li><strong>BEM</strong> — для организации.</li>
+            <li><strong>Не бойся ошибок.</strong> Все ошибаются, это часть обучения.</li>
+        </ul>
+
+        <hr>
+        <p style="text-align:center; color:#888; font-size:14px;">
+            Конец урока 60 · Конец курса CSS 🎉
+        </p>
+
+    </div>
+
+</body>
+</html>

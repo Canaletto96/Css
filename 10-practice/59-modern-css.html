@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 59: современный CSS — nesting, :has(), container queries, :is, :where, subgrid. Новинки 2023–2024.">
+    <title>CSS Урок 59. Современный CSS</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        /* ============================================================ */
+        /* ДЕМО: CSS Nesting                                             */
+        /* ============================================================ */
+        .nesting-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: var(--space);
+            box-shadow: var(--shadow-md);
+            max-width: 300px;
+
+            & h3 {
+                margin: 0 0 8px 0;
+                color: var(--primary);
+                font-size: 18px;
+            }
+
+            & p {
+                margin: 0 0 12px 0;
+                color: var(--text-muted);
+                font-size: 14px;
+            }
+
+            & button {
+                padding: 8px 16px;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            &:hover {
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            }
+
+            &.featured {
+                border: 2px solid var(--primary);
+                background: #e3f2fd;
+            }
+        }
+
+        /* ============================================================ */
+        /* ДЕМО: :has()                                                  */
+        /* ============================================================ */
+        .has-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: var(--space);
+            box-shadow: var(--shadow-md);
+            margin: 8px 0;
+        }
+
+        .has-card:has(img) {
+            border-left: 4px solid #43a047;
+        }
+
+        .has-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            float: left;
+            margin-right: 12px;
+        }
+
+        .has-card .clear {
+            clear: both;
+        }
+
+        /* ============================================================ */
+        /* ДЕМО: Container Queries                                       */
+        /* ============================================================ */
+        .cq-container {
+            container-type: inline-size;
+            container-name: card;
+            background: #f5f5f5;
+            border: 2px solid #999;
+            border-radius: var(--radius);
+            padding: var(--space);
+            margin: 8px 0;
+        }
+
+        .cq-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--white);
+            padding: var(--space);
+            border-radius: var(--radius);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cq-card-image {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .cq-card-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: var(--primary);
+            border: none;
+            padding: 0;
+        }
+
+        .cq-card-content p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @container card (min-width: 400px) {
+            .cq-card {
+                flex-direction: row;
+                align-items: center;
+            }
+            .cq-card-image {
+                width: 120px;
+                height: 120px;
+                flex-shrink: 0;
+            }
+        }
+
+        /* ============================================================ */
+        /* ДЕМО: :is() и :where()                                        */
+        /* ============================================================ */
+        .is-demo h2,
+        .is-demo h3,
+        .is-demo h4 {
+            margin: 8px 0;
+            font-size: 18px;
+        }
+
+        .is-demo :is(h2, h3, h4) {
+            color: var(--primary);
+        }
+
+        .where-demo :where(h2, h3) {
+            color: #6a1b9a;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 59. Современный CSS</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: освоить новинки CSS 2023–2024 — nesting,      -->
+    <!-- :has(), container queries, subgrid.                        -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что изменилось в CSS</h2>
+
+    <p>
+        CSS <strong>очень изменился</strong> за 2023–2024. Многие вещи, для которых
+        раньше нужны были препроцессоры или JS, теперь <strong>встроены</strong>.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Возможность</th>
+                <th>Было</th>
+                <th>Стало</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Вложенность</td>
+                <td>Только SCSS/LESS</td>
+                <td><strong>Нативный CSS</strong> (2023)</td>
+            </tr>
+            <tr>
+                <td>«Родитель по ребёнку»</td>
+                <td>Только JS</td>
+                <td><strong><code>:has()</code></strong> (2023)</td>
+            </tr>
+            <tr>
+                <td>Адаптив по контейнеру</td>
+                <td>Только <code>@media</code></td>
+                <td><strong><code>@container</code></strong> (2023)</td>
+            </tr>
+            <tr>
+                <td>Subgrid</td>
+                <td>Не было</td>
+                <td><strong><code>grid-template-rows: subgrid</code></strong></td>
+            </tr>
+            <tr>
+                <td>Переменные</td>
+                <td>Только SCSS</td>
+                <td><strong><code>--var</code></strong> (2018)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. CSS Nesting — вложенность</h2>
+
+    <p>
+        Теперь можно писать <strong>вложенные селекторы</strong> прямо в CSS.
+        Как в SCSS, но <strong>нативно</strong>.
+    </p>
+
+    <pre><code>.card {
+    padding: 16px;
+
+    & h3 {
+        color: blue;
+    }
+
+    & p {
+        color: gray;
+    }
+
+    &:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    &.featured {
+        border: 2px solid blue;
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">CSS Nesting:</div>
+        <div class="nesting-card">
+            <h3>Заголовок</h3>
+            <p>Описание карточки с нативной вложенностью.</p>
+            <button>Кнопка</button>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Как в SCSS:</strong> <code>&amp;</code> — родительский селектор.
+        <code>&amp;:hover</code> = <code>.card:hover</code>.
+        <code>&amp;.featured</code> = <code>.card.featured</code>.
+    </div>
+
+    <h3>Вложенность без <code>&amp;</code></h3>
+
+    <pre><code>.card {
+    padding: 16px;
+
+    h3 {
+        color: blue;
+    }
+
+    p {
+        color: gray;
+    }
+}</code></pre>
+
+    <div class="note">
+        <strong>Без <code>&amp;</code></strong> — тоже работает (для тегов и классов).
+        Но для псевдоклассов (<code>:hover</code>) и модификаторов (<code>.featured</code>)
+        лучше <strong>с <code>&amp;</code></strong>.
+    </div>
+
+    <h2>3. <code>:has()</code> — «родитель по ребёнку»</h2>
+
+    <p>
+        <strong>Революция.</strong> Позволяет выбрать элемент, у которого
+        <strong>есть</strong> указанный потомок.
+    </p>
+
+    <pre><code>.card:has(img) {
+    border-left: 4px solid green;
+}
+
+form:has(:invalid) {
+    border: 2px solid red;
+}
+
+h2:has(+ p) {
+    margin-bottom: 0;
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Карточка с картинкой — зелёная рамка:</div>
+        <div class="has-card">
+            <img src="https://picsum.photos/60/60?random=140" alt="Фото">
+            <strong>Карточка с картинкой</strong>
+            <p style="margin: 4px 0 0 0; color: #666; font-size: 14px;">У неё есть :has(img) — зелёная рамка.</p>
+            <div class="clear"></div>
+        </div>
+        <div class="has-card">
+            <strong>Карточка без картинки</strong>
+            <p style="margin: 4px 0 0 0; color: #666; font-size: 14px;">Без :has(img) — обычная.</p>
+        </div>
+    </div>
+
+    <h3>Практические применения <code>:has()</code></h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Селектор</th>
+                <th>Что выбирает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>.card:has(img)</code></td><td>Карточка с картинкой</td></tr>
+            <tr><td><code>form:has(:invalid)</code></td><td>Форма с ошибкой</td></tr>
+            <tr><td><code>h2:has(+ p)</code></td><td>Заголовок, за которым идёт параграф</td></tr>
+            <tr><td><code>.card:has( .featured)</code></td><td>Карточка с прямым ребёнком .featured</td></tr>
+            <tr><td><code>label:has(+ input:focus)</code></td><td>Label, у которого следующий input в фокусе</td></tr>
+        </tbody>
+    </table>
+
+    <h2>4. Container Queries — адаптив по контейнеру</h2>
+
+    <p>
+        Раньше <code>@media</code> смотрел только на <strong>окно</strong>. Теперь
+        <code>@container</code> смотрит на <strong>контейнер</strong>.
+    </p>
+
+    <pre><code>.card-container {
+    container-type: inline-size;
+    container-name: card;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+@container card (min-width: 400px) {
+    .card {
+        flex-direction: row;
+    }
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Узкий контейнер (300px) — вертикальная карточка:</div>
+        <div class="cq-container" style="max-width: 300px;">
+            <div class="cq-card">
+                <div class="cq-card-image">Фото</div>
+                <div class="cq-card-content">
+                    <h3>Заголовок</h3>
+                    <p>Описание карточки в узком контейнере.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo">
+        <div class="demo-label">Широкий контейнер (500px) — горизонтальная карточка:</div>
+        <div class="cq-container" style="max-width: 500px;">
+            <div class="cq-card">
+                <div class="cq-card-image">Фото</div>
+                <div class="cq-card-content">
+                    <h3>Заголовок</h3>
+                    <p>Описание карточки в широком контейнере. Карточка перестроилась автоматически.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Главное:</strong> одна и та же карточка <strong>сама</strong>
+        подстраивается под ширину контейнера. Не нужно знать, где она используется.
+    </div>
+
+    <h2>5. <code>:is()</code> и <code>:where()</code></h2>
+
+    <h3><code>:is()</code> — группировка</h3>
+
+    <pre><code>:is(h2, h3, h4) {
+    color: blue;
+}
+
+/* = */
+h2, h3, h4 { color: blue; }</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">:is(h2, h3, h4):</div>
+        <div class="is-demo">
+            <h2>Заголовок h2</h2>
+            <h3>Заголовок h3</h3>
+            <h4>Заголовок h4</h4>
+        </div>
+    </div>
+
+    <h3><code>:where()</code> — как <code>:is()</code>, но специфичность 0</h3>
+
+    <pre><code>:where(h2, h3) { color: blue; }
+h2 { color: red; }   /* ← победит, потому что специфичность h2 выше :where */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">:where(h2, h3) — легко переопределить:</div>
+        <div class="where-demo">
+            <h2>Заголовок h2</h2>
+            <h3>Заголовок h3</h3>
+        </div>
+    </div>
+
+    <h2>6. Subgrid — вложенные сетки</h2>
+
+    <p>
+        Позволяет <strong>вложенной сетке</strong> использовать <strong>линии
+        родительской</strong>.
+    </p>
+
+    <pre><code>.parent {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+.child {
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: subgrid;   /* ← использует колонки родителя */
+}</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">Subgrid (карточки выравниваются по родителю):</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <div style="display: grid; grid-template-columns: subgrid; grid-column: span 3; gap: 8px;">
+                <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-size: 12px;">1</div>
+                <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-size: 12px;">2</div>
+                <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; text-align: center; font-size: 12px;">3</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>7. Другие новинки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Возможность</th>
+                <th>Что даёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>:focus-visible</code></td><td>Фокус только с клавиатуры (не с мыши)</td></tr>
+            <tr><td><code>aspect-ratio</code></td><td>Пропорции элемента</td></tr>
+            <tr><td><code>gap</code> в flexbox</td><td>Отступы между flex-элементами</td></tr>
+            <tr><td><code>clamp()</code></td><td>Адаптивный размер</td></tr>
+            <tr><td><code>color-mix()</code></td><td>Смешивание цветов</td></tr>
+            <tr><td><code>@layer</code></td><td>Слои каскада</td></tr>
+            <tr><td><code>scrollbar-gutter</code></td><td>Контроль скроллбара</td></tr>
+            <tr><td><code>text-wrap: balance</code></td><td>Красивый перенос текста</td></tr>
+        </tbody>
+    </table>
+
+    <h3><code>:focus-visible</code> — фокус только с клавиатуры</h3>
+
+    <pre><code>button:focus-visible {
+    outline: 3px solid blue;
+}
+
+/* Мышь — нет обводки. Клавиатура — есть */</code></pre>
+
+    <div class="note">
+        <strong>Полезно:</strong> решает старую проблему — «как убрать обводку
+        при клике, но оставить при Tab». Теперь — <code>:focus-visible</code>.
+    </div>
+
+    <h3><code>color-mix()</code> — смешивание цветов</h3>
+
+    <pre><code>background: color-mix(in srgb, #1565c0 50%, white 50%);
+/* смесь синего и белого — голубой */</code></pre>
+
+    <div class="demo">
+        <div class="demo-label">color-mix():</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px;">
+            <div style="background: color-mix(in srgb, #1565c0 100%, white 0%); padding: 16px; border-radius: 6px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 12px;">100% синий</div>
+            <div style="background: color-mix(in srgb, #1565c0 75%, white 25%); padding: 16px; border-radius: 6px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 12px;">75%</div>
+            <div style="background: color-mix(in srgb, #1565c0 50%, white 50%); padding: 16px; border-radius: 6px; text-align: center; color: white; font-family: Consolas, Monaco, monospace; font-size: 12px;">50%</div>
+            <div style="background: color-mix(in srgb, #1565c0 25%, white 75%); padding: 16px; border-radius: 6px; text-align: center; color: #1565c0; font-family: Consolas, Monaco, monospace; font-size: 12px;">25%</div>
+        </div>
+    </div>
+
+    <h3><code>@layer</code> — слои каскада</h3>
+
+    <pre><code>@layer reset, base, components, utilities;
+
+@layer reset {
+    * { margin: 0; }
+}
+
+@layer components {
+    .btn { background: blue; }
+}
+
+@layer utilities {
+    .text-center { text-align: center; }
+}</code></pre>
+
+    <div class="note">
+        <strong><code>@layer</code></strong> — контроль порядка каскада.
+        Слои применяются в порядке объявления. <strong>Не зависит</strong> от
+        специфичности.
+    </div>
+
+    <h2>8. Поддержка браузерами</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Возможность</th>
+                <th>Chrome</th>
+                <th>Firefox</th>
+                <th>Safari</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Nesting</td><td>112+</td><td>117+</td><td>16.5+</td></tr>
+            <tr><td><code>:has()</code></td><td>105+</td><td>121+</td><td>15.4+</td></tr>
+            <tr><td>Container queries</td><td>105+</td><td>110+</td><td>16+</td></tr>
+            <tr><td>Subgrid</td><td>117+</td><td>71+</td><td>16+</td></tr>
+            <tr><td><code>color-mix()</code></td><td>111+</td><td>113+</td><td>16.2+</td></tr>
+            <tr><td><code>@layer</code></td><td>99+</td><td>97+</td><td>15.4+</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Сейчас (2026)</strong> — всё поддерживается <strong>везде</strong>.
+        Можно использовать в продакшене.
+    </div>
+
+    <h2>9. Практика: карточка на современном CSS</h2>
+
+    <pre><code>/* Без вложенности */
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    color: blue;
+    margin: 0 0 8px 0;
+}
+
+.card p {
+    color: gray;
+    margin: 0;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* С вложенностью (2023) */
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    & h3 {
+        color: blue;
+        margin: 0 0 8px 0;
+    }
+
+    & p {
+        color: gray;
+        margin: 0;
+    }
+
+    &:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+}</code></pre>
+
+    <h2>10. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Забыть <code>&amp;</code> для псевдокласса</td>
+                <td><code>:hover</code> без <code>&amp;</code> — другой селектор</td>
+            </tr>
+            <tr>
+                <td>Слишком глубокая вложенность</td>
+                <td>Длинные селекторы — сложно переопределить</td>
+            </tr>
+            <tr>
+                <td><code>:has()</code> на старых браузерах</td>
+                <td>Не работает. Нужен fallback</td>
+            </tr>
+            <tr>
+                <td><code>container-type</code> без <code>container-name</code></td>
+                <td>Можно, но при нескольких — путаница</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>@layer</code> без плана</td>
+                <td>Слои применяются в порядке объявления — легко запутаться</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>11. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>CSS Nesting</strong> — вложенность нативно. <code>&amp;</code> — родитель.</li>
+        <li><strong><code>:has()</code></strong> — «родитель по ребёнку». Революция 2023.</li>
+        <li><strong>Container Queries</strong> — адаптив по контейнеру. <code>@container</code>.</li>
+        <li><strong><code>:is()</code></strong> — группировка. <strong><code>:where()</code></strong> — специфичность 0.</li>
+        <li><strong>Subgrid</strong> — вложенная сетка использует линии родителя.</li>
+        <li><strong><code>:focus-visible</code></strong> — фокус только с клавиатуры.</li>
+        <li><strong><code>color-mix()</code></strong> — смешивание цветов.</li>
+        <li><strong><code>@layer</code></strong> — контроль порядка каскада.</li>
+        <li><strong>Поддержка</strong> — везде с 2024.</li>
+        <li><strong>Не углубляйся</strong> в вложенность — 2–3 уровня.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 59 · Конец блока 10 (Практика и инструменты) · Следующий урок: <em>Итоговый проект — финальный сайт</em>
+    </p>
+
+</body>
+</html>

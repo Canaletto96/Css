@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSS Урок 57: препроцессоры — Sass, LESS, SCSS. Переменные, вложенность, миксины, функции.">
+    <title>CSS Урок 57. Препроцессоры</title>
+
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --text: #222;
+            --text-muted: #666;
+            --bg: #fafafa;
+            --white: #fff;
+            --border: #ddd;
+            --radius: 8px;
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --space: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1 { color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 8px; }
+        h2 { color: var(--text); margin-top: 40px; }
+        h3 { color: var(--text-muted); margin-top: 28px; border-left: 4px solid var(--primary); padding-left: 12px; }
+
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            color: #c7254e;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        pre code { background: none; color: inherit; padding: 0; }
+
+        .note { background: #e3f2fd; border-left: 4px solid var(--primary); padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .warn { background: #ffebee; border-left: 4px solid #e53935; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+        .task { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: var(--radius); }
+
+        .demo {
+            border: 2px dashed #999;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            background: var(--white);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            background: var(--white);
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th { background: #f5f5f5; }
+
+        kbd {
+            background: #333;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.85em;
+            box-shadow: 0 2px 0 #000;
+        }
+
+        .tree {
+            background: #f5f5f5;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .tree .folder { color: #1565c0; font-weight: bold; }
+        .tree .file { color: #2e7d32; }
+        .tree .comment { color: #999; font-style: italic; }
+
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        @media (max-width: 600px) {
+            .compare { grid-template-columns: 1fr; }
+        }
+        .compare > div h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Урок 57. Препроцессоры</h1>
+
+    <!-- ========================================================= -->
+    <!-- ЦЕЛЬ УРОКА: понять, что такое препроцессоры, зачем они    -->
+    <!-- нужны, и как они работают (на примере Sass / SCSS).       -->
+    <!-- ========================================================= -->
+
+    <h2>1. Что такое препроцессор</h2>
+
+    <p>
+        <strong>Препроцессор</strong> — это программа, которая <strong>превращает
+        «расширенный» CSS в обычный CSS</strong>. Браузер не понимает Sass / LESS —
+        понимает только чистый CSS.
+    </p>
+
+    <pre><code>// style.scss (пишешь ты)
+$primary: #1565c0;
+
+.button {
+    background: $primary;
+
+    &:hover {
+        background: darken($primary, 10%);
+    }
+}
+
+/* ↓ компилируется в style.css (понимает браузер) */
+.button {
+    background: #1565c0;
+}
+.button:hover {
+    background: #0d47a1;
+}</code></pre>
+
+    <div class="note">
+        <strong>Аналогия:</strong> препроцессор — как <strong>переводчик</strong>.
+        Ты пишешь «удобно», он переводит в «понятно браузеру».
+    </div>
+
+    <h2>2. Зачем препроцессоры</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Возможность</th>
+                <th>Чистый CSS</th>
+                <th>Препроцессор</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Переменные</td>
+                <td><code>--var</code> (есть)</td>
+                <td><code>$var</code> (раньше было только здесь)</td>
+            </tr>
+            <tr>
+                <td>Вложенность</td>
+                <td>Только с 2023 (не везде)</td>
+                <td><strong>Да</strong></td>
+            </tr>
+            <tr>
+                <td>Миксины (функции)</td>
+                <td>Нет</td>
+                <td><strong>Да</strong></td>
+            </tr>
+            <tr>
+                <td>Циклы</td>
+                <td>Нет</td>
+                <td><strong>Да</strong> (<code>@for</code>, <code>@each</code>)</td>
+            </tr>
+            <tr>
+                <td>Функции</td>
+                <td>Только <code>calc()</code>, <code>clamp()</code></td>
+                <td><strong>Да</strong> (<code>darken()</code>, <code>lighten()</code>)</td>
+            </tr>
+            <tr>
+                <td>Разбиение на файлы</td>
+                <td><code>@import</code> (медленно)</td>
+                <td><strong>Да</strong> (быстро)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Важно:</strong> с 2023 чистый CSS получил <strong>переменные</strong>
+        и <strong>вложенность</strong>. Но миксины, циклы, функции — всё ещё только
+        в препроцессорах.
+    </div>
+
+    <h2>3. Sass и LESS — два основных</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Sass / SCSS</th>
+                <th>LESS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Синтаксис</td>
+                <td><code>.scss</code> (как CSS) или <code>.sass</code> (отступы)</td>
+                <td><code>.less</code> (как CSS)</td>
+            </tr>
+            <tr>
+                <td>Популярность</td>
+                <td><strong>Высокая</strong></td>
+                <td>Средняя</td>
+            </tr>
+            <tr>
+                <td>Переменные</td>
+                <td><code>$var</code></td>
+                <td><code>@var</code></td>
+            </tr>
+            <tr>
+                <td>Миксины</td>
+                <td><code>@mixin</code> / <code>@include</code></td>
+                <td><code>.mixin()</code></td>
+            </tr>
+            <tr>
+                <td>Где используется</td>
+                <td>Bootstrap, большинство проектов</td>
+                <td>Меньше</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>Сейчас</strong> — <strong>Sass (SCSS)</strong> — стандарт. LESS
+        используется реже. <strong>SCSS</strong> — синтаксис как CSS, но с
+        дополнительными возможностями.
+    </div>
+
+    <h2>4. Переменные</h2>
+
+    <h3>SCSS</h3>
+
+    <pre><code>$primary: #1565c0;
+$radius: 8px;
+$font: system-ui, sans-serif;
+
+.button {
+    background: $primary;
+    border-radius: $radius;
+    font-family: $font;
+}</code></pre>
+
+    <h3>LESS</h3>
+
+    <pre><code>@primary: #1565c0;
+@radius: 8px;
+
+.button {
+    background: @primary;
+    border-radius: @radius;
+}</code></pre>
+
+    <div class="note">
+        <strong>С CSS-переменными</strong> (<code>--var</code>) препроцессорные
+        переменные стали менее нужны. Но Sass-переменные <strong>компилируются</strong>
+        в значения — их нельзя менять через JS.
+    </div>
+
+    <h2>5. Вложенность</h2>
+
+    <p>
+        Главная «фишка» препроцессоров — <strong>вложенные селекторы</strong>.
+    </p>
+
+    <div class="compare">
+        <div>
+            <h4>Чистый CSS</h4>
+            <pre><code>.card {
+    padding: 16px;
+}
+
+.card .title {
+    font-size: 18px;
+}
+
+.card .text {
+    color: #666;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}</code></pre>
+        </div>
+        <div>
+            <h4>SCSS</h4>
+            <pre><code>.card {
+    padding: 16px;
+
+    .title {
+        font-size: 18px;
+    }
+
+    .text {
+        color: #666;
+    }
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong><code>&amp;</code></strong> — «родительский селектор».
+        <code>&amp;:hover</code> = <code>.card:hover</code>.
+        <code>&amp;--large</code> = <code>.card--large</code>.
+    </div>
+
+    <h3>Амперсанд <code>&amp;</code> — примеры</h3>
+
+    <pre><code>.button {
+    background: blue;
+
+    &:hover { background: darkblue; }      /* .button:hover */
+    &:focus { outline: 2px solid blue; }   /* .button:focus */
+    &--large { padding: 20px; }             /* .button--large */
+    .dark & { color: white; }               /* .dark .button */
+}</code></pre>
+
+    <h2>6. Миксины — «функции» для CSS</h2>
+
+    <p>
+        <strong>Миксин</strong> — это <strong>группа CSS-свойств</strong>, которую
+        можно <strong>переиспользовать</strong>. Как функция, но для стилей.
+    </p>
+
+    <pre><code>// Объявление
+@mixin button-style {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+// Использование
+.btn-primary {
+    @include button-style;
+    background: #1565c0;
+    color: white;
+}
+
+.btn-secondary {
+    @include button-style;
+    background: #f5f5f5;
+    color: #222;
+}</code></pre>
+
+    <div class="compare">
+        <div>
+            <h4>Чистый CSS</h4>
+            <pre><code>.btn-primary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #1565c0;
+    color: white;
+}
+
+.btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #f5f5f5;
+    color: #222;
+}</code></pre>
+        </div>
+        <div>
+            <h4>SCSS</h4>
+            <pre><code>@mixin button-style {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    @include button-style;
+    background: #1565c0;
+    color: white;
+}
+
+.btn-secondary {
+    @include button-style;
+    background: #f5f5f5;
+    color: #222;
+}</code></pre>
+        </div>
+    </div>
+
+    <h3>Миксины с параметрами</h3>
+
+    <pre><code>@mixin button($bg, $color: white) {
+    padding: 10px 20px;
+    background: $bg;
+    color: $color;
+    border: none;
+    border-radius: 6px;
+}
+
+.btn-primary {
+    @include button(#1565c0);
+}
+
+.btn-secondary {
+    @include button(#f5f5f5, #222);
+}</code></pre>
+
+    <h2>7. Функции цвета</h2>
+
+    <pre><code>$primary: #1565c0;
+
+.button {
+    background: $primary;
+    border: 1px solid darken($primary, 10%);   // темнее на 10%
+}
+
+.button:hover {
+    background: lighten($primary, 10%);        // светлее на 10%
+}
+
+.alert {
+    background: rgba($primary, 0.5);            // прозрачность
+}</code></pre>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Функция</th>
+                <th>Что делает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>darken($color, 10%)</code></td><td>Темнее</td></tr>
+            <tr><td><code>lighten($color, 10%)</code></td><td>Светлее</td></tr>
+            <tr><td><code>rgba($color, 0.5)</code></td><td>С прозрачностью</td></tr>
+            <tr><td><code>mix($c1, $c2, 50%)</code></td><td>Смешать цвета</td></tr>
+            <tr><td><code>adjust-hue($color, 30deg)</code></td><td>Сдвинуть оттенок</td></tr>
+        </tbody>
+    </table>
+
+    <h2>8. Циклы</h2>
+
+    <pre><code>// Цикл по списку
+@each $name, $color in (primary: #1565c0, danger: #e53935, success: #43a047) {
+    .btn-#{$name} {
+        background: $color;
+    }
+}
+
+// Компилируется в:
+.btn-primary { background: #1565c0; }
+.btn-danger { background: #e53935; }
+.btn-success { background: #43a047; }</code></pre>
+
+    <div class="note">
+        <strong>Циклы</strong> — мощный инструмент. Позволяют генерировать
+        <strong>сотни</strong> классов одной строкой.
+    </div>
+
+    <h2>9. Разбиение на файлы</h2>
+
+    <p>
+        Sass позволяет <strong>импортировать</strong> файлы. Это быстрее, чем
+        CSS <code>@import</code> — всё <strong>компилируется в один CSS-файл</strong>.
+    </p>
+
+    <div class="tree"><span class="folder">scss/</span>
+├── <span class="file">_variables.scss</span>     <span class="comment">← переменные</span>
+├── <span class="file">_mixins.scss</span>        <span class="comment">← миксины</span>
+├── <span class="folder">components/</span>
+│   ├── <span class="file">_button.scss</span>
+│   ├── <span class="file">_card.scss</span>
+│   └── <span class="file">_header.scss</span>
+├── <span class="folder">pages/</span>
+│   ├── <span class="file">_home.scss</span>
+│   └── <span class="file">_about.scss</span>
+└── <span class="file">main.scss</span>          <span class="comment">← главный файл</span></div>
+
+    <pre><code>// main.scss
+@import "variables";
+@import "mixins";
+@import "components/button";
+@import "components/card";
+@import "components/header";
+@import "pages/home";
+@import "pages/about";
+
+/* ↓ компилируется в один style.css */</code></pre>
+
+    <div class="note">
+        <strong><code>_</code> перед именем</strong> — «партиал». Такие файлы
+        <strong>не компилируются</strong> в отдельные CSS. Только импортируются.
+    </div>
+
+    <h2>10. Как использовать Sass</h2>
+
+    <h3>Способ 1: онлайн-компилятор</h3>
+
+    <ul>
+        <li><a href="https://sass-lang.com/playground">sass-lang.com/playground</a></li>
+        <li>Пишешь SCSS → видишь CSS.</li>
+    </ul>
+
+    <h3>Способ 2: VS Code + расширение</h3>
+
+    <ul>
+        <li>Расширение <strong>Live Sass Compiler</strong>.</li>
+        <li>Сохраняешь <code>.scss</code> → автоматически <code>.css</code>.</li>
+    </ul>
+
+    <h3>Способ 3: командная строка</h3>
+
+    <pre><code>npm install -g sass
+sass style.scss style.css
+
+# или с наблюдением
+sass --watch style.scss:style.css</code></pre>
+
+    <h3>Способ 4: сборщики (Vite, Webpack)</h3>
+
+    <p>Автоматическая компиляция при сборке проекта.</p>
+
+    <h2>11. Когда использовать</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ситуация</th>
+                <th>Препроцессор?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Маленький проект (1–3 страницы)</td>
+                <td>Не нужен — чистый CSS</td>
+            </tr>
+            <tr>
+                <td>Средний проект (5–10 страниц)</td>
+                <td>Можно, но не обязательно</td>
+            </tr>
+            <tr>
+                <td>Большой проект (20+ страниц)</td>
+                <td><strong>Да</strong></td>
+            </tr>
+            <tr>
+                <td>Команда</td>
+                <td><strong>Да</strong> (стандарт)</td>
+            </tr>
+            <tr>
+                <td>Дизайн-система</td>
+                <td><strong>Да</strong></td>
+            </tr>
+            <tr>
+                <td>Учебный проект</td>
+                <td>Не нужен — учи CSS</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <strong>Не начинай с препроцессора!</strong>
+        <ul>
+            <li>Сначала <strong>освой чистый CSS</strong>.</li>
+            <li>Пойми, как работает каскад, специфичность, Flexbox, Grid.</li>
+            <li>Потом — Sass. Иначе — «магия» без понимания.</li>
+        </ul>
+    </div>
+
+    <h2>12. Частые ошибки</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ошибка</th>
+                <th>Почему плохо</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Учить Sass до CSS</td>
+                <td>Не поймёшь, как работает каскад</td>
+            </tr>
+            <tr>
+                <td>Слишком глубокая вложенность</td>
+                <td>Длинные селекторы, сложно переопределить</td>
+            </tr>
+            <tr>
+                <td>Забыть <code>&amp;</code> для псевдоклассов</td>
+                <td><code>:hover</code> без <code>&amp;</code> — другой селектор</td>
+            </tr>
+            <tr>
+                <td>Использовать <code>@import</code> вместо <code>@use</code></td>
+                <td><code>@import</code> устарел в Sass (с 2022)</td>
+            </tr>
+            <tr>
+                <td>Компилировать вручную каждый раз</td>
+                <td>Долго. Используй <code>--watch</code> или сборщик</td>
+            </tr>
+            <tr>
+                <td>Не использовать <code>_</code> для партиалов</td>
+                <td>Компилируются в отдельные CSS — лишние файлы</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>13. Что запомнить из урока</h2>
+
+    <ul>
+        <li><strong>Препроцессор</strong> — компилирует «расширенный CSS» в обычный.</li>
+        <li><strong>Sass (SCSS)</strong> — стандарт. <strong>LESS</strong> — реже.</li>
+        <li><strong>Переменные:</strong> <code>$var</code> (Sass), <code>@var</code> (LESS).</li>
+        <li><strong>Вложенность</strong> — главная фишка. <code>&amp;</code> — родитель.</li>
+        <li><strong>Миксины</strong> — переиспользуемые группы свойств.</li>
+        <li><strong>Функции:</strong> <code>darken()</code>, <code>lighten()</code>, <code>rgba()</code>.</li>
+        <li><strong>Циклы:</strong> <code>@for</code>, <code>@each</code> — генерируют классы.</li>
+        <li><strong>Партиалы:</strong> файлы с <code>_</code> — не компилируются отдельно.</li>
+        <li><strong>Компиляция:</strong> онлайн, VS Code, CLI, сборщики.</li>
+        <li><strong>Не начинай с Sass</strong> — сначала чистый CSS.</li>
+    </ul>
+
+    <hr>
+    <p style="text-align:center; color:#888; font-size:14px;">
+        Конец урока 57 · Следующий урок: <em>CSS-фреймворки — Bootstrap, Tailwind (обзорно)</em>
+    </p>
+
+</body>
+</html>
